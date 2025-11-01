@@ -1,0 +1,74 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "framework": "nextjs",
+  "regions": ["lhr1"],
+  "functions": {
+    "src/app/api/**/*.ts": {
+      "maxDuration": 30
+    }
+  },
+  "images": {
+    "remotePatterns": [
+      {
+        "protocol": "https",
+        "hostname": "shop.lowtherloudspeakers.com",
+        "pathname": "/**"
+      },
+      {
+        "protocol": "https",
+        "hostname": "cdn.shopify.com",
+        "pathname": "/**"
+      },
+      {
+        "protocol": "https",
+        "hostname": "images.unsplash.com",
+        "pathname": "/**"
+      }
+    ]
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
+    },
+    {
+      "source": "/fonts/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/images/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/shop",
+      "destination": "https://shop.lowtherloudspeakers.com",
+      "permanent": true
+    }
+  ]
+}

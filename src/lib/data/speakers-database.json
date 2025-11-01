@@ -1,0 +1,500 @@
+{
+  "image_defaults": {
+    "allowed_extensions": ["jpg", "jpeg", "png", "webp", "avif"],
+    "categories": ["hero", "gallery", "details", "technical"]
+  },
+  "speakers": {
+    "quarterwave": {
+      "id": "quarterwave",
+      "title": "Quarter Wave",
+      "slug": "quarterwave",
+      "feeling": "discreet. architectural.",
+      "image": "/images/card-images/card-image-Quarterwave.webp",
+      "href": "/loudspeakers/acousta-quarter-wave",
+      "images": {
+        "base": "/images/speakers/quarter-wave/",
+        "hero": "hero/",
+        "gallery": "gallery/",
+        "details": "details/",
+        "technical": "technical/"
+      },
+      "technical": {
+        "colour_options": "Bespoke premium matched veneer",
+        "horn_type": "Rear-loaded quarter-wave Voigt horn",
+        "driver_size": "8\"",
+        "recommended_driver": "PM7A Philharmonic",
+        "alternative_drivers": ["DX2", "DX3", "DX4", "PM6C", "PM6A"],
+        "sensitivity": "98–105 dB (room dependent, typically >100 dB system efficiency)",
+        "impedance": "8 ohm nominal",
+        "frequency_response": "35Hz – 20kHz",
+        "dimensions_mm": { "height": 830, "width": 250, "depth": 480 },
+        "weight": "27kg",
+        "enclosure_type": "Wall-assisted quarter-wave horn",
+        "materials": { 
+          "cabinet": "18mm Baltic Birch plywood", 
+          "finish": "Matched veneers" 
+        }
+      },
+      "design": {
+        "designer": "Lowther",
+        "year_launched": "2024 relaunch of Corner Acousta",
+        "design_philosophy": "Leverage boundary reinforcement from a nearby wall for natural bass, while remaining flexible in room placement.",
+        "unique_features": [
+          "Rear-loaded quarter-wave gain without corner dependence",
+          "Compact footprint with architectural proportions"
+        ],
+        "target_room_size": "Small to medium rooms",
+        "placement": "Place near a wall with breathing space behind and to the sides; adaptable to varied rooms."
+      },
+      "market": {
+        "price_tier": "Premium",
+        "target_audience": "Design-conscious listeners who want authentic Lowther sound without placement constraints",
+        "positioning": "Architectural quarter-wave horn, Handmade in Great Britain",
+        "competitors": ["Boenicke Audio", "Klipsch Heritage"]
+      },
+      "content": {
+        "short_description": "Engineered with the flexibility to perform anywhere in the room — even behind furniture — the Acousta Quarter Wave delivers true hi-fi without dominating your space.",
+        "long_description": "The Acousta Quarter Wave proves that high fidelity need not command attention to be exceptional. Its ingenious rear-horn design produces clean, articulate bass with signature Lowther clarity, even when positioned behind furniture or discreetly in a corner. Handmade in Great Britain and finished in bespoke veneers carefully matched to each living space, it is as beautiful as fine furniture yet unassuming in its presence.\n\nAt its heart lies the PM7A Philharmonic, renowned for warmth, speed and natural detail. Together, cabinet and instrument create a performance that rivals, and often surpasses, systems many times its size. Every pair carries a 10-year warranty and the assurance of a lifetime of listening pleasure.",
+        "approved_copy": {
+          "hero_heading": "Simply just works.",
+          "hero_subheading": "Engineered with the flexibility to perform anywhere in a room, even behind furniture.",
+          "features_list": [
+            "Rear-horn design for clean, articulate bass and signature Lowther clarity",
+            "Performs beautifully whether in open view or discreetly behind furniture",
+            "Handmade in Great Britain and finished in bespoke matched veneers"
+          ],
+          "technical_highlights": "Rear-loaded quarter-wave Voigt horn with PM7A Philharmonic driver, delivering 35Hz–20kHz response and over 100dB system efficiency in typical rooms.",
+          "lifestyle_copy": "Tall, elegant, and understated, the Acousta Quarter Wave blends seamlessly into your environment while delivering the immersive, lifelike sound for which Lowther is renowned. Whether placed proudly in view or tucked subtly into the room's design, it fills the space with warmth, speed and precision — a true marriage of sound and craftsmanship.",
+          "call_to_action": "Discover how effortlessly the Acousta Quarter Wave fits your life. Handmade in Great Britain with a 10-year warranty."
+        }
+      },
+      "seo": {
+        "meta_title": "Quarterwave – Architectural Quarter-Wave Loudspeaker | Lowther",
+        "meta_description": "Lowther Quarterwave: rear-loaded quarter-wave horn, placement-flexible and Handmade in Great Britain for natural bass and crystalline clarity.",
+        "keywords": [
+          "Lowther Quarterwave",
+          "quarter-wave Voigt horn",
+          "wall-assisted horn",
+          "full-range loudspeaker",
+          "Handmade in Great Britain"
+        ]
+      }
+    },
+    "acousta-117": {
+      "id": "acousta-117",
+      "title": "Acousta 117",
+      "slug": "acousta-117",
+      "feeling": "timeless. versatile.",
+      "image": "/images/card-images/card-image-Acousta-117.webp",
+      "href": "/loudspeakers/acousta-117",
+      "images": {
+        "base": "/images/speakers/acousta-117/",
+        "hero": "hero/",
+        "gallery": "gallery/",
+        "details": "details/",
+        "technical": "technical/"
+      },
+      "technical": {
+        "colour_options": "Bespoke premium matched veneer",
+        "horn_type": "Front-loaded, folded Voigt horn",
+        "driver_size": "8\"",
+        "recommended_driver": "PM6A",
+        "alternative_drivers": ["DX2","DX3","DX4","EX2","EX3","EX4","PM6C","PM7A"],
+        "sensitivity": "98–105 dB (room dependent, typically >100 dB system efficiency)",
+        "impedance": "8 ohm nominal",
+        "frequency_response": "35Hz – 20kHz",
+        "dimensions_mm": { "height": 905, "width": 470, "depth": 375 },
+        "weight": "27kg",
+        "enclosure_type": "Folded front horn",
+        "materials": { "cabinet": "Baltic Birch plywood", "finish": "Matched veneers" }
+      },
+      "design": {
+        "designer": "Paul Voigt (heritage), refined by Lowther",
+        "design_philosophy": "Classic Lowther horn clarity with modern materials and damping.",
+        "unique_features": ["Flexible placement","Heritage detailing"],
+        "target_room_size": "Medium rooms",
+        "placement": "Against wall or gently toed-in"
+      },
+      "market": {
+        "price_tier": "Mid-premium",
+        "target_audience": "Listeners seeking the classic Lowther presentation",
+        "positioning": "Iconic folded horn, Handmade in Great Britain",
+        "competitors": ["Tannoy","Wharfedale Heritage"]
+      },
+      "content": {
+        "short_description": "The definitive Lowther classic, a timeless folded-horn loudspeaker refined for today with modern materials, improved rigidity, and unmatched musical versatility.",
+        "long_description": "The Acousta 117 stands as Lowther's most enduring design, a folded-horn loudspeaker that has defined the art of single-driver reproduction for generations. Its carefully balanced geometry and handcrafted Baltic Birch cabinet deliver the immediacy, detail, and natural presence that only a Lowther can produce. Modern refinements in damping, adhesives, and finishing bring new stability and warmth to a legendary form. Finished in bespoke matched veneers and handmade in Great Britain, the 117 adapts gracefully to a wide range of spaces, pairing effortlessly with valve amplifiers for an experience that is as emotive as it is revealing. It remains the benchmark for pure, timeless sound.",
+        "approved_copy": {
+          "hero_heading": "The timeless Lowther classic.",
+          "hero_subheading": "Acousta 117, refined heritage and effortless musicality.",
+          "features_list": [
+            "Front-loaded folded-horn design for natural scale and clarity",
+            "Flexible placement suitable for a wide variety of rooms",
+            "Handmade in Great Britain with bespoke matched veneers"
+          ],
+          "technical_highlights": "Front-loaded folded-Voigt horn using an 8 inch PM6A driver, 35 Hz to 20 kHz frequency response, 98 to 105 dB sensitivity, and 8 ohm nominal impedance.",
+          "lifestyle_copy": "Elegant and confident yet understated, the Acousta 117 brings the soul of live performance into the home. Its enduring form, refined craftsmanship, and adaptable nature make it equally at home in traditional or contemporary interiors. This is the speaker that defined the Lowther sound, open, immediate, and emotionally engaging, and continues to inspire audiophiles worldwide.",
+          "call_to_action": "Experience the heritage of Lowther through the Acousta 117. Handmade in Great Britain for a lifetime of music."
+        }
+      },
+      "seo": {
+        "meta_title": "Acousta 117 – Timeless Lowther Horn | Lowther",
+        "meta_description": "Discover Acousta 117, Lowther's classic folded horn, Handmade in Great Britain with matched veneers and effortless musicality.",
+        "keywords": ["Acousta 117","folded horn","full-range driver","British craftsmanship"]
+      }
+    },
+    "almira": {
+      "id": "almira",
+      "title": "Almira",
+      "slug": "almira",
+      "feeling": "balanced. expressive.",
+      "image": "/images/card-images/card-image-Almira.webp",
+      "href": "/loudspeakers/almira",
+      "images": {
+        "base": "/images/speakers/almira/",
+        "hero": "hero/",
+        "gallery": "gallery/",
+        "details": "details/",
+        "technical": "technical/"
+      },
+      "technical": {
+        "colour_options": "Your choice of real wood, matched veneer",
+        "horn_type": "Hybrid quarter-wave Voigt horn",
+        "driver_size": "8\"",
+        "recommended_driver": "DX3",
+        "alternative_drivers": ["PM7A"],
+        "sensitivity": "98–105 dB (room dependent, typically >100 dB system efficiency)",
+        "impedance": "8 ohm nominal",
+        "frequency_response": "35Hz – 20kHz",
+        "dimensions_mm": { "height": 1200, "width": 300, "depth": 330 },
+        "weight": "27kg",
+        "materials": { "cabinet": "Baltic Birch plywood", "finish": "Matched veneers" }
+      },
+      "design": {
+        "design_philosophy": "Hybrid quarter-wave loading for poise and clarity.",
+        "target_room_size": "Modest to medium rooms",
+        "placement": "Easy to integrate, gentle toe-in"
+      },
+      "market": {
+        "price_tier": "Premium",
+        "target_audience": "Modern homes wanting Lowther immediacy in a slim form",
+        "positioning": "Handmade in Great Britain"
+      },
+      "content": {
+        "short_description": "The Almira represents Lowther's first new cabinet design in over 30 years, artfully maximising our legendary single driver performance in a meticulously engineered, new cabinet design.",
+        "long_description": "Designed to perform equally well in smaller rooms as in larger spaces, the Almira preserves the clarity and scale of bigger Lowther speaker cabinets but in a much more compact footprint. Utilising the DX3 driver, the Almira is based on a quarter-wave Voigt horn with a floor-facing exit.",
+        "approved_copy": {
+          "hero_heading": "Our first new loudspeaker design in over 30 years.",
+          "hero_subheading": "The Almira artfully maximises our legendary single driver performance in a meticulously engineered, new cabinet design.",
+          "features_list": [
+            "Quarter-wave Voigt horn with floor-facing exit for natural bass extension",
+            "DX3 Sinfonia driver with powerful neodymium magnet system",
+            "Integrated super-tweeter for extended high-frequency detail",
+            "Handmade in Great Britain with bespoke matched veneers"
+          ],
+          "technical_highlights": "Quarter-wave Voigt horn using an 8 inch DX3 driver with super-tweeter, 35 Hz to 20 kHz frequency response, 98 to 105 dB sensitivity, and 8 ohm nominal impedance.",
+          "lifestyle_copy": "Elegant in form and focused in performance, Almira brings the unmistakable Lowther clarity to modern interiors. Its refined cabinet proportions and graceful presence make it as visually calm as it is sonically engaging. Every note arrives with precision, warmth, and texture, turning listening into an experience that feels alive and beautifully complete.",
+          "call_to_action": "Discover Almira, the perfect balance of design and musical expression. Handmade in Great Britain and crafted for a lifetime of listening."
+        }
+      },
+      "seo": {
+        "meta_title": "Almira – Hybrid Quarter-Wave Elegance | Lowther",
+        "meta_description": "Almira pairs hybrid quarter-wave loading with Lowther clarity in a slim, handcrafted cabinet.",
+        "keywords": ["Lowther Almira","quarter-wave","DX3","handmade loudspeaker"]
+      }
+    },
+    "edilia": {
+      "id": "edilia",
+      "title": "Edilia",
+      "slug": "edilia",
+      "feeling": "elegant. focused.",
+      "image": "/images/card-images/card-image-Edilia.webp",
+      "href": "/loudspeakers/edilia",
+      "images": {
+        "base": "/images/speakers/edilia/",
+        "hero": "hero/",
+        "gallery": "gallery/",
+        "details": "details/",
+        "technical": "technical/"
+      },
+      "technical": {
+        "colour_options": "Your choice of real wood matched veneer applied by our master craftsman.",
+        "horn_type": "Hybrid quarter wave Voigt horn",
+        "driver_size": "8\"",
+        "recommended_driver": "PM7A and DX3 Bass",
+        "alternative_drivers": ["N/A"],
+        "sensitivity": "98-105 dB",
+        "impedance": "8 ohm",
+        "frequency_response": "35Hz - 20kHz",
+        "dimensions_mm": { "height": 1200, "width": 300, "depth": 330 },
+        "weight": "32kg",
+        "materials": { "cabinet": "Baltic Birch plywood", "finish": "Matched veneers" }
+      },
+      "design": {
+        "unique_features": ["Tapped bass with passive control"],
+        "target_room_size": "Modest to medium rooms",
+        "placement": "Floor-facing exit, tune to room"
+      },
+      "market": {
+        "price_tier": "Premium",
+        "target_audience": "Listeners wanting full-range coherence with controllable foundation",
+        "positioning": "Handmade in Great Britain"
+      },
+      "content": {
+        "short_description": "An elegant quarter-wave loudspeaker with adjustable bass control and natural Lowther purity. Designed to integrate beautifully into real living spaces.",
+        "long_description": "Edilia builds upon the heritage of the Almira design, adding a tunable bass system that allows the listener to shape the sound to suit their room and taste. Its hybrid quarter-wave enclosure and carefully balanced geometry provide smooth extension and remarkable coherence across the frequency range. At its heart lies the PM7A full-range instrument, supported by a DX3 bass driver under passive control, delivering a sound that is open, precise, and full of musical character. Handmade in Great Britain from Baltic Birch and finished in bespoke matched veneers, Edilia is crafted to perform with grace and refinement for a lifetime of listening.",
+        "approved_copy": {
+          "hero_heading": "Elegant and focused.",
+          "hero_subheading": "Edilia, refined balance with tunable bass control.",
+          "features_list": [
+            "Hybrid quarter-wave enclosure with tunable bass adjustment",
+            "PM7A full-range driver with DX3 bass support for natural extension",
+            "Handmade in Great Britain from Baltic Birch with bespoke veneers"
+          ],
+          "technical_highlights": "Hybrid quarter-wave Voigt horn using PM7A full-range and DX3 bass driver, 35 Hz to 20 kHz frequency response, 98 to 105 dB sensitivity, and 8 ohm nominal impedance.",
+          "lifestyle_copy": "Edilia is designed for those who value refinement and precision in equal measure. Its tunable bass system allows perfect integration with the room, while its slender, elegant form brings a touch of understated beauty to any interior. Every detail, from the hand-matched veneers to the acoustic balance of its cabinet, reflects Lowther's commitment to craftsmanship and authenticity.",
+          "call_to_action": "Experience the elegance and precision of Edilia. Handmade in Great Britain and crafted for a lifetime of music."
+        }
+      },
+      "seo": {
+        "meta_title": "Edilia – Tunable Quarter-Wave Mastery | Lowther",
+        "meta_description": "Edilia blends Lowther's full-range voice with a tunable quarter-wave bass system in a refined cabinet.",
+        "keywords": ["Lowther Edilia","quarter-wave","PM7A","DX3","handmade"]
+      }
+    },
+    "tp2": {
+      "id": "tp2",
+      "title": "TP2",
+      "slug": "tp2",
+      "feeling": "powerful. grand.",
+      "image": "/images/card-images/card-image-TP2.webp",
+      "href": "/loudspeakers/tp2",
+      "images": {
+        "base": "/images/speakers/tp2/",
+        "hero": "hero/",
+        "gallery": "gallery/",
+        "details": "details/",
+        "technical": "technical/"
+      },
+      "technical": {
+        "colour_options": "Your choice of real wood matched veneer applied by our master craftsman.",
+        "horn_type": "Dual-loaded Voigt horn",
+        "driver_size": "8\"",
+        "recommended_driver": "Lowther PM4A",
+        "alternative_drivers": ["DX2","DX3","DX4","EX2","EX3","EX4","PM2A","PM5A","PM6A","PM7A"],
+        "sensitivity": "98-105 dB",
+        "impedance": "8/15 ohm",
+        "frequency_response": "35Hz - 20kHz",
+        "dimensions_mm": { "height": 1055, "width": 820, "width_rear": 720, "depth": 600 },
+        "weight": "70kg (per speaker)",
+        "materials": { "cabinet": "Baltic Birch plywood", "finish": "Matched veneers" }
+      },
+      "design": {
+        "design_philosophy": "Balanced loading on both sides of the diaphragm for scale and efficiency.",
+        "target_room_size": "Large rooms",
+        "placement": "Designed for room reinforcement to unlock full horn gain"
+      },
+      "market": {
+        "price_tier": "Premium",
+        "target_audience": "Horn aficionados seeking concert-hall scale",
+        "positioning": "Handmade in Great Britain"
+      },
+      "content": {
+        "short_description": "The Lowther TP2 redefines the classic corner horn design with a modern touch.",
+        "long_description": "Inspired by legendary designs like the AudioVector and Lowther Hegeman, it employs a dual-loaded horn principle for exceptional efficiency and a rich sound quality. This speaker, a testament to Lowther's commitment to excellence, balancing historical design elements with contemporary advancements.",
+        "approved_copy": {
+          "hero_heading": "The Lowther TP2 redefines the classic corner horn design with a modern touch.",
+          "hero_subheading": "Inspired by legendary designs like the AudioVector and Lowther Hegeman, it employs a dual-loaded horn principle for exceptional efficiency and a rich sound quality.",
+          "features_list": [
+            "Dual-loaded horn design for natural scale and dynamic control",
+            "Balanced loading on both sides of the diaphragm for improved efficiency",
+            "Handmade in Great Britain from Baltic Birch with matched veneers"
+          ],
+          "technical_highlights": "Dual-loaded Voigt horn using the PM4A driver, 35 Hz to 20 kHz frequency response, 98 to 105 dB sensitivity, and 8 or 15 ohm impedance options. Each speaker weighs 70 kg and is constructed from 18 mm Baltic Birch plywood.",
+          "lifestyle_copy": "TP2 is a statement piece for the dedicated listener. Its monumental form and commanding presence fill the room with sound that is powerful yet refined. Every note feels immediate and alive, every performance recreated with depth and realism. Designed for those who seek the emotion of live music in their own space, TP2 transforms listening into a grand experience.",
+          "call_to_action": "Experience the authority and artistry of the TP2. Handmade in Great Britain and built for a lifetime of musical excellence."
+        }
+      },
+      "seo": {
+        "meta_title": "TP2 – Corner Horn Masterpiece | Lowther",
+        "meta_description": "TP2: dual-loaded horn with magnificent scale, Handmade in Great Britain.",
+        "keywords": ["Lowther TP2","horn loudspeaker","dual-loaded horn","PM4A"]
+      }
+    },
+    "audiovector": {
+      "id": "audiovector",
+      "title": "Audiovector",
+      "slug": "audiovector",
+      "feeling": "monumental. adaptable.",
+      "image": "/images/card-images/card-image-Audiovector.webp",
+      "href": "/loudspeakers/audiovector",
+      "images": {
+        "base": "/images/speakers/audiovector/",
+        "hero": "hero/",
+        "gallery": "gallery/",
+        "details": "details/",
+        "technical": "technical/"
+      },
+      "technical": {
+        "colour_options": "Your choice of real wood, matched veneer",
+        "horn_type": "Voigt horn (top dispersal + front)",
+        "driver_size": "8\"",
+        "recommended_driver": "PM4A (top), PM2A (front)",
+        "alternative_drivers": [],
+        "sensitivity": "98–105 dB (room dependent, typically >100 dB system efficiency)",
+        "impedance": "8/15 ohm",
+        "frequency_response": "35Hz – 20kHz",
+        "dimensions_mm": { "height": 950, "height_with_reflector": 1380, "width": 685, "depth": 600 },
+        "weight": "120kg (per speaker)",
+        "materials": { "cabinet": "Baltic Birch with laminated curves", "finish": "Matched veneers" }
+      },
+      "design": {
+        "unique_features": ["Adjustable top reflector","Gain matching between drivers"],
+        "target_room_size": "Large, high-ceilinged rooms",
+        "placement": "Free-space with reflector tuning"
+      },
+      "market": {
+        "price_tier": "Ultra-limited, by commission",
+        "target_audience": "Collectors and horn specialists",
+        "positioning": "Handmade in Great Britain"
+      },
+      "content": {
+        "short_description": "A monumental loudspeaker that projects music with commanding presence and graceful adaptability. Designed for grand spaces and built by hand in Great Britain.",
+        "long_description": "Meticulously handcrafted in Great Britain, the new AudioVector merges the revered Lowther legacy with contemporary advancements. Designed for large spaces, the 2019 AudioVector can be identified by its dual Lowther drivers and iconic top dispersal horn. Originating from a passionate experiment, it has evolved into a cherished series, distinguished by its rarefied presence in the market.\n\nEach AudioVector is not just a speaker but a piece of history, complete with authenticity certificates and serial plates, promising exclusivity and a legacy of sound to be treasured for generations.",
+        "approved_copy": {
+          "hero_heading": "The AudioVector",
+          "hero_subheading": "Meticulously handcrafted in Great Britain, the new AudioVector merges the revered Lowther legacy with contemporary advancements.",
+          "features_list": [
+            "Dual-driver horn system with adjustable top reflector",
+            "Re-plotted horn geometry for refined dispersal and accuracy",
+            "Handmade in Great Britain from Baltic Birch with matched veneers"
+          ],
+          "technical_highlights": "Top-dispersal and front-firing Voigt horn system using PM4A and PM2A drivers, 35 Hz to 20 kHz frequency response, 98 to 105 dB sensitivity, and 8 or 15 ohm impedance. Each speaker weighs 120 kg and is constructed from laminated Baltic Birch for exceptional strength.",
+          "lifestyle_copy": "Audiovector brings a sense of occasion to every piece of music. Its towering presence and sculptural form make it as much a work of art as a high-fidelity instrument. Adjustable top dispersion allows it to adapt to room acoustics, ensuring that the full beauty of the recording reaches the listener with clarity and balance. For those who value the grandeur of live sound and the craftsmanship of true British artistry, Audiovector stands unmatched.",
+          "call_to_action": "Commission your Audiovector and experience Lowther's grandest expression of sound. Handmade in Great Britain for those who demand the extraordinary."
+        }
+      },
+      "seo": {
+        "meta_title": "Audiovector – Acoustic Grandeur Redefined | Lowther",
+        "meta_description": "Audiovector: top-dispersal Voigt horn with adjustable reflector, handmade to commission in Great Britain.",
+        "keywords": ["Lowther Audiovector","stereo horn","PM4A","PM2A"]
+      }
+    },
+    "hegeman": {
+      "id": "hegeman",
+      "title": "Hegeman",
+      "slug": "hegeman",
+      "feeling": "exclusive. reverent.",
+      "image": "/images/card-images/card-image-Hegeman.webp",
+      "href": "/loudspeakers/hegeman",
+      "images": {
+        "base": "/images/speakers/hegeman/",
+        "hero": "hero/",
+        "gallery": "gallery/",
+        "details": "details/",
+        "technical": "technical/"
+      },
+      "technical": {
+        "colour_options": "Your choice of real wood, matched veneer",
+        "horn_type": "Voigt horn",
+        "driver_size": "8\"",
+        "recommended_driver": "Lowther Field Coil",
+        "alternative_drivers": ["PM4A Philharmonic"],
+        "sensitivity": "98–105 dB (room dependent, typically >100 dB system efficiency)",
+        "impedance": "8/15 ohm",
+        "frequency_response": "35Hz – 20kHz",
+        "dimensions_mm": { "height": 1140, "width": 1130, "depth": 600 },
+        "weight": "150kg (per speaker)",
+        "materials": { "cabinet": "Baltic Birch with matched veneers", "finish": "Hand-applied veneer by master craftsman" }
+      },
+      "design": {
+        "target_room_size": "Large rooms and salons",
+        "placement": "Free-space horn with room-tuned positioning"
+      },
+      "market": {
+        "price_tier": "Premium / by commission",
+        "target_audience": "Connoisseurs seeking classic Lowther horn expression",
+        "positioning": "Handmade in Great Britain"
+      },
+      "content": {
+        "short_description": "An exclusive horn loudspeaker that captures the spirit of Lowther's earliest masterpieces. Crafted for the connoisseur who values musical purity and timeless design.",
+        "long_description": "Revisiting the fabled collaboration between Donald Chave and Stewart Hegeman in the 1950's, the Hegeman revives a revered chapter in Lowther's history, drawing inspiration from classic Voigt horn architecture while embracing the precision of modern craftsmanship.\n\nOffered exclusively with the Lowther Field Coil or PM4A Philharmonic, it delivers breathtaking immediacy and scale, revealing the full emotional weight of music with absolute control and refinement. Each cabinet is handcrafted from Baltic Birch and finished in hand-matched veneers, achieving both resonance control and beauty in form. Built to commission, Hegeman represents the pinnacle of British artisanal engineering and a lifelong connection to musical truth.",
+        "approved_copy": {
+          "hero_heading": "Exclusive and reverent.",
+          "hero_subheading": "Hegeman, a reimagining of Lowther's horn legacy.",
+          "features_list": [
+            "Voigt horn architecture with Lowther Field Coil or PM4A Philharmonic",
+            "Handcrafted Baltic Birch construction with precision horn geometry",
+            "Built to commission and handmade in Great Britain"
+          ],
+          "technical_highlights": "Voigt horn system available with Lowther Field Coil or PM4A Philharmonic, 35 Hz to 20 kHz frequency response, 98 to 105 dB sensitivity, and 8 or 15 ohm impedance. Each cabinet weighs 150 kg and is built from Baltic Birch with matched veneers.",
+          "lifestyle_copy": "Hegeman is for those who see music as art and sound as an emotional journey. Its presence is commanding yet understated, its sound enveloping yet precise. Every pair is built to order, tailored to the listener who values authenticity and craftsmanship above all else. With its classic horn form and flawless finish, Hegeman embodies the reverence of a tradition that has defined true high-fidelity for nearly a century.",
+          "call_to_action": "Commission your Hegeman and experience the essence of Lowther's horn heritage. Handmade in Great Britain and crafted for the devoted listener."
+        }
+      },
+      "seo": {
+        "meta_title": "Hegeman – Revered Lowther Horn | Lowther",
+        "meta_description": "Hegeman: classic Voigt horn architecture with Lowther Field Coil or PM4A Philharmonic. Handmade in Great Britain.",
+        "keywords": ["Lowther Hegeman","Voigt horn","Field Coil","PM4A Philharmonic"]
+      }
+    },
+    "voigt-horn": {
+      "id": "voigt-horn",
+      "title": "4ft Voigt Horn",
+      "slug": "voigt-horn",
+      "feeling": "historic. sculptural.",
+      "image": "/images/card-images/card-image-Voigt-Horn.webp",
+      "href": "/loudspeakers/voigt-horn",
+      "images": {
+        "base": "/images/speakers/voigt-horn/",
+        "hero": "hero/",
+        "gallery": "gallery/",
+        "details": "details/",
+        "technical": "technical/"
+      },
+      "technical": {
+        "colour_options": "Your choice of real wood, matched veneer",
+        "horn_type": "Voigt Horn",
+        "driver_size": "8\"",
+        "recommended_driver": "Lowther Field Coil Philharmonic",
+        "alternative_drivers": ["PM4A Philharmonic"],
+        "sensitivity": "98–105+ dB (room dependent, typically >100 dB system efficiency)",
+        "impedance": "8 ohm nominal",
+        "frequency_response": "35Hz – 20kHz",
+        "dimensions_mm": { "height": 1580, "width": 1220, "depth": 1650 },
+        "weight": "150kg (per speaker)",
+        "materials": { "cabinet": "Baltic Birch with laminated horn curves", "finish": "Matched veneers" }
+      },
+      "design": {
+        "target_room_size": "Very large rooms, salons, studios",
+        "placement": "Free-space horn"
+      },
+      "market": {
+        "price_tier": "By commission",
+        "target_audience": "Horn collectors and historians",
+        "positioning": "Handmade in Great Britain"
+      },
+      "content": {
+        "short_description": "A historic horn loudspeaker of monumental presence and sculptural grace. The 4ft Voigt Horn is Lowther's most iconic expression of single-driver artistry.",
+        "long_description": "In the 1920s, Paul Voigt created a horn loudspeaker that would become the foundation of modern Hi‑Fi.\n\nThe Voigt horn captures more than sound. It represents a moment in time when Great Britain was at the forefront of both engineering and creativity. From this single design grew a world of Hi‑Fi that changed the way people experienced music forever.\n\nOur 2024 reproduction honours that original moment. Handcrafted in Britain, the horn is designed for the Field Coil Philharmonic drive unit, pairing Voigt's pioneering form with Lowther's most coveted instrument.\n\nThe result is both a tribute and a continuation: a timeless union of past and present. This is not just a loudspeaker - it is a piece of Hi‑Fi history, a moment in time, preserved in an eternity of music.",
+        "approved_copy": {
+          "hero_heading": "The Voigt Horn",
+          "hero_subheading": "A moment in time, preserved in an eternity of music.",
+          "features_list": [
+            "Full-scale Voigt horn architecture with Field Coil or PM4A Philharmonic",
+            "Handcrafted Baltic Birch cabinet with matched veneers",
+            "Handmade in Great Britain and built to commission"
+          ],
+          "technical_highlights": "Full-scale Voigt horn using the Lowther Field Coil or PM4A Philharmonic, 35 Hz to 20 kHz frequency response, 98 to 105 dB sensitivity, and 8 ohm nominal impedance. Each cabinet weighs 150 kg and is constructed from Baltic Birch with laminated horn curves.",
+          "lifestyle_copy": "The 4ft Voigt Horn is more than a loudspeaker; it is an heirloom of British acoustic history. Its presence transforms a space into a concert hall, revealing the character of every recording with extraordinary realism. Sculptural and commanding, it invites the listener to rediscover music in its purest form, each note resonating with the legacy of Paul Voigt's pioneering spirit.",
+          "call_to_action": "Commission the 4ft Voigt Horn and own a piece of audio history. Handmade in Great Britain and crafted to inspire generations of listeners."
+        }
+      },
+      "seo": {
+        "meta_title": "4ft Voigt Horn – The Icon Reimagined | Lowther",
+        "meta_description": "Lowther 4ft Voigt Horn with field-coil options. Handmade in Great Britain for monumental, lifelike sound.",
+        "keywords": ["4ft Voigt Horn","Voigt Horn","Lowther Field Coil","PM4A Philharmonic","horn loudspeaker"]
+      }
+    }
+  }
+}

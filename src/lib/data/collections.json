@@ -1,0 +1,56 @@
+[
+  {
+    "id": "philharmonic",
+    "slug": "philharmonic",
+    "title": "Philharmonic",
+    "description": "Our flagship collection representing the pinnacle of Lowther craftsmanship and acoustic engineering.",
+    "image": "/images/collections/philharmonic.jpg",
+    "featured": true,
+    "speakers": ["philharmonic-iii"]
+  },
+  {
+    "id": "grand-opera",
+    "slug": "grand-opera", 
+    "title": "Grand Opera",
+    "description": "Commanding loudspeakers designed for larger spaces, delivering orchestral dynamics with remarkable clarity.",
+    "image": "/images/collections/grand-opera.jpg",
+    "featured": true,
+    "speakers": ["grand-opera"]
+  },
+  {
+    "id": "cottage",
+    "slug": "cottage",
+    "title": "Cottage",
+    "description": "Perfect for smaller spaces, delivering the signature Lowther sound in compact, elegant forms.",
+    "image": "/images/collections/cottage.jpg",
+    "featured": false,
+    "speakers": ["cottage"]
+  },
+  {
+    "id": "quarter-wave",
+    "slug": "quarter-wave",
+    "title": "Quarter Wave",
+    "description": "Classic designs available as build-it-yourself kits, perfect for the DIY enthusiast.",
+    "image": "/images/collections/quarter-wave.jpg",
+    "featured": false,
+    "speakers": ["quarter-wave"]
+  },
+  {
+    "id": "drive-units",
+    "slug": "drive-units",
+    "title": "Drive Units",
+    "description": "The heart of every Lowther loudspeaker. Hand-selected and individually tested drivers.",
+    "image": "/images/collections/drive-units.jpg",
+    "featured": false,
+    "speakers": ["dx3-driver", "pm6c-driver", "pm2a-driver", "pm4a-driver"]
+  },
+  {
+    "id": "cables",
+    "slug": "cables",
+    "title": "Cables",
+    "description": "High-quality cables designed to preserve the integrity of your Lowther system.",
+    "image": "/images/collections/cables.jpg",
+    "featured": false,
+    "speakers": ["reference-cables", "studio-cables"]
+  }
+]

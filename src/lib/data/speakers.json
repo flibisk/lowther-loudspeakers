@@ -1,0 +1,133 @@
+[
+  {
+    "id": "philharmonic-iii",
+    "slug": "philharmonic-iii",
+    "title": "Philharmonic III",
+    "subtitle": "Reference Excellence",
+    "description": "Our flagship loudspeaker representing the pinnacle of Lowther craftsmanship and acoustic engineering.",
+    "category": "loudspeakers",
+    "collection": "philharmonic",
+    "price": 15995,
+    "currency": "GBP",
+    "images": [
+      "/images/philharmonic-iii-1.jpg",
+      "/images/philharmonic-iii-2.jpg",
+      "/images/philharmonic-iii-3.jpg"
+    ],
+    "specifications": {
+      "frequencyResponse": "25Hz - 20kHz",
+      "sensitivity": "95dB/1W/1m",
+      "impedance": "8Ω",
+      "powerHandling": "20W - 100W",
+      "dimensions": "H: 1200mm W: 400mm D: 350mm",
+      "weight": "45kg"
+    },
+    "features": [
+      "Hand-selected Lowther DX3 drivers",
+      "Quarter-wave transmission line",
+      "Solid walnut cabinet",
+      "Hand-finished veneers"
+    ],
+    "relatedProducts": ["dx3-driver"],
+    "featured": true,
+    "inStock": true
+  },
+  {
+    "id": "grand-opera",
+    "slug": "grand-opera",
+    "title": "Grand Opera",
+    "subtitle": "Theatrical Power",
+    "description": "A commanding presence designed for larger spaces, delivering orchestral dynamics with remarkable clarity.",
+    "category": "loudspeakers",
+    "collection": "grand-opera",
+    "price": 12995,
+    "currency": "GBP",
+    "images": [
+      "/images/grand-opera-1.jpg",
+      "/images/grand-opera-2.jpg",
+      "/images/grand-opera-3.jpg"
+    ],
+    "specifications": {
+      "frequencyResponse": "30Hz - 18kHz",
+      "sensitivity": "93dB/1W/1m",
+      "impedance": "8Ω",
+      "powerHandling": "15W - 80W",
+      "dimensions": "H: 1100mm W: 380mm D: 320mm",
+      "weight": "38kg"
+    },
+    "features": [
+      "Lowther PM6C drivers",
+      "Bass reflex design",
+      "Cherry wood cabinet",
+      "Professional finish"
+    ],
+    "relatedProducts": ["pm6c-driver"],
+    "featured": true,
+    "inStock": true
+  },
+  {
+    "id": "cottage",
+    "slug": "cottage",
+    "title": "Cottage",
+    "subtitle": "Intimate Precision",
+    "description": "Perfect for smaller spaces, delivering the signature Lowther sound in a compact, elegant form.",
+    "category": "loudspeakers",
+    "collection": "cottage",
+    "price": 8995,
+    "currency": "GBP",
+    "images": [
+      "/images/cottage-1.jpg",
+      "/images/cottage-2.jpg"
+    ],
+    "specifications": {
+      "frequencyResponse": "40Hz - 16kHz",
+      "sensitivity": "91dB/1W/1m",
+      "impedance": "8Ω",
+      "powerHandling": "10W - 50W",
+      "dimensions": "H: 800mm W: 300mm D: 280mm",
+      "weight": "22kg"
+    },
+    "features": [
+      "Lowther PM2A drivers",
+      "Compact transmission line",
+      "Oak cabinet",
+      "Traditional joinery"
+    ],
+    "relatedProducts": ["pm2a-driver"],
+    "featured": true,
+    "inStock": true
+  },
+  {
+    "id": "quarter-wave",
+    "slug": "quarter-wave",
+    "title": "Quarter Wave",
+    "subtitle": "Classic Design",
+    "description": "A timeless design that has defined Lowther loudspeakers for decades, now available as a build-it-yourself kit.",
+    "category": "loudspeakers",
+    "collection": "quarter-wave",
+    "price": 4595,
+    "currency": "GBP",
+    "images": [
+      "/images/quarter-wave-1.jpg",
+      "/images/quarter-wave-2.jpg"
+    ],
+    "specifications": {
+      "frequencyResponse": "35Hz - 15kHz",
+      "sensitivity": "89dB/1W/1m",
+      "impedance": "8Ω",
+      "powerHandling": "8W - 40W",
+      "dimensions": "H: 900mm W: 280mm D: 250mm",
+      "weight": "18kg"
+    },
+    "features": [
+      "Lowther PM4A drivers",
+      "Quarter-wave loading",
+      "MDF cabinet kit",
+      "Complete assembly guide"
+    ],
+    "relatedProducts": ["pm4a-driver"],
+    "featured": false,
+    "inStock": true,
+    "kit": true
+  }
+]

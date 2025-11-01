@@ -1,0 +1,58 @@
+[
+  {
+    "id": "building-quarter-wave",
+    "slug": "building-quarter-wave",
+    "title": "Building Your First Quarter Wave",
+    "excerpt": "A comprehensive guide to assembling your Lowther Quarter Wave kit, from unboxing to first notes.",
+    "content": "/blog/building-quarter-wave.mdx",
+    "author": "James Lowther",
+    "publishedAt": "2024-10-01",
+    "updatedAt": "2024-10-01",
+    "tags": ["DIY", "Quarter Wave", "Assembly"],
+    "featured": true,
+    "image": "/images/blog/building-quarter-wave.jpg",
+    "readTime": "12 min read"
+  },
+  {
+    "id": "choosing-amp",
+    "slug": "choosing-amp",
+    "title": "Choosing the Right Amplifier",
+    "excerpt": "Understanding the relationship between your Lowther loudspeakers and amplification for optimal performance.",
+    "content": "/blog/choosing-amp.mdx",
+    "author": "Sarah Mitchell",
+    "publishedAt": "2024-09-15",
+    "updatedAt": "2024-09-15",
+    "tags": ["Amplification", "Setup", "Performance"],
+    "featured": true,
+    "image": "/images/blog/choosing-amp.jpg",
+    "readTime": "8 min read"
+  },
+  {
+    "id": "room-acoustics",
+    "slug": "room-acoustics",
+    "title": "Room Acoustics for Lowther Loudspeakers",
+    "excerpt": "How to position and treat your listening room to get the best from your Lowther loudspeakers.",
+    "content": "/blog/room-acoustics.mdx",
+    "author": "David Chen",
+    "publishedAt": "2024-09-01",
+    "updatedAt": "2024-09-01",
+    "tags": ["Acoustics", "Setup", "Positioning"],
+    "featured": false,
+    "image": "/images/blog/room-acoustics.jpg",
+    "readTime": "15 min read"
+  },
+  {
+    "id": "history-lowther",
+    "slug": "history-lowther",
+    "title": "The History of Lowther Loudspeakers",
+    "excerpt": "From our founding in 1945 to today's handcrafted masterpieces, explore the legacy of Lowther.",
+    "content": "/blog/history-lowther.mdx",
+    "author": "Michael Lowther",
+    "publishedAt": "2024-08-20",
+    "updatedAt": "2024-08-20",
+    "tags": ["History", "Heritage", "Company"],
+    "featured": false,
+    "image": "/images/blog/history-lowther.jpg",
+    "readTime": "10 min read"
+  }
+]

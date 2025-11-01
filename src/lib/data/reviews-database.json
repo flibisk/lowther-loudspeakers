@@ -1,0 +1,48 @@
+{
+  "reviews": [
+    {
+      "id": "review-1",
+      "content": "A huge thank you to Martin and Malcolm for indulging me in my passion for Lowther Loudspeakers, and their hospitality and knowledge, a great way to spend a Sunday morning. If you have the remotest interest in Lowther Loudspeakers and Hi Fi, book a slot and pay them a visit, you will not be disappointed, and so glad that you did. Once again thank you Martin and Malcolm.",
+      "reviewer": "Jeff Carter",
+      "rating": 5,
+      "date": "2025-01-15"
+    },
+    {
+      "id": "review-2", 
+      "content": "Having had four Lowther PM6 speakers, my father's, sitting unserviceable in a cupboard for the last 30 years I contacted Martin and his team for help and advice. I cannot express how helpful the team has been. For the first time in my life, all four of the driver units have all been reunited with their cabinets and the results are even better than I remembered from my childhood.",
+      "reviewer": "Richard Merry",
+      "rating": 5,
+      "date": "2025-01-10"
+    },
+    {
+      "id": "review-3",
+      "content": "At long last I've been able to listen to my Lowther PM6C reconditioned drive units. They sound even better than I remember when my Father used to listen to them! A great job – thank you.",
+      "reviewer": "Adrian Mills", 
+      "rating": 5,
+      "date": "2025-01-08"
+    },
+    {
+      "id": "review-4",
+      "content": "Morning Martin, Just wanted to thank you for my EX2's. I'm a week in and loving them, It's been nice running them in and hearing the noticeable sound improvements. I've never had such sensitive speaker's and my Cambridge audio amplifier of 4 year's has never sounded so good, Proper looking forward to getting my Quad valve amp's back.",
+      "reviewer": "Stew",
+      "rating": 5,
+      "date": "2025-01-05"
+    },
+    {
+      "id": "review-5",
+      "content": "You will not find any high pressure salesmen at Lowther. Everything is conducted in a professional, friendly, relaxed and unhurried manner. I would urge others to make the effort and visit the LISTENING ROOM and experience for themselves the stunning sounds contained within. Many thanks to Martin, Malcolm and Pete for a memorable visit and a wonderful pair of Silver PM2a drivers.",
+      "reviewer": "David",
+      "rating": 5,
+      "date": "2025-01-03"
+    }
+  ],
+  "google_sheets": {
+    "url": "https://docs.google.com/spreadsheets/d/1OgI6BZbCDoVPn43tXp4MPvLznTqF3yr-9prWP417Krs/edit?usp=sharing",
+    "sheet_name": "Lowther Reviews",
+    "columns": {
+      "content": "A",
+      "reviewer": "B", 
+      "rating": "C"
+    }
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "speaker-slug": {
+    "id": "speaker-slug",
+    "title": "Speaker Name",
+    "slug": "speaker-slug",
+    "feeling": "Two. Words.",
+    "image": "/images/card-images/card-image-speaker.webp",
+    "href": "/speakers/speaker-slug",
+    "images": {
+      "base": "/images/speakers/speaker-slug/",
+      "hero": "hero/",
+      "gallery": "gallery/",
+      "details": "details/",
+      "technical": "technical/"
+    },
+    "technical": {
+      "colour_options": "Color/finish options description",
+      "horn_type": "Horn type description",
+      "driver_size": "Driver size (e.g., 8\")",
+      "recommended_driver": "Recommended driver model",
+      "alternative_drivers": ["Driver 1", "Driver 2", "Driver 3"],
+      "sensitivity": "Sensitivity specification",
+      "impedance": "Impedance specification",
+      "frequency_response": "Frequency response range",
+      "dimensions_mm": { "height": 0, "width": 0, "depth": 0 },
+      "weight": "Weight specification",
+      "enclosure_type": "Enclosure type description",
+      "materials": { 
+        "cabinet": "Cabinet material", 
+        "finish": "Finish description" 
+      }
+    },
+    "design": {
+      "designer": "Designer name",
+      "year_launched": "Year or decade",
+      "design_philosophy": "Brief description of design approach and philosophy",
+      "unique_features": [
+        "Unique feature 1",
+        "Unique feature 2",
+        "Unique feature 3"
+      ],
+      "target_room_size": "Room size recommendation",
+      "placement": "Placement advice and recommendations"
+    },
+    "market": {
+      "price_tier": "Premium|Mid-premium|Entry",
+      "target_audience": "Who this speaker appeals to - be specific about demographics and interests",
+      "positioning": "How it's positioned in the market relative to competitors",
+      "competitors": [
+        "Competitor 1",
+        "Competitor 2",
+        "Competitor 3"
+      ]
+    },
+    "content": {
+      "short_description": "One compelling sentence describing the speaker (under 160 characters)",
+      "long_description": "2-3 detailed paragraphs about the speaker's design, performance, and appeal. Include technical highlights and emotional benefits."
+    },
+    "seo": {
+      "meta_title": "Speaker Name - Key Feature | Lowther",
+      "meta_description": "Compelling description under 160 characters that includes key benefits and search terms",
+      "keywords": [
+        "primary keyword",
+        "secondary keyword",
+        "technical keyword",
+        "lifestyle keyword",
+        "brand keyword"
+      ]
+    }
+  }
+}

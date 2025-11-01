@@ -1,103 +1,140 @@
+import { VideoHero } from "@/components/video-hero";
+import { Grid } from "@/components/grid";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { FeaturedMasterpieces } from "@/components/featured-masterpieces";
+import { EdiliaBanner } from "@/components/edilia-banner";
+import { PhilharmonicCollection } from "@/components/philharmonic-collection";
+import { CatalogueOrder } from "@/components/catalogue-order";
+import { BlogSection } from "@/components/blog-section";
+import { BuildALowtherBanner } from "@/components/build-a-lowther-banner";
+import { ReviewsSection } from "@/components/reviews-section";
+import { HistoryBanner } from "@/components/history-banner";
+import Link from "next/link";
 import Image from "next/image";
 
-export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+// Import data
+import collectionsData from "@/lib/data/collections.json";
+import postsData from "@/lib/data/posts.json";
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+export default function HomePage() {
+  // Load only essential data for faster initial render
+  const featuredCollections = collectionsData.filter(collection => collection.featured).slice(0, 2);
+  const featuredPosts = postsData.filter(post => post.featured).slice(0, 2);
+
+  return (
+    <>
+      {/* HERO - Dark video section */}
+      <section data-surface="dark" className="relative min-h-[100vh] overflow-hidden">
+        <video 
+          className="absolute inset-0 h-full w-full object-cover" 
+          autoPlay 
+          muted 
+          loop 
+          playsInline 
+          src="/videos/Banner-Voigt-Horn.mp4" 
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/40 to-black/60"></div>
+        
+        {/* Text Overlay - Mobile: Stacked, Desktop: Side by side */}
+        <div className="absolute bottom-20 930:bottom-20 left-6 930:left-16 z-10 text-white max-w-xs sm:max-w-md 930:max-w-2xl">
+          {/* Small line and category */}
+          <div className="flex items-center mb-2">
+            <div className="w-8 h-px bg-white mr-3"></div>
+            <span className="text-sm tracking-wider uppercase text-white/80">A LOWTHER MASTERPIECE</span>
+          </div>
+          
+          {/* Main title */}
+          <h1 className="font-display text-6xl font-bold leading-tight mb-4" style={{ color: '#c59862' }}>
+            The 4ft Voigt Horn
+          </h1>
+          
+          {/* Description */}
+          <p className="text-lg text-white/90 leading-relaxed mb-6 930:mb-0">
+            More than just a loudspeaker. Every 4ft Voigt Horn represents a piece of Hi-Fi history, a moment in time preserved in an eternity of music.
+          </p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+
+        {/* Button - Mobile/Tablet: Below text, Desktop: Hidden (moved to separate div) */}
+        <div className="930:hidden absolute bottom-8 left-6 z-10">
+          <Button 
+            variant="white"
+            size="lowther"
+            asChild
+          >
+            <Link href="/loudspeakers/voigt-horn">LEARN MORE</Link>
+          </Button>
+        </div>
+
+        {/* Button - Desktop: Bottom Right */}
+        <div className="hidden 930:block absolute bottom-20 right-16 z-10">
+          <Button 
+            variant="white"
+            size="lowther"
+            asChild
+          >
+            <Link href="/loudspeakers/voigt-horn">LEARN MORE</Link>
+          </Button>
+        </div>
+
+        {/* Scroll Indicator - Bottom Center - Hidden on mobile when button is below text */}
+        <div className="hidden 930:flex absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 flex-col items-center text-white">
+          <span className="text-xs tracking-wider uppercase mb-2">Scroll</span>
+          <svg className="w-4 h-4 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
+        </div>
+
+        {/* Sentinel sits at the bottom of the hero */}
+        <div id="hero-sentinel" className="absolute bottom-0 h-[1px] w-full" />
+      </section>
+
+      {/* LIGHT CONTENT - Featured Masterpieces */}
+      <FeaturedMasterpieces />
+
+      {/* EDILIA BANNER - Dark atmospheric banner */}
+      <EdiliaBanner />
+
+      {/* PHILHARMONIC COLLECTION - Drive units showcase */}
+      <PhilharmonicCollection />
+
+      {/* CATALOGUE ORDER - Dark atmospheric banner */}
+      <CatalogueOrder />
+
+      {/* BLOG SECTION - From Our Blog */}
+      <BlogSection />
+
+      {/* BUILD A LOWTHER BANNER - Dark atmospheric banner */}
+      <BuildALowtherBanner />
+
+      {/* REVIEWS SECTION - Customer testimonials */}
+      <ReviewsSection />
+
+      {/* HISTORY BANNER - Dark atmospheric banner */}
+      <HistoryBanner />
+
+      {/* LIGHT CONTENT - Newsletter */}
+      <section data-surface="light" className="py-16 bg-white">
+        <div className="container mx-auto px-6 sm:px-6 lg:px-8 xl:px-12 text-center">
+          <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">
+            Join the Lowther Community
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
+            Subscribe to our newsletter for updates and insights.
+          </p>
+          <div className="flex justify-center">
+            <input
+              type="email"
+              placeholder="Enter your email"
+              className="max-w-sm w-full p-3 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-[#c59862]"
+            />
+            <Button variant="black" size="lowther">
+              Subscribe
+            </Button>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
