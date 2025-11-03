@@ -176,7 +176,7 @@ export default function ProductsPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
         
         {/* Content - Bottom Left */}
-        <div className="absolute bottom-8 930:bottom-20 left-6 930:left-16 z-10 text-white max-w-xs sm:max-w-md 930:max-w-3xl">
+        <div className="absolute bottom-8 930:bottom-20 left-6 930:left-16 z-10 text-white max-w-xs sm:max-w-md 930:max-w-5xl">
           <div className="flex items-center mb-2">
             <div className="w-8 h-px bg-white mr-3"></div>
             <span className="text-sm tracking-wider uppercase text-white/80">LOWTHER LOUDSPEAKERS</span>
@@ -205,8 +205,9 @@ export default function ProductsPage() {
 
       {/* Our Masterpieces Section */}
       <section className="py-24 bg-white overflow-hidden">
-        <div className="max-w-[1600px] mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="flex justify-between items-end mb-12">
+        {/* Header with constrained width */}
+        <div className="max-w-[1600px] mx-auto px-6 sm:px-8 lg:px-12 mb-12">
+          <div className="flex justify-between items-end">
             <div>
               <h2 className="font-display text-4xl lg:text-5xl mb-4" style={{ color: '#c59862' }}>
                 Our Masterpieces
@@ -232,13 +233,13 @@ export default function ProductsPage() {
               </button>
             </div>
           </div>
+        </div>
 
-          {/* Horizontal Scroll Container - extends to edge */}
-          <div className="-mx-6 sm:-mx-8 lg:-mx-12">
-            <div 
-              ref={masterpiecesRef}
-              className="overflow-x-auto scrollbar-hide px-6 sm:px-8 lg:px-12"
-            >
+        {/* Horizontal Scroll Container - full width */}
+        <div 
+          ref={masterpiecesRef}
+          className="overflow-x-auto scrollbar-hide px-6 sm:px-8 lg:px-12"
+        >
               <div className="flex gap-6 pb-4" style={{ width: 'max-content' }}>
                 {speakers.map((speaker) => (
                   <div key={speaker.id} className="w-[320px] flex-shrink-0 group">
@@ -275,7 +276,6 @@ export default function ProductsPage() {
                 ))}
               </div>
             </div>
-          </div>
         </div>
       </section>
 
@@ -284,8 +284,9 @@ export default function ProductsPage() {
 
       {/* Our Instruments Section */}
       <section className="py-24 bg-white overflow-hidden">
-        <div className="max-w-[1600px] mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="flex justify-between items-end mb-12">
+        {/* Header with constrained width */}
+        <div className="max-w-[1600px] mx-auto px-6 sm:px-8 lg:px-12 mb-12">
+          <div className="flex justify-between items-end">
             <div>
               <h2 className="font-display text-4xl lg:text-5xl mb-4" style={{ color: '#c59862' }}>
                 Our Instruments
@@ -311,13 +312,13 @@ export default function ProductsPage() {
               </button>
             </div>
           </div>
+        </div>
 
-          {/* Horizontal Scroll Container - extends to edge */}
-          <div className="-mx-6 sm:-mx-8 lg:-mx-12">
-            <div 
-              ref={instrumentsRef}
-              className="overflow-x-auto scrollbar-hide px-6 sm:px-8 lg:px-12"
-            >
+        {/* Horizontal Scroll Container - full width */}
+        <div 
+          ref={instrumentsRef}
+          className="overflow-x-auto scrollbar-hide px-6 sm:px-8 lg:px-12"
+        >
               <div className="flex gap-6 pb-4" style={{ width: 'max-content' }}>
                 {collections.map((collection) => (
                   <div key={collection.id} className="w-[320px] flex-shrink-0 group">
@@ -351,7 +352,6 @@ export default function ProductsPage() {
                 ))}
               </div>
             </div>
-          </div>
         </div>
       </section>
 
@@ -360,8 +360,9 @@ export default function ProductsPage() {
 
       {/* Lowther Ensemble Section */}
       <section className="py-24 bg-white overflow-hidden">
-        <div className="max-w-[1600px] mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="flex justify-between items-end mb-12">
+        {/* Header with constrained width */}
+        <div className="max-w-[1600px] mx-auto px-6 sm:px-8 lg:px-12 mb-12">
+          <div className="flex justify-between items-end">
             <div>
               <h2 className="font-display text-4xl lg:text-5xl mb-4" style={{ color: '#c59862' }}>
                 The Lowther Ensemble
@@ -387,13 +388,13 @@ export default function ProductsPage() {
               </button>
             </div>
           </div>
+        </div>
 
-          {/* Horizontal Scroll Container - extends to edge */}
-          <div className="-mx-6 sm:-mx-8 lg:-mx-12">
-            <div 
-              ref={ensembleRef}
-              className="overflow-x-auto scrollbar-hide px-6 sm:px-8 lg:px-12"
-            >
+        {/* Horizontal Scroll Container - full width */}
+        <div 
+          ref={ensembleRef}
+          className="overflow-x-auto scrollbar-hide px-6 sm:px-8 lg:px-12"
+        >
               <div className="flex gap-6 pb-4" style={{ width: 'max-content' }}>
                 {ensembleItems.map((item) => (
                   <div key={item.id} className="w-[320px] flex-shrink-0 group">
@@ -430,7 +431,6 @@ export default function ProductsPage() {
                 ))}
               </div>
             </div>
-          </div>
         </div>
       </section>
     </div>
