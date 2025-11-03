@@ -54,7 +54,7 @@ export function PhilharmonicCollection() {
         {/* Drive Unit Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
           {instruments.map((instrument) => (
-            <Link key={instrument.id} href="/drive-units/philharmonic-collection" className="text-center group block">
+            <Link key={instrument.id} href="/collection/philharmonic" className="text-center group block">
               {/* Drive Unit Image */}
               <div className="mb-1 flex justify-center">
                 <div className="relative max-w-sm w-full aspect-[4/3] transition-transform duration-300 group-hover:scale-105">

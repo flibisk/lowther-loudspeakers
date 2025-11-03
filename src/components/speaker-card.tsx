@@ -33,14 +33,15 @@ export function SpeakerCard({ id, title, feeling, image, href }: SpeakerCardProp
           <p className="text-white text-lg mb-6">
             {feeling}
           </p>
-          <Link href={href}>
-            <Button 
-              variant="white" 
-              size="lowther"
-            >
+          <Button 
+            variant="white" 
+            size="lowther"
+            asChild
+          >
+            <Link href={href}>
               Learn More
-            </Button>
-          </Link>
+            </Link>
+          </Button>
         </div>
       </div>
     </div>
