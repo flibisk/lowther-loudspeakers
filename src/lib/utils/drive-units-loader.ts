@@ -81,7 +81,7 @@ export async function loadCollectionImages(
  * @returns Array of collection objects
  */
 export function getAllCollections() {
-  return Object.values(driveUnitsDatabase.collections);
+  return driveUnitsDatabase.data.filter((item) => item.type === 'collection');
 }
 
 /**
@@ -90,7 +90,7 @@ export function getAllCollections() {
  * @returns Collection object or null
  */
 export function getCollection(collectionSlug: string) {
-  return driveUnitsDatabase.collections[collectionSlug as keyof typeof driveUnitsDatabase.collections] || null;
+  return driveUnitsDatabase.data.find((item) => item.slug === collectionSlug && item.type === 'collection') || null;
 }
 
 /**
@@ -99,8 +99,7 @@ export function getCollection(collectionSlug: string) {
  * @returns Array of instrument objects
  */
 export function getCollectionInstruments(collectionSlug: string) {
-  const collection = getCollection(collectionSlug);
-  return collection?.instruments || [];
+  return driveUnitsDatabase.data.filter((item) => item.type === 'instrument' && (item as any).collection === collectionSlug);
 }
 
 /**
