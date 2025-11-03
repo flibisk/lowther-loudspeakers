@@ -68,7 +68,7 @@ export function FeaturedMasterpieces() {
     allSpeakers.find(s => s.id === "quarterwave"),
     allSpeakers.find(s => s.id === "edilia"), 
     allSpeakers.find(s => s.id === "hegeman")
-  ].filter(Boolean);
+  ].filter((speaker): speaker is typeof allSpeakers[0] => speaker !== undefined);
 
   return (
     <section className="py-32 bg-white">
