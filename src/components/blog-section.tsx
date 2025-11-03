@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Card, CardHeader } from "@/components/ui/card";
 
 /**
  * Beehiiv API Response Types
@@ -56,18 +57,6 @@ async function fetchLatestPosts(): Promise<BeehiivPost[]> {
   }
 }
 
-/**
- * Format date for display
- */
-function formatDate(dateString: string | number): string {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric'
-  });
-}
-
 export async function BlogSection() {
   const posts = await fetchLatestPosts();
 
@@ -93,51 +82,40 @@ export async function BlogSection() {
         {/* Blog Posts Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
           {posts.map((post) => (
-            <article key={post.id} className="bg-white group">
-              <a 
-                href={post.web_url} 
-                target="_blank" 
-                rel="noopener noreferrer"
-              >
-                {/* Image */}
+            <a 
+              key={post.id} 
+              href={post.web_url} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="block"
+            >
+              <Card className="overflow-hidden group h-full hover:shadow-lg transition-shadow duration-300 !p-0 !gap-0">
+                {/* Post Thumbnail */}
                 {post.thumbnail_url && (
-                  <div className="relative aspect-[4/3] overflow-hidden mb-6">
+                  <div className="relative aspect-video overflow-hidden">
                     <Image
                       src={post.thumbnail_url}
                       alt={post.title}
                       fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
                       sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     />
                   </div>
                 )}
-
-                {/* Content */}
-                <div className="space-y-3">
-                  {/* Date */}
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="font-medium text-gray-900 uppercase tracking-wider">
-                      LATEST
-                    </span>
-                    <span className="text-gray-500">
-                      {formatDate(post.published_at)}
-                    </span>
-                  </div>
-
-                  {/* Title */}
-                  <h3 className="font-semibold text-lg leading-tight text-gray-900 group-hover:text-[#c59862] transition-colors">
+                
+                {/* Post Content */}
+                <CardHeader className="pt-6 pb-6">
+                  <h3 className="font-display text-lg font-semibold group-hover:text-[#c59862] transition-colors mb-2">
                     {post.title}
                   </h3>
-
-                  {/* Preview text */}
                   {post.preview_text && (
-                    <p className="text-gray-600 text-sm line-clamp-2">
+                    <p className="text-muted-foreground text-sm line-clamp-3">
                       {post.preview_text}
                     </p>
                   )}
-                </div>
-              </a>
-            </article>
+                </CardHeader>
+              </Card>
+            </a>
           ))}
         </div>
 
