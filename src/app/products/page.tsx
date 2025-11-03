@@ -240,42 +240,41 @@ export default function ProductsPage() {
           ref={masterpiecesRef}
           className="overflow-x-auto scrollbar-hide px-6 sm:px-8 lg:px-12"
         >
-              <div className="flex gap-6 pb-4" style={{ width: 'max-content' }}>
-                {speakers.map((speaker) => (
-                  <div key={speaker.id} className="w-[320px] flex-shrink-0 group">
-                    <div className="relative aspect-[2/3] overflow-hidden rounded-lg">
-                      <Image
-                        src={speaker.image}
-                        alt={speaker.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        sizes="320px"
-                      />
-                      {/* Gradient Overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
-                      
-                      {/* Text Content */}
-                      <div className="absolute bottom-0 left-0 right-0 p-8 text-center">
-                        <h3 className="text-[#c59862] text-2xl mb-2">
-                          {speaker.title}
-                        </h3>
-                        <p className="text-white text-lg mb-6">
-                          {speaker.feeling}
-                        </p>
-                        <Link href={speaker.href}>
-                          <Button 
-                            variant="white" 
-                            size="lowther"
-                          >
-                            Learn More
-                          </Button>
-                        </Link>
-                      </div>
-                    </div>
+          <div className="flex gap-6 pb-4" style={{ width: 'max-content' }}>
+            {speakers.map((speaker) => (
+              <div key={speaker.id} className="w-[320px] flex-shrink-0 group">
+                <div className="relative aspect-[2/3] overflow-hidden rounded-lg">
+                  <Image
+                    src={speaker.image}
+                    alt={speaker.title}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    sizes="320px"
+                  />
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+                  
+                  {/* Text Content */}
+                  <div className="absolute bottom-0 left-0 right-0 p-8 text-center">
+                    <h3 className="text-[#c59862] text-2xl mb-2">
+                      {speaker.title}
+                    </h3>
+                    <p className="text-white text-lg mb-6">
+                      {speaker.feeling}
+                    </p>
+                    <Link href={speaker.href}>
+                      <Button 
+                        variant="white" 
+                        size="lowther"
+                      >
+                        Learn More
+                      </Button>
+                    </Link>
                   </div>
-                ))}
+                </div>
               </div>
-            </div>
+            ))}
+          </div>
         </div>
       </section>
 
