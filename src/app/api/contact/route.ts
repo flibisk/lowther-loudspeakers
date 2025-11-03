@@ -149,6 +149,46 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Add to Beehiiv subscriber list (optional, don't fail if it errors)
+    if (process.env.BEEHIIV_API_KEY && process.env.BEEHIIV_PUBLICATION_ID) {
+      try {
+        const beehiivResponse = await fetch(
+          `https://api.beehiiv.com/v2/publications/${process.env.BEEHIIV_PUBLICATION_ID}/subscriptions`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${process.env.BEEHIIV_API_KEY}`,
+            },
+            body: JSON.stringify({
+              email,
+              reactivate_existing: false,
+              send_welcome_email: false,
+              utm_source: 'website',
+              utm_medium: 'contact_form',
+              utm_campaign: segment || 'general_contact',
+              referring_site: 'lowtherloudspeakers.com',
+              custom_fields: [
+                { name: 'full_name', value: name },
+                { name: 'phone', value: phone || '' },
+                { name: 'location', value: location || '' },
+                { name: 'lead_type', value: segment || 'Contact Form' },
+              ],
+            }),
+          }
+        );
+
+        if (!beehiivResponse.ok) {
+          const beehiivError = await beehiivResponse.json();
+          console.error('Beehiiv API error (non-fatal):', beehiivError);
+        } else {
+          console.log('Successfully added to Beehiiv');
+        }
+      } catch (beehiivError) {
+        console.error('Beehiiv integration error (non-fatal):', beehiivError);
+      }
+    }
+
     return NextResponse.json({
       success: true,
       message: 'Thank you for contacting us! We\'ll get back to you soon.',
