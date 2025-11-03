@@ -6,7 +6,7 @@ import { SupportedLanguage, translations, defaultLanguage } from '@/lib/i18n';
 interface TranslationContextType {
   language: SupportedLanguage;
   setLanguage: (language: SupportedLanguage) => void;
-  t: typeof translations[SupportedLanguage];
+  t: (typeof translations)[SupportedLanguage];
 }
 
 const TranslationContext = createContext<TranslationContextType | undefined>(undefined);
