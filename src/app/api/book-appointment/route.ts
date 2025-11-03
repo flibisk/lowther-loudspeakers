@@ -31,7 +31,10 @@ export async function POST(request: NextRequest) {
     const contactEmail = process.env.CONTACT_EMAIL || 'social@lowtherloudspeakers.com';
 
     // Format location for display
-    const locationName = location === 'norfolk' ? 'Norfolk Workshop' : 'London Listening Room';
+    const locationName = 
+      location === 'norfolk' ? 'Norfolk Workshop' : 
+      location === 'london' ? 'London Listening Room' : 
+      'Phone Consultation';
     const timeSlot = preferredTime ? 
       (preferredTime === 'morning' ? 'Morning (9:00 - 12:00)' : 
        preferredTime === 'afternoon' ? 'Afternoon (12:00 - 17:00)' : 
