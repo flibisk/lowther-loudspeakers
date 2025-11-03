@@ -318,38 +318,38 @@ export default function ProductsPage() {
           ref={instrumentsRef}
           className="overflow-x-auto scrollbar-hide px-6 sm:px-8 lg:px-12"
         >
-              <div className="flex gap-6 pb-4" style={{ width: 'max-content' }}>
-                {collections.map((collection) => (
-                  <div key={collection.id} className="w-[320px] flex-shrink-0 group">
-                    <div className="relative aspect-[2/3] overflow-hidden rounded-lg">
-                      <Image
-                        src={collection.image}
-                        alt={collection.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        sizes="320px"
-                      />
-                      {/* Gradient Overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
-                      
-                      {/* Text Content */}
-                      <div className="absolute bottom-0 left-0 right-0 p-8 text-center">
-                        <h3 className="text-[#c59862] text-2xl mb-6">
-                          {collection.title}
-                        </h3>
-                        <Link href={collection.href}>
-                          <Button 
-                            variant="white" 
-                            size="lowther"
-                          >
-                            Learn More
-                          </Button>
-                        </Link>
-                      </div>
-                    </div>
+          <div className="flex gap-6 pb-4" style={{ width: 'max-content' }}>
+            {collections.map((collection) => (
+              <div key={collection.id} className="w-[320px] flex-shrink-0 group">
+                <div className="relative aspect-[2/3] overflow-hidden rounded-lg">
+                  <Image
+                    src={collection.image}
+                    alt={collection.title}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    sizes="320px"
+                  />
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+                  
+                  {/* Text Content */}
+                  <div className="absolute bottom-0 left-0 right-0 p-8 text-center">
+                    <h3 className="text-[#c59862] text-2xl mb-6">
+                      {collection.title}
+                    </h3>
+                    <Link href={collection.href}>
+                      <Button 
+                        variant="white" 
+                        size="lowther"
+                      >
+                        Learn More
+                      </Button>
+                    </Link>
                   </div>
-                ))}
+                </div>
               </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -393,41 +393,41 @@ export default function ProductsPage() {
           ref={ensembleRef}
           className="overflow-x-auto scrollbar-hide px-6 sm:px-8 lg:px-12"
         >
-              <div className="flex gap-6 pb-4" style={{ width: 'max-content' }}>
-                {ensembleItems.map((item) => (
-                  <div key={item.id} className="w-[320px] flex-shrink-0 group">
-                    <div className="relative aspect-[2/3] overflow-hidden rounded-lg">
-                      <Image
-                        src={item.image}
-                        alt={item.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        sizes="320px"
-                      />
-                      {/* Gradient Overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
-                      
-                      {/* Text Content */}
-                      <div className="absolute bottom-0 left-0 right-0 p-8 text-center">
-                        <p className="text-gray-300 text-xs uppercase tracking-wider mb-2">
-                          {item.subtitle}
-                        </p>
-                        <h3 className="text-[#c59862] text-2xl mb-6">
-                          {item.title}
-                        </h3>
-                        <Link href={item.href}>
-                          <Button 
-                            variant="white" 
-                            size="lowther"
-                          >
-                            Learn More
-                          </Button>
-                        </Link>
-                      </div>
-                    </div>
+          <div className="flex gap-6 pb-4" style={{ width: 'max-content' }}>
+            {ensembleItems.map((item) => (
+              <div key={item.id} className="w-[320px] flex-shrink-0 group">
+                <div className="relative aspect-[2/3] overflow-hidden rounded-lg">
+                  <Image
+                    src={item.image}
+                    alt={item.title}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    sizes="320px"
+                  />
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+                  
+                  {/* Text Content */}
+                  <div className="absolute bottom-0 left-0 right-0 p-8 text-center">
+                    <p className="text-gray-300 text-xs uppercase tracking-wider mb-2">
+                      {item.subtitle}
+                    </p>
+                    <h3 className="text-[#c59862] text-2xl mb-6">
+                      {item.title}
+                    </h3>
+                    <Link href={item.href}>
+                      <Button 
+                        variant="white" 
+                        size="lowther"
+                      >
+                        Learn More
+                      </Button>
+                    </Link>
                   </div>
-                ))}
+                </div>
               </div>
+            ))}
+          </div>
         </div>
       </section>
     </div>
