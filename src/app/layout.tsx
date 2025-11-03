@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/react";
 import SiteHeader from "@/components/site-header";
 import { Footer } from "@/components/footer";
 import { generateStructuredData } from "@/lib/seo";
+import { CurrencyProvider } from "@/contexts/currency-context";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -83,14 +84,16 @@ export default function RootLayout({
         />
       </head>
       <body className="font-body antialiased">
-        <SiteHeader nav={NAV} />
-        <div className="min-h-screen flex flex-col">
-          <main className="flex-1">
-            {children}
-          </main>
-          <Footer />
-        </div>
-        <Analytics />
+        <CurrencyProvider>
+          <SiteHeader nav={NAV} />
+          <div className="min-h-screen flex flex-col">
+            <main className="flex-1">
+              {children}
+            </main>
+            <Footer />
+          </div>
+          <Analytics />
+        </CurrencyProvider>
       </body>
     </html>
   );

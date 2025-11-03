@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { LanguageSelector } from "@/components/language-selector";
+import { LanguageCurrencySelector } from "@/components/language-currency-selector";
 import { X, ChevronRight, ChevronLeft, Calendar, MapPin, Globe } from "lucide-react";
 
 interface MenuItem {
@@ -23,7 +23,7 @@ interface MobileMenuProps {
   onClose: () => void;
   menuItems: MenuItem[];
   currentLanguage: string;
-  onLanguageChange: (language: string) => void;
+  onLanguageChange: (language: string, currency: string) => void;
 }
 
 type MenuView = 'main' | 'sub' | 'appointment' | 'locations' | 'languages';
@@ -472,7 +472,7 @@ export function MobileMenu({ isOpen, onClose, menuItems, currentLanguage, onLang
                 <span className="text-xs font-medium">Locations</span>
               </button>
 
-              {/* Language Selector */}
+              {/* Language & Currency Selector */}
               <button
                 onClick={() => setCurrentView('languages')}
                 className="flex flex-col items-center gap-2 text-white hover:text-[#c59862] transition-colors group"
@@ -480,7 +480,7 @@ export function MobileMenu({ isOpen, onClose, menuItems, currentLanguage, onLang
                 <div className="p-3 rounded-full bg-neutral-800 group-hover:bg-[#c59862] transition-colors">
                   <Globe className="w-5 h-5 text-white" />
                 </div>
-                <LanguageSelector 
+                <LanguageCurrencySelector 
                   currentLanguage={currentLanguage} 
                   onLanguageChange={onLanguageChange}
                   isMobile={true}

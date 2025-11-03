@@ -6,11 +6,12 @@ import { useDebounceValue } from 'usehooks-ts';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { Menu } from 'lucide-react';
-import { LanguageSelector } from '@/components/language-selector';
+import { LanguageCurrencySelector } from '@/components/language-currency-selector';
 import { BookAppointmentForm } from '@/components/forms/book-appointment-form';
 import { ContactForm } from '@/components/forms/contact-form';
 import { PointsOfSaleForm } from '@/components/forms/points-of-sale-form';
 import { MobileMenu } from '@/components/mobile-menu';
+import { useCurrency } from '@/contexts/currency-context';
 
 type Props = {
   nav: Array<{ label: string; href: string; children?: Array<{ label: string; href: string; desc?: string }> }>;
@@ -18,13 +19,14 @@ type Props = {
 
 export default function SiteHeader({ nav }: Props) {
   const pathname = usePathname();
+  const { setCurrency } = useCurrency();
   const [hidden, setHidden] = useState(false);
   const [solid, setSolid] = useState(false);
   const [onDark, setOnDark] = useState(true); // assume hero is dark
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [hoveredImage, setHoveredImage] = useState<string | null>(null);
-  const [currentLanguage, setCurrentLanguage] = useState<string>('en');
+  const [currentLanguage, setCurrentLanguage] = useState<string>('en-GB');
   const [bookAppointmentOpen, setBookAppointmentOpen] = useState(false);
   const [contactFormOpen, setContactFormOpen] = useState(false);
   const [pointsOfSaleOpen, setPointsOfSaleOpen] = useState(false);
@@ -34,10 +36,9 @@ export default function SiteHeader({ nav }: Props) {
     setActiveDropdown(activeDropdown === dropdownName ? null : dropdownName);
   };
 
-  const handleLanguageChange = (language: string) => {
+  const handleLanguageCurrencyChange = (language: string, currency: string) => {
     setCurrentLanguage(language);
-    // Here you would typically update the app's language context
-    // For now, we'll just update the local state
+    setCurrency(currency, language);
   };
 
   // Image mapping for individual link hover states
@@ -176,11 +177,11 @@ export default function SiteHeader({ nav }: Props) {
       >
         <div className="w-full px-6 sm:px-6 lg:px-8 xl:px-12">
           <div className="flex items-center justify-between h-10">
-            {/* Left Side - Language Selector */}
+            {/* Left Side - Language & Currency Selector */}
             <div className="flex items-center">
-              <LanguageSelector 
+              <LanguageCurrencySelector 
                 currentLanguage={currentLanguage} 
-                onLanguageChange={handleLanguageChange}
+                onLanguageChange={handleLanguageCurrencyChange}
               />
             </div>
 
@@ -686,7 +687,7 @@ export default function SiteHeader({ nav }: Props) {
           },
         ]}
         currentLanguage={currentLanguage}
-        onLanguageChange={handleLanguageChange}
+        onLanguageChange={handleLanguageCurrencyChange}
       />
     </>
   );
