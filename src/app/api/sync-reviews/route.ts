@@ -63,7 +63,7 @@ async function fetchReviewsFromGoogleSheets(): Promise<Review[]> {
           date: new Date().toISOString().split('T')[0]
         };
       })
-      .filter((review): review is Review => review !== null);
+      .filter((review: Review | null): review is Review => review !== null);
 
     return reviews;
   } catch (error) {
