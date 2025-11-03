@@ -511,7 +511,8 @@ export function AlmiraPageContent({
       {/* Commission Form */}
       <CommissionForm 
         isOpen={isCommissionFormOpen} 
-        onClose={() => setIsCommissionFormOpen(false)} 
+        onClose={() => setIsCommissionFormOpen(false)}
+        speakerName="Almira"
       />
 
       {/* Fullscreen Gallery Overlay */}
