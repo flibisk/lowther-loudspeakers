@@ -25,6 +25,17 @@ export async function POST(request: NextRequest) {
     }
 
     // Subscribe to Beehiiv
+    const beehiivPayload = {
+      email,
+      reactivate_existing: false,
+      send_welcome_email: true,
+      utm_source: 'website',
+      utm_medium: 'footer',
+      referring_site: 'lowtherloudspeakers.com',
+    };
+
+    console.log('Newsletter signup - Sending to Beehiiv:', JSON.stringify(beehiivPayload, null, 2));
+
     const response = await fetch(
       `https://api.beehiiv.com/v2/publications/${BEEHIIV_PUBLICATION_ID}/subscriptions`,
       {
@@ -33,14 +44,7 @@ export async function POST(request: NextRequest) {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${BEEHIIV_API_KEY}`,
         },
-        body: JSON.stringify({
-          email,
-          reactivate_existing: false,
-          send_welcome_email: true,
-          utm_source: 'website',
-          utm_medium: 'footer',
-          referring_site: 'lowtherloudspeakers.com',
-        }),
+        body: JSON.stringify(beehiivPayload),
       }
     );
 
@@ -48,6 +52,7 @@ export async function POST(request: NextRequest) {
 
     if (!response.ok) {
       console.error('Beehiiv API error:', data);
+      console.error('Full error details:', JSON.stringify(data, null, 2));
       
       // Handle specific error cases
       if (response.status === 400 && data.error?.includes('already subscribed')) {
@@ -58,10 +63,17 @@ export async function POST(request: NextRequest) {
       }
 
       return NextResponse.json(
-        { success: false, message: 'Failed to subscribe. Please try again.' },
+        { 
+          success: false, 
+          message: process.env.NODE_ENV === 'development' 
+            ? `Beehiiv Error: ${data.message || 'Failed to subscribe'}` 
+            : 'Failed to subscribe. Please try again.' 
+        },
         { status: 500 }
       );
     }
+
+    console.log('Successfully subscribed to newsletter:', data);
 
     return NextResponse.json({
       success: true,
