@@ -351,7 +351,6 @@ export default function ProductsPage() {
                   </div>
                 ))}
               </div>
-            </div>
         </div>
       </section>
 
@@ -430,7 +429,6 @@ export default function ProductsPage() {
                   </div>
                 ))}
               </div>
-            </div>
         </div>
       </section>
     </div>
