@@ -16,9 +16,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Check if Resend API key is configured
+    if (!process.env.RESEND_API_KEY) {
+      console.error('RESEND_API_KEY is not configured');
+      return NextResponse.json(
+        { success: false, message: 'Email service not configured. Please contact support.' },
+        { status: 500 }
+      );
+    }
+
+    // Use onboarding@resend.dev for testing until domain is verified
+    // Change this to your verified domain once ready
+    const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+
     // Send email via Resend
     const { data, error } = await resend.emails.send({
-      from: 'Lowther Website <noreply@lowtherloudspeakers.com>',
+      from: `Lowther Website <${fromEmail}>`,
       to: [process.env.CONTACT_EMAIL || 'contact@lowtherloudspeakers.com'],
       replyTo: email,
       subject: `Commission Request: ${speakerName} from ${fullName}`,
@@ -141,8 +154,16 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('Resend error:', error);
+      // Return more detailed error for debugging
+      const errorMessage = error.message || 'Failed to send commission request';
+      console.error('Full error details:', JSON.stringify(error, null, 2));
       return NextResponse.json(
-        { success: false, message: 'Failed to send commission request' },
+        { 
+          success: false, 
+          message: process.env.NODE_ENV === 'development' 
+            ? `Error: ${errorMessage}` 
+            : 'Failed to send commission request. Please try again or contact us directly.' 
+        },
         { status: 500 }
       );
     }
