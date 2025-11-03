@@ -44,7 +44,7 @@ export function EdiliaBanner() {
             </p>
 
             {/* Learn More button */}
-            <Link href="/speakers/edilia">
+            <Link href="/loudspeakers/edilia">
               <Button 
                 variant="white" 
                 size="lowther"
