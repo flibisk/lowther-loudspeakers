@@ -40,7 +40,7 @@ export function ReviewsSection() {
         
         if (data.success && data.reviews) {
           // Randomize reviews order
-          const shuffledReviews = shuffleArray(data.reviews);
+          const shuffledReviews = shuffleArray(data.reviews as Review[]);
           setReviews(shuffledReviews);
         }
       } catch (error) {
