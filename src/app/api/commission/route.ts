@@ -172,6 +172,24 @@ export async function POST(request: NextRequest) {
     // Add to Beehiiv subscriber list (optional, don't fail if it errors)
     if (process.env.BEEHIIV_API_KEY && process.env.BEEHIIV_PUBLICATION_ID) {
       try {
+        const beehiivPayload = {
+          email,
+          reactivate_existing: false,
+          send_welcome_email: false,
+          utm_source: 'website',
+          utm_medium: 'commission_form',
+          utm_campaign: speakerName,
+          referring_site: 'lowtherloudspeakers.com',
+          custom_fields: [
+            { name: 'full_name', value: fullName },
+            { name: 'phone', value: phone || '' },
+            { name: 'speaker_interest', value: speakerName },
+            { name: 'lead_type', value: 'Commission Request' },
+          ],
+        };
+
+        console.log('Sending to Beehiiv:', JSON.stringify(beehiivPayload, null, 2));
+
         const beehiivResponse = await fetch(
           `https://api.beehiiv.com/v2/publications/${process.env.BEEHIIV_PUBLICATION_ID}/subscriptions`,
           {
@@ -180,29 +198,16 @@ export async function POST(request: NextRequest) {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${process.env.BEEHIIV_API_KEY}`,
             },
-            body: JSON.stringify({
-              email,
-              reactivate_existing: false,
-              send_welcome_email: false,
-              utm_source: 'website',
-              utm_medium: 'commission_form',
-              utm_campaign: speakerName,
-              referring_site: 'lowtherloudspeakers.com',
-              custom_fields: [
-                { name: 'full_name', value: fullName },
-                { name: 'phone', value: phone || '' },
-                { name: 'speaker_interest', value: speakerName },
-                { name: 'lead_type', value: 'Commission Request' },
-              ],
-            }),
+            body: JSON.stringify(beehiivPayload),
           }
         );
 
+        const beehiivData = await beehiivResponse.json();
+
         if (!beehiivResponse.ok) {
-          const beehiivError = await beehiivResponse.json();
-          console.error('Beehiiv API error (non-fatal):', beehiivError);
+          console.error('Beehiiv API error (non-fatal):', beehiivData);
         } else {
-          console.log('Successfully added to Beehiiv');
+          console.log('Successfully added to Beehiiv:', beehiivData);
         }
       } catch (beehiivError) {
         console.error('Beehiiv integration error (non-fatal):', beehiivError);
