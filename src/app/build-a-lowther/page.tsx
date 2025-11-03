@@ -33,7 +33,7 @@ const cabinetPlans: CabinetPlan[] = [
     image: '/images/build-a-lowther/gallery/Acousta-90-Image.avif',
     description: `The Acousta 90 is a compact speaker designed for novice home builders looking to embark on their journey into the world of Lowther's more intricate cabinet designs. This bookshelf speaker was first introduced in the 1990s. The simplicity makes it an ideal project for learning the art of veneering, and once you've completed the build, you'll have a pair of drive units ready for your next, more complex project. The Acousta 90 is the perfect starting point for anyone interested in building Lowther speakers, and once you begin, you'll find yourself hooked on the process.`,
     materialGuidance: `We recommend building your speaker out of high-grade MDF or for better acoustic properties, baltic birch plywood. Choose MDF if you are not planning on veneering your speaker and painting it instead. To get a nice glossy finish when painting we recommend using a water based pigmented lacquer with an 80% sheen level.`,
-    pdfPath: '/images/build-a-lowther/plans/acousta-90.pdf',
+    pdfPath: '/images/build-a-lowther/plans/Acousta-90.pdf',
     driveUnitOptions: {
       standard: '2x DX3 Concert',
       sealed: '2x EX3 Concert'
@@ -47,7 +47,7 @@ const cabinetPlans: CabinetPlan[] = [
     image: '/images/build-a-lowther/gallery/Acousta-115-xray-Image.avif',
     description: `The Acousta 115 was first released in 1962 and was the speaker of choice of Jimi Hendrix. The 116 is the same core design as the 115 but offers a few small improvements to the build. The Acousta range of cabinets was first introduced for the PM6A in the 1950's. We rate this speaker as an intermediate difficulty build. Like all our designs there are a few complicated angles to cut and sealing the cabinet is very important.`,
     materialGuidance: `We recommend building your speaker out of high-grade MDF or baltic birch plywood. Choose MDF if you are not planning on veneering your speaker and painting it instead. To get a nice glossy finish when painting we recommend using a water based pigmented lacquer with an 80% sheen level.`,
-    pdfPath: '/images/build-a-lowther/plans/acousta-115-116.pdf',
+    pdfPath: '/images/build-a-lowther/plans/Acousta-115-116.pdf',
     driveUnitOptions: {
       standard: '2x DX3 Concert',
       recommended: '2x PM6A Sinfonia',
@@ -62,7 +62,7 @@ const cabinetPlans: CabinetPlan[] = [
     image: '/images/build-a-lowther/gallery/Acousta-124-xray-Image.avif',
     description: `The Acousta 124 was first released in the 1960's. The Acousta range of cabinets was first introduced for the PM6A in the 1950's. We rate this speaker as an intermediate difficulty build. Like all our designs there are a few complicated angles to cut and sealing the cabinet is very important.`,
     materialGuidance: `We recommend building your speaker out of high-grade MDF or baltic birch plywood. Choose MDF if you are not planning on veneering your speaker and painting it instead. To get a nice glossy finish when painting we recommend using a water based pigmented lacquer with an 80% sheen level.`,
-    pdfPath: '/images/build-a-lowther/plans/acousta-124.pdf',
+    pdfPath: '/images/build-a-lowther/plans/Acousta-124.pdf',
     driveUnitOptions: {
       standard: '4x DX2 Concert',
       recommended: '4x PM7A Sinfonia',
@@ -77,7 +77,7 @@ const cabinetPlans: CabinetPlan[] = [
     image: '/images/build-a-lowther/gallery/Bicor-200-xray-Image.avif',
     description: `The Bicor 200 was first released in the 1990's. We rate this speaker as an intermediate difficulty build. Like all our designs there are a few complicated angles to cut and sealing the cabinet is very important.`,
     materialGuidance: `We recommend building your speaker out of high-grade MDF or for the best possible sound use baltic birch plywood. Choose MDF if you are not planning on veneering your speaker and painting it instead. To get a nice glossy finish when painting we recommend using a water based pigmented lacquer with an 80% sheen level.`,
-    pdfPath: '/images/build-a-lowther/plans/bicor-200.pdf',
+    pdfPath: '/images/build-a-lowther/plans/Bicor-200.pdf',
     driveUnitOptions: {
       standard: '2x DX3 Concert',
       recommended: '2x PM6A Sinfonia',
@@ -92,7 +92,7 @@ const cabinetPlans: CabinetPlan[] = [
     image: '/images/build-a-lowther/gallery/Accolade-2-xray-Image.avif',
     description: `The Accolade 2 was first released in the 1980's. This 2011 version has been modified slightly to fit more drive units. We rate this speaker as an intermediate difficulty build. Like all our designs there are a few complicated angles to cut and sealing the cabinet is very important.`,
     materialGuidance: `We recommend building your speaker out of high-grade MDF or baltic birch plywood. Choose MDF if you are not planning on veneering your speaker and painting it instead. To get a nice glossy finish when painting we recommend using a water based pigmented lacquer with an 80% sheen level.`,
-    pdfPath: '/images/build-a-lowther/plans/accolade-2.pdf',
+    pdfPath: '/images/build-a-lowther/plans/Accolade-2.pdf',
     driveUnitOptions: {
       standard: '2x DX3 Concert plus 2x DX55'
     }
@@ -105,7 +105,7 @@ const cabinetPlans: CabinetPlan[] = [
     image: '/images/build-a-lowther/gallery/Accolade-4-xray-Image.avif',
     description: `The Accolade 4 was first released in the 1980's. We rate this speaker as an intermediate difficulty build. Like all our designs there are a few complicated angles to cut and sealing the cabinet is very important.`,
     materialGuidance: `We recommend building your speaker out of high-grade MDF or baltic birch plywood. Choose MDF if you are not planning on veneering your speaker and painting it instead. To get a nice glossy finish when painting we recommend using a water based pigmented lacquer with an 80% sheen level.`,
-    pdfPath: '/images/build-a-lowther/plans/accolade-4.pdf',
+    pdfPath: '/images/build-a-lowther/plans/Accolade-4.pdf',
     driveUnitOptions: {
       standard: '4x DX3 Concert plus 4x DX55'
     }
@@ -122,7 +122,7 @@ The clarity and sense of location makes The Academy stand apart from its peers. 
 
 Due to the complexity of the labyrinth and size of this cabinet we have rated this an advanced cabinet to build. However, with some time and care taken in construction, The Academy will not disappoint.`,
     materialGuidance: `We recommend building your speaker out of high-grade MDF or for the best sound then use baltic birch plywood. Choose MDF if you are not planning on veneering your speaker and painting it instead. To get a nice glossy finish when painting we recommend using a water based pigmented lacquer with an 80% sheen level.`,
-    pdfPath: '/images/build-a-lowther/plans/academy.pdf',
+    pdfPath: '/images/build-a-lowther/plans/Academy.pdf',
     driveUnitOptions: {
       standard: '4x DX3 Concert',
       recommended: '4x PM7A Sinfonia',
