@@ -1,9 +1,6 @@
-'use client';
-
 import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardHeader } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
 import { getAllCollections } from '@/lib/utils/drive-units-loader';
 
