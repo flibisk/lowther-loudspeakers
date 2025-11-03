@@ -61,11 +61,9 @@ export function MobileMenu({ isOpen, onClose, menuItems, currentLanguage, onLang
       setCurrentView('sub');
     } else if (item.href) {
       // Handle direct links (like Our Blog, Contact Us)
-      if (item.label === 'Our Blog') {
+      if (item.label === 'Our Blog' || item.label === 'Contact Us') {
         window.location.href = item.href;
-      } else if (item.label === 'Contact Us') {
         onClose();
-        setContactFormOpen(true);
       }
     }
   };
