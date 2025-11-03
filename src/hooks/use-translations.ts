@@ -1,12 +1,12 @@
 'use client';
 
 import { useContext, createContext, ReactNode, useState } from 'react';
-import { SupportedLanguage, translations, defaultLanguage } from '@/lib/i18n';
+import { SupportedLanguage, translations, defaultLanguage, Translations } from '@/lib/i18n';
 
 interface TranslationContextType {
   language: SupportedLanguage;
   setLanguage: (language: SupportedLanguage) => void;
-  t: (typeof translations)[SupportedLanguage];
+  t: Translations;
 }
 
 const TranslationContext = createContext<TranslationContextType | undefined>(undefined);
