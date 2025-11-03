@@ -18,16 +18,8 @@ interface Review {
  */
 async function fetchReviewsFromGoogleSheets(): Promise<Review[]> {
   try {
-    // If no API key, use public sheet URL
-    const range = `${SHEET_NAME}!A2:C100`; // Skip header row
-    
-    let url: string;
-    if (API_KEY) {
-      url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${range}?key=${API_KEY}`;
-    } else {
-      // Try public CSV export as fallback
-      url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}`;
-    }
+    // Use Google Visualization API for better JSON parsing (works with public sheets)
+    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
 
     const response = await fetch(url, {
       next: { revalidate: 3600 } // Cache for 1 hour
@@ -38,66 +30,40 @@ async function fetchReviewsFromGoogleSheets(): Promise<Review[]> {
       return [];
     }
 
-    let reviews: Review[] = [];
-
-    if (API_KEY) {
-      // Parse JSON response from Sheets API
-      const data = await response.json();
-      const rows = data.values || [];
-      
-      reviews = rows
-        .filter((row: string[]) => row[0] && row[1]) // Must have content and reviewer
-        .map((row: string[], index: number) => ({
-          id: `review-${Date.now()}-${index}`,
-          content: row[0] || '',
-          reviewer: row[1] || 'Anonymous',
-          rating: parseInt(row[2]) || 5,
-          date: new Date().toISOString().split('T')[0]
-        }));
-    } else {
-      // Parse CSV response
-      const csvText = await response.text();
-      const rows = csvText.split('\n').slice(1); // Skip header
-      
-      reviews = rows
-        .filter(row => row.trim())
-        .map((row, index) => {
-          // Proper CSV parsing that handles quoted strings with commas
-          const columns: string[] = [];
-          let current = '';
-          let inQuotes = false;
-          
-          for (let i = 0; i < row.length; i++) {
-            const char = row[i];
-            
-            if (char === '"') {
-              inQuotes = !inQuotes;
-            } else if (char === ',' && !inQuotes) {
-              columns.push(current.trim());
-              current = '';
-            } else {
-              current += char;
-            }
-          }
-          columns.push(current.trim()); // Add last column
-          
-          // Remove quotes from columns
-          const content = columns[0]?.replace(/^"|"$/g, '') || '';
-          const reviewer = columns[1]?.replace(/^"|"$/g, '') || '';
-          const rating = parseInt(columns[2]?.replace(/^"|"$/g, '') || '5') || 5;
-          
-          if (!content || !reviewer) return null;
-          
-          return {
-            id: `review-${Date.now()}-${index}`,
-            content,
-            reviewer,
-            rating,
-            date: new Date().toISOString().split('T')[0]
-          };
-        })
-        .filter((review): review is Review => review !== null);
+    // Google returns JSONP, need to extract the JSON
+    const text = await response.text();
+    const jsonMatch = text.match(/google\.visualization\.Query\.setResponse\((.*)\);/);
+    
+    if (!jsonMatch || !jsonMatch[1]) {
+      console.error('Failed to parse Google Sheets response');
+      return [];
     }
+
+    const data = JSON.parse(jsonMatch[1]);
+    const rows = data.table.rows || [];
+    
+    const reviews: Review[] = rows
+      .map((row: any, index: number) => {
+        // Each row has cells array: [content, reviewer, rating]
+        const cells = row.c || [];
+        
+        // Extract values (v property contains the actual value)
+        const content = cells[0]?.v?.toString().trim() || '';
+        const reviewer = cells[1]?.v?.toString().trim() || '';
+        const rating = parseInt(cells[2]?.v?.toString() || '5') || 5;
+        
+        // Skip if no content or reviewer
+        if (!content || !reviewer) return null;
+        
+        return {
+          id: `review-${Date.now()}-${index}`,
+          content,
+          reviewer,
+          rating,
+          date: new Date().toISOString().split('T')[0]
+        };
+      })
+      .filter((review): review is Review => review !== null);
 
     return reviews;
   } catch (error) {
