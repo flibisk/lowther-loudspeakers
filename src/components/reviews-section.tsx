@@ -159,11 +159,6 @@ export function ReviewsSection() {
             {/* Reviewer */}
             <div className="text-gray-600">
               <p className="font-semibold text-lg">{currentReview.reviewer}</p>
-              <p className="text-sm">{new Date(currentReview.date).toLocaleDateString('en-GB', { 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-              })}</p>
             </div>
           </div>
 
