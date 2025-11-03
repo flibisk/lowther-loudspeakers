@@ -1,35 +1,80 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
 
-export function BlogSection() {
-  // Sample blog posts - these will be replaced with Beehiiv integration
-  const blogPosts = [
-    {
-      id: "building-acousta-davids-journey",
-      title: "Building An Acousta: David's Journey",
-      category: "THE LISTENING CIRCLE",
-      date: "Sep 16, 2025",
-      image: "/images/blog/building-acousta.jpg",
-      href: "/blog/building-acousta-davids-journey"
-    },
-    {
-      id: "the-px4-valve",
-      title: "The PX4 Valve",
-      category: "NEWS",
-      date: "Sep 12, 2025",
-      image: "/images/blog/px4-valve.jpg",
-      href: "/blog/the-px4-valve"
-    },
-    {
-      id: "passing-the-torch",
-      title: "Passing The Torch: Why True Sound Must Find New Ears",
-      category: "STORY",
-      date: "Aug 9, 2025",
-      image: "/images/blog/passing-torch.jpg",
-      href: "/blog/passing-the-torch"
+/**
+ * Beehiiv API Response Types
+ */
+interface BeehiivPost {
+  id: string;
+  title: string;
+  preview_text: string;
+  thumbnail_url: string | null;
+  published_at: string | number;
+  web_url: string;
+}
+
+interface BeehiivResponse {
+  data: BeehiivPost[];
+  total_results: number;
+}
+
+/**
+ * Fetch latest posts from Beehiiv API
+ */
+async function fetchLatestPosts(): Promise<BeehiivPost[]> {
+  const beehiivApiKey = process.env.BEEHIIV_API_KEY;
+  const beehiivPublicationId = process.env.BEEHIIV_PUBLICATION_ID;
+
+  if (!beehiivApiKey || !beehiivPublicationId) {
+    console.error('Beehiiv API credentials not configured');
+    return [];
+  }
+
+  try {
+    const response = await fetch(
+      `https://api.beehiiv.com/v2/publications/${beehiivPublicationId}/posts?status=confirmed&limit=3&order_by=publish_date&direction=desc`,
+      {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${beehiivApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        next: { revalidate: 3600 } // Cache for 1 hour
+      }
+    );
+
+    if (!response.ok) {
+      console.error('Beehiiv API error:', response.status, await response.text());
+      return [];
     }
-  ];
+
+    const data: BeehiivResponse = await response.json();
+    return data.data || [];
+  } catch (error) {
+    console.error('Error fetching Beehiiv posts:', error);
+    return [];
+  }
+}
+
+/**
+ * Format date for display
+ */
+function formatDate(dateString: string | number): string {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  });
+}
+
+export async function BlogSection() {
+  const posts = await fetchLatestPosts();
+
+  // If no posts, don't render the section
+  if (posts.length === 0) {
+    return null;
+  }
 
   return (
     <section className="py-32 bg-white">
@@ -47,28 +92,35 @@ export function BlogSection() {
 
         {/* Blog Posts Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-          {blogPosts.map((post) => (
+          {posts.map((post) => (
             <article key={post.id} className="bg-white group">
-              <Link href={post.href}>
+              <a 
+                href={post.web_url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
                 {/* Image */}
-                <div className="relative aspect-[4/3] overflow-hidden mb-6">
-                  <Image
-                    src={post.image}
-                    alt={post.title}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                </div>
+                {post.thumbnail_url && (
+                  <div className="relative aspect-[4/3] overflow-hidden mb-6">
+                    <Image
+                      src={post.thumbnail_url}
+                      alt={post.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    />
+                  </div>
+                )}
 
                 {/* Content */}
                 <div className="space-y-3">
-                  {/* Category and Date */}
+                  {/* Date */}
                   <div className="flex justify-between items-center text-sm">
                     <span className="font-medium text-gray-900 uppercase tracking-wider">
-                      {post.category}
+                      LATEST
                     </span>
                     <span className="text-gray-500">
-                      {post.date}
+                      {formatDate(post.published_at)}
                     </span>
                   </div>
 
@@ -76,8 +128,15 @@ export function BlogSection() {
                   <h3 className="font-semibold text-lg leading-tight text-gray-900 group-hover:text-[#c59862] transition-colors">
                     {post.title}
                   </h3>
+
+                  {/* Preview text */}
+                  {post.preview_text && (
+                    <p className="text-gray-600 text-sm line-clamp-2">
+                      {post.preview_text}
+                    </p>
+                  )}
                 </div>
-              </Link>
+              </a>
             </article>
           ))}
         </div>

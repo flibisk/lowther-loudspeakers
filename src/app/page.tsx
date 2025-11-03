@@ -1,8 +1,4 @@
-import { VideoHero } from "@/components/video-hero";
-import { Grid } from "@/components/grid";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { FeaturedMasterpieces } from "@/components/featured-masterpieces";
 import { EdiliaBanner } from "@/components/edilia-banner";
 import { PhilharmonicCollection } from "@/components/philharmonic-collection";
@@ -12,17 +8,8 @@ import { BuildALowtherBanner } from "@/components/build-a-lowther-banner";
 import { ReviewsSection } from "@/components/reviews-section";
 import { HistoryBanner } from "@/components/history-banner";
 import Link from "next/link";
-import Image from "next/image";
 
-// Import data
-import collectionsData from "@/lib/data/collections.json";
-import postsData from "@/lib/data/posts.json";
-
-export default function HomePage() {
-  // Load only essential data for faster initial render
-  const featuredCollections = collectionsData.filter(collection => collection.featured).slice(0, 2);
-  const featuredPosts = postsData.filter(post => post.featured).slice(0, 2);
-
+export default async function HomePage() {
   return (
     <>
       {/* HERO - Dark video section */}
