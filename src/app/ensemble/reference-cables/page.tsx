@@ -128,7 +128,7 @@ export default function ReferenceCablesPage() {
       {/* Hero Banner */}
       <section data-surface="dark" className="relative min-h-[100vh] overflow-hidden">
         <Image
-          src="/images/ensemble/reference-cables/hero/Lowther-cables-hero.avif"
+          src="/images/ensemble/reference-cables/hero/Lowther-cables-hero.png"
           alt="Reference Cables"
           fill
           className="absolute inset-0 h-full w-full object-cover"

@@ -305,7 +305,7 @@ export default function SinfoniaCollectionPage() {
       <Breadcrumbs 
         items={[
           { label: 'Home', href: '/' },
-          { label: 'Instruments', href: '/collection/sinfonia' },
+          { label: 'Instruments', href: '/products' },
           { label: 'The Sinfonia Collection' }
         ]}
       />

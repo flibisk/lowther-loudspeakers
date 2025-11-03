@@ -353,7 +353,7 @@ export default function ConcertCollectionPage() {
       <Breadcrumbs 
         items={[
           { label: 'Home', href: '/' },
-          { label: 'Instruments', href: '/collection/concert' },
+          { label: 'Instruments', href: '/products' },
           { label: 'The Concert Collection' }
         ]}
       />

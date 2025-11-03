@@ -196,7 +196,7 @@ export default function GrandOperaCollectionPage() {
       <Breadcrumbs 
         items={[
           { label: 'Home', href: '/' },
-          { label: 'Instruments', href: '/collection/grand-opera' },
+          { label: 'Instruments', href: '/products' },
           { label: 'The Grand Opera Collection' }
         ]}
       />

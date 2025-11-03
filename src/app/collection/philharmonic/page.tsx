@@ -247,7 +247,7 @@ export default function PhilharmonicCollectionPage() {
       <Breadcrumbs 
         items={[
           { label: 'Home', href: '/' },
-          { label: 'Instruments', href: '/collection/philharmonic' },
+          { label: 'Instruments', href: '/products' },
           { label: 'The Philharmonic Collection' }
         ]}
       />

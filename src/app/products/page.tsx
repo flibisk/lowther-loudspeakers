@@ -34,35 +34,35 @@ const speakers = [
     title: "Acousta 117",
     feeling: "Timeless. Versatile.",
     image: "/images/Menu/masterpieces/acousta-117.jpg",
-    href: "/speakers/acousta-117"
+    href: "/loudspeakers/acousta-117"
   },
   {
     id: "almira",
     title: "Almira",
     feeling: "Balanced. Expressive.",
     image: "/images/Menu/masterpieces/almira.jpg",
-    href: "/speakers/almira"
+    href: "/loudspeakers/almira"
   },
   {
     id: "tp2",
     title: "TP2",
     feeling: "Powerful. Grand.",
     image: "/images/Menu/masterpieces/tp2.jpg",
-    href: "/speakers/tp2"
+    href: "/loudspeakers/tp2"
   },
   {
     id: "audiovector",
     title: "Audiovector",
     feeling: "Dynamic. Bold.",
     image: "/images/Menu/masterpieces/audiovector.jpg",
-    href: "/speakers/audiovector"
+    href: "/loudspeakers/audiovector"
   },
   {
     id: "voigt-horn",
     title: "Voigt Horn",
     feeling: "Historic. Iconic.",
     image: "/images/Menu/masterpieces/voigt-horn.jpg",
-    href: "/speakers/voigt-horn"
+    href: "/loudspeakers/voigt-horn"
   }
 ];
 
@@ -160,7 +160,7 @@ export default function ProductsPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Video Banner */}
-      <section className="relative h-[70vh] min-h-[600px] flex items-center justify-center overflow-hidden">
+      <section data-surface="dark" className="relative min-h-[100vh] overflow-hidden">
         <video
           autoPlay
           loop
@@ -173,18 +173,34 @@ export default function ProductsPage() {
         </video>
         
         {/* Overlay */}
-        <div className="absolute inset-0 bg-black/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
         
-        {/* Content */}
-        <div className="relative z-10 text-center text-white px-6 max-w-4xl mx-auto">
-          <h1 className="font-display text-5xl md:text-6xl lg:text-7xl mb-8 leading-tight">
+        {/* Content - Bottom Left */}
+        <div className="absolute bottom-8 930:bottom-20 left-6 930:left-16 z-10 text-white max-w-xs sm:max-w-md 930:max-w-3xl">
+          <div className="flex items-center mb-2">
+            <div className="w-8 h-px bg-white mr-3"></div>
+            <span className="text-sm tracking-wider uppercase text-white/80">LOWTHER LOUDSPEAKERS</span>
+          </div>
+          
+          <h1 className="font-display text-5xl md:text-6xl lg:text-7xl mb-6 leading-tight" style={{ color: '#c59862' }}>
             Craftsmanship that Transcends Time.<br />
             Sound that Transforms your Space.
           </h1>
-          <p className="text-xl md:text-2xl leading-relaxed max-w-3xl mx-auto">
+          
+          <p className="text-lg md:text-xl leading-relaxed text-white/90 max-w-2xl">
             All our speakers are designed by ear, built by hand and exist for one reason: to enhance the experience of listening to music.
           </p>
         </div>
+
+        {/* Scroll Indicator */}
+        <div className="hidden 930:flex absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 flex-col items-center text-white">
+          <span className="text-xs tracking-wider uppercase mb-2">Scroll</span>
+          <svg className="w-4 h-4 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
+        </div>
+
+        <div id="hero-sentinel" className="absolute bottom-0 h-[1px] w-full" />
       </section>
 
       {/* Our Masterpieces Section */}
