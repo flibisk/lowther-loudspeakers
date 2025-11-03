@@ -415,27 +415,32 @@ export function MobileMenu({ isOpen, onClose, menuItems, currentLanguage, onLang
             <div className="px-6 py-8 pb-24">
               <div className="space-y-2">
                 {[
-                  { code: "en", name: "United Kingdom (English)", flag: "🇬🇧" },
-                  { code: "fr", name: "Français", flag: "🇫🇷" },
-                  { code: "de", name: "Deutsch", flag: "🇩🇪" },
-                  { code: "ja", name: "日本語", flag: "🇯🇵" },
-                  { code: "es", name: "Español", flag: "🇪🇸" },
-                  { code: "it", name: "Italiano", flag: "🇮🇹" },
+                  { code: "en-GB", name: "United Kingdom", flag: "🇬🇧", currency: "GBP", currencySymbol: "£" },
+                  { code: "en-US", name: "United States", flag: "🇺🇸", currency: "USD", currencySymbol: "$" },
+                  { code: "en-EU", name: "Europe", flag: "🇪🇺", currency: "EUR", currencySymbol: "€" },
+                  { code: "ja-JP", name: "日本 (Japan)", flag: "🇯🇵", currency: "JPY", currencySymbol: "¥" },
+                  { code: "en-AU", name: "Australia", flag: "🇦🇺", currency: "AUD", currencySymbol: "A$" },
+                  { code: "en-CA", name: "Canada", flag: "🇨🇦", currency: "CAD", currencySymbol: "C$" },
                 ].map((language) => (
                   <button
                     key={language.code}
                     onClick={() => {
-                      onLanguageChange(language.code);
+                      onLanguageChange(language.code, language.currency);
                       setCurrentView('main');
                     }}
-                    className={`w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-neutral-800 transition-colors rounded-lg ${
+                    className={`w-full text-left px-4 py-3 flex items-center justify-between hover:bg-neutral-800 transition-colors rounded-lg ${
                       currentLanguage === language.code ? "bg-neutral-800" : ""
                     }`}
                   >
-                    <span className="text-lg">{language.flag}</span>
-                    <span className="text-white">{language.name}</span>
+                    <div className="flex items-center gap-3">
+                      <span className="text-lg">{language.flag}</span>
+                      <div className="flex flex-col">
+                        <span className="text-white font-medium">{language.name}</span>
+                        <span className="text-xs text-gray-400">{language.currency} {language.currencySymbol}</span>
+                      </div>
+                    </div>
                     {currentLanguage === language.code && (
-                      <svg className="w-5 h-5 ml-auto text-[#c59862]" fill="currentColor" viewBox="0 0 20 20">
+                      <svg className="w-5 h-5 text-[#c59862]" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                     )}
