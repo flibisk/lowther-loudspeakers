@@ -87,7 +87,7 @@ export function PhilharmonicCollection() {
         {/* Call to Action */}
         <div className="text-center">
           <Link 
-            href="/drive-units/philharmonic-collection" 
+            href="/products" 
             className="text-black hover:text-[#c59862] transition-colors font-medium tracking-wider uppercase text-sm underline-animated"
           >
             EXPLORE ALL OUR COLLECTIONS

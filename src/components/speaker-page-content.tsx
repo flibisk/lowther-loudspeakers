@@ -252,8 +252,8 @@ export function SpeakerPageContent({
       <Breadcrumbs 
         items={[
           { label: 'Home', href: '/' },
-          { label: 'Products', href: '/loudspeakers' },
-          { label: 'Masterpieces', href: '/loudspeakers' },
+          { label: 'Products', href: '/products' },
+          { label: 'Masterpieces', href: '/products' },
           { label: speaker.title }
         ]}
       />

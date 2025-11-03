@@ -158,7 +158,7 @@ export default function ReferenceCablesPage() {
       <Breadcrumbs 
         items={[
           { label: 'Home', href: '/' },
-          { label: 'Lowther Ensemble', href: '/ensemble/px4-amplifier' },
+          { label: 'Lowther Ensemble', href: '/products' },
           { label: 'Reference Cables' }
         ]}
       />

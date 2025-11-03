@@ -100,7 +100,7 @@ export function FeaturedMasterpieces() {
         {/* Explore All Link */}
         <div className="text-center">
           <Link 
-            href="/category/loudspeakers" 
+            href="/products" 
             className="text-black hover:text-[#c59862] transition-colors font-medium tracking-wider uppercase text-sm underline-animated"
           >
             Explore ALL our masterpieces
