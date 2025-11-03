@@ -68,7 +68,7 @@ export default function RefurbishmentsUpgradesPage() {
     setUpgradeError('');
 
     try {
-      const response = await fetch('/api/form', {
+      const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -78,8 +78,8 @@ export default function RefurbishmentsUpgradesPage() {
           email: upgradeFormData.email,
           phone: upgradeFormData.phone,
           location: upgradeFormData.address,
-          message: `Upgrade Request\n\nDrive Unit Type: ${upgradeFormData.driveUnitType}\nSerial Number: ${upgradeFormData.serialNumber}\nYear Purchased: ${upgradeFormData.yearPurchased}`,
-          segment: 'Upgrade',
+          message: `Upgrade Request\n\nDrive Unit Type: ${upgradeFormData.driveUnitType}\nSerial Number: ${upgradeFormData.serialNumber || 'Not provided'}\nYear Purchased: ${upgradeFormData.yearPurchased}`,
+          segment: 'Upgrade Request',
         }),
       });
 
@@ -104,7 +104,7 @@ export default function RefurbishmentsUpgradesPage() {
     setRefurbishmentError('');
 
     try {
-      const response = await fetch('/api/form', {
+      const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -114,8 +114,8 @@ export default function RefurbishmentsUpgradesPage() {
           email: refurbishmentFormData.email,
           phone: refurbishmentFormData.phone,
           location: refurbishmentFormData.address,
-          message: `Refurbishment Request\n\nDrive Unit Type: ${refurbishmentFormData.driveUnitType}\nSerial Number: ${refurbishmentFormData.serialNumber}\nYear Purchased: ${refurbishmentFormData.yearPurchased}`,
-          segment: 'Refurbishment',
+          message: `Refurbishment Request\n\nDrive Unit Type: ${refurbishmentFormData.driveUnitType}\nSerial Number: ${refurbishmentFormData.serialNumber || 'Not provided'}\nYear Purchased: ${refurbishmentFormData.yearPurchased}`,
+          segment: 'Refurbishment Request',
         }),
       });
 
