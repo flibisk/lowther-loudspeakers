@@ -33,12 +33,77 @@ export function BookAppointmentForm({ isOpen, onClose }: BookAppointmentFormProp
     message: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<{
+    type: 'success' | 'error' | null;
+    message: string;
+  }>({ type: null, message: '' });
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Book Appointment Form Data:', formData);
-    // Here you would typically send the data to your backend
-    alert('Appointment request submitted successfully!');
-    onClose();
+    setIsSubmitting(true);
+    setSubmitStatus({ type: null, message: '' });
+
+    try {
+      // Map the form data to match the API expectations
+      const apiPayload = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        preferredDate: formData.date,
+        preferredTime: formData.time,
+        location: formData.appointmentType === 'visit' ? 'norfolk' : 'phone_call',
+        interest: formData.appointmentType === 'phone' ? 'Phone Consultation' : 'Listening Room Visit',
+        message: formData.message || '',
+      };
+
+      const response = await fetch('/api/book-appointment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(apiPayload),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setSubmitStatus({
+          type: 'success',
+          message: data.message || 'Your appointment request has been sent successfully!',
+        });
+        
+        // Close the form after 2 seconds
+        setTimeout(() => {
+          onClose();
+          // Reset form
+          setFormData({
+            appointmentType: 'phone',
+            name: '',
+            phone: '',
+            email: '',
+            country: '',
+            date: '',
+            time: '',
+            message: ''
+          });
+          setSubmitStatus({ type: null, message: '' });
+        }, 2000);
+      } else {
+        setSubmitStatus({
+          type: 'error',
+          message: data.message || 'Failed to send appointment request. Please try again.',
+        });
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setSubmitStatus({
+        type: 'error',
+        message: 'An error occurred. Please try again or contact us directly.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleInputChange = (field: keyof FormData, value: string) => {
@@ -155,7 +220,7 @@ export function BookAppointmentForm({ isOpen, onClose }: BookAppointmentFormProp
             value={formData.date}
             onChange={(e) => handleInputChange('date', e.target.value)}
             required
-            className="w-full"
+            className="w-full [color-scheme:light]"
           />
         </div>
 
@@ -170,7 +235,7 @@ export function BookAppointmentForm({ isOpen, onClose }: BookAppointmentFormProp
             value={formData.time}
             onChange={(e) => handleInputChange('time', e.target.value)}
             required
-            className="w-full"
+            className="w-full [color-scheme:light]"
           />
         </div>
 
@@ -189,15 +254,25 @@ export function BookAppointmentForm({ isOpen, onClose }: BookAppointmentFormProp
           />
         </div>
 
+        {/* Submit Status Message */}
+        {submitStatus.type && (
+          <div className={`p-4 rounded-md ${
+            submitStatus.type === 'success' ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'
+          }`}>
+            <p className="text-sm">{submitStatus.message}</p>
+          </div>
+        )}
+
         {/* Submit Button */}
         <div className="pt-4">
           <Button
             type="submit"
             variant="black"
             size="lowther"
-            className="w-full"
+            className="w-full disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isSubmitting}
           >
-            Submit Appointment Request
+            {isSubmitting ? 'Sending...' : 'Submit Appointment Request'}
           </Button>
         </div>
       </form>
