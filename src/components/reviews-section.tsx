@@ -2,14 +2,56 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
-import reviewsData from '@/lib/data/reviews-database.json';
+
+interface Review {
+  id: string;
+  content: string;
+  reviewer: string;
+  rating: number;
+  date: string;
+}
+
+/**
+ * Shuffle array using Fisher-Yates algorithm
+ */
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
 
 export function ReviewsSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [reviews, setReviews] = useState(reviewsData.reviews);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
+
+  // Fetch reviews from API on mount
+  useEffect(() => {
+    async function fetchReviews() {
+      try {
+        const response = await fetch('/api/sync-reviews');
+        const data = await response.json();
+        
+        if (data.success && data.reviews) {
+          // Randomize reviews order
+          const shuffledReviews = shuffleArray(data.reviews);
+          setReviews(shuffledReviews);
+        }
+      } catch (error) {
+        console.error('Error fetching reviews:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchReviews();
+  }, []);
 
   // Auto-advance reviews
   useEffect(() => {
@@ -57,6 +99,28 @@ export function ReviewsSection() {
       prevIndex === 0 ? reviews.length - 1 : prevIndex - 1
     );
   };
+
+  // Show loading or empty state
+  if (isLoading) {
+    return (
+      <section className="py-32 bg-white">
+        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
+          <div className="text-center mb-16">
+            <h2 className="font-display text-4xl lg:text-5xl mb-6" style={{ color: '#c59862' }}>
+              What Our Customers Say
+            </h2>
+          </div>
+          <div className="text-center text-gray-500">
+            <p>Loading reviews...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (reviews.length === 0) {
+    return null; // Hide section if no reviews
+  }
 
   const currentReview = reviews[currentIndex];
 
