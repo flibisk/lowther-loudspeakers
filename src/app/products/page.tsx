@@ -12,56 +12,56 @@ const speakers = [
     id: "quarterwave",
     title: "Quarter Wave",
     feeling: "Discreet. Architectural.",
-    image: "/images/menu/masterpieces/acousta-qw.jpg",
+    image: "/images/Menu/masterpieces/acousta-qw.jpg",
     href: "/loudspeakers/acousta-quarter-wave"
   },
   {
     id: "edilia",
     title: "Edilia", 
     feeling: "Elegant. Focused.",
-    image: "/images/menu/masterpieces/edilia.jpg",
+    image: "/images/Menu/masterpieces/edilia.jpg",
     href: "/loudspeakers/edilia"
   },
   {
     id: "hegeman",
     title: "Hegeman",
     feeling: "Exclusive. Reverent.",
-    image: "/images/menu/masterpieces/hegeman.jpg", 
+    image: "/images/Menu/masterpieces/hegeman.jpg", 
     href: "/loudspeakers/hegeman"
   },
   {
     id: "acousta-117",
     title: "Acousta 117",
     feeling: "Timeless. Versatile.",
-    image: "/images/menu/masterpieces/acousta-117.jpg",
+    image: "/images/Menu/masterpieces/acousta-117.jpg",
     href: "/speakers/acousta-117"
   },
   {
     id: "almira",
     title: "Almira",
     feeling: "Balanced. Expressive.",
-    image: "/images/menu/masterpieces/almira.jpg",
+    image: "/images/Menu/masterpieces/almira.jpg",
     href: "/speakers/almira"
   },
   {
     id: "tp2",
     title: "TP2",
     feeling: "Powerful. Grand.",
-    image: "/images/menu/masterpieces/tp2.jpg",
+    image: "/images/Menu/masterpieces/tp2.jpg",
     href: "/speakers/tp2"
   },
   {
     id: "audiovector",
     title: "Audiovector",
     feeling: "Dynamic. Bold.",
-    image: "/images/menu/masterpieces/audiovector.jpg",
+    image: "/images/Menu/masterpieces/audiovector.jpg",
     href: "/speakers/audiovector"
   },
   {
     id: "voigt-horn",
     title: "Voigt Horn",
     feeling: "Historic. Iconic.",
-    image: "/images/menu/masterpieces/voigt-horn.jpg",
+    image: "/images/Menu/masterpieces/voigt-horn.jpg",
     href: "/speakers/voigt-horn"
   }
 ];
@@ -72,28 +72,28 @@ const collections = [
     id: "concert-collection",
     title: "The Concert Collection",
     description: "Hand-crafted drive units deliver the legendary immediate and detailed sound.",
-    image: "/images/menu/instruments/concert-collection.jpg",
+    image: "/images/Menu/instruments/concert-collection.jpg",
     href: "/collection/concert"
   },
   {
     id: "sinfonia-collection",
     title: "The Sinfonia Collection",
     description: "Enhanced performance with neodymium magnets for exceptional clarity.",
-    image: "/images/menu/instruments/sinfonia-collection.jpg",
+    image: "/images/Menu/instruments/sinfonia-collection.jpg",
     href: "/collection/sinfonia"
   },
   {
     id: "philharmonic-collection",
     title: "The Philharmonic Collection",
     description: "Commissioning-based artistry with field-coil designs for discerning collectors.",
-    image: "/images/menu/instruments/philharmonic-collection.jpg",
+    image: "/images/Menu/instruments/philharmonic-collection.jpg",
     href: "/collection/philharmonic"
   },
   {
     id: "grand-opera-collection",
     title: "The Grand Opera Collection",
     description: "Our flagship collection representing the pinnacle of acoustic achievement.",
-    image: "/images/menu/instruments/grand-opera-collection.jpg",
+    image: "/images/Menu/instruments/grand-opera-collection.jpg",
     href: "/collection/grand-opera"
   }
 ];
@@ -104,42 +104,42 @@ const ensembleItems = [
     id: "px4-amplifier",
     title: "The PX4 AMP",
     subtitle: "Amplifier",
-    image: "/images/menu/Ensemble/PX4-Amplifier.avif",
+    image: "/images/Menu/Ensemble/PX4-Amplifier.avif",
     href: "/ensemble/px4-amplifier"
   },
   {
     id: "reference-cables",
     title: "Premium Cables",
     subtitle: "Cables",
-    image: "/images/menu/Ensemble/Reference-Cables.avif",
+    image: "/images/Menu/Ensemble/Reference-Cables.avif",
     href: "/ensemble/reference-cables"
   },
   {
     id: "phase-plugs",
     title: "Phase Plugs",
     subtitle: "Enhancement",
-    image: "/images/menu/Ensemble/Phase-Plugs.webp",
+    image: "/images/Menu/Ensemble/Phase-Plugs.webp",
     href: "/ensemble/phase-plugs"
   },
   {
     id: "lowther-badges",
     title: "Lowther Badges",
     subtitle: "Authenticity",
-    image: "/images/menu/Ensemble/Lowther-badges.avif",
+    image: "/images/Menu/Ensemble/Lowther-badges.avif",
     href: "/ensemble/lowther-badges"
   },
   {
     id: "residential-design",
     title: "Residential System Design",
     subtitle: "Service",
-    image: "/images/menu/Ensemble/White-Glove-residential.avif",
+    image: "/images/Menu/Ensemble/White-Glove-residential.avif",
     href: "/ensemble/residential-system-design"
   },
   {
     id: "commercial-design",
     title: "Commercial System Design",
     subtitle: "Service",
-    image: "/images/menu/Ensemble/Commercial-white-glove.avif",
+    image: "/images/Menu/Ensemble/Commercial-white-glove.avif",
     href: "/ensemble/commercial-system-design"
   }
 ];
@@ -318,12 +318,9 @@ export default function ProductsPage() {
                       
                       {/* Text Content */}
                       <div className="absolute bottom-0 left-0 right-0 p-8 text-center">
-                        <h3 className="text-[#c59862] text-2xl mb-2">
+                        <h3 className="text-[#c59862] text-2xl mb-6">
                           {collection.title}
                         </h3>
-                        <p className="text-white text-base mb-6">
-                          {collection.description}
-                        </p>
                         <Link href={collection.href}>
                           <Button 
                             variant="white" 

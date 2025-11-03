@@ -43,48 +43,48 @@ export default function SiteHeader({ nav }: Props) {
   // Image mapping for individual link hover states
   const menuImages = {
     // Masterpieces
-    'acousta-qw': '/images/menu/masterpieces/acousta-qw.jpg',
-    'acousta-quarter-wave': '/images/menu/masterpieces/acousta-qw.jpg',
-    'acousta-117': '/images/menu/masterpieces/acousta-117.jpg',
-    'edilia': '/images/menu/masterpieces/edilia.jpg',
-    'almira': '/images/menu/masterpieces/almira.jpg',
-    'tp2': '/images/menu/masterpieces/tp2.jpg',
-    'audiovector': '/images/menu/masterpieces/audiovector.jpg',
-    'hegeman': '/images/menu/masterpieces/hegeman.jpg',
-    'voigt-horn': '/images/menu/masterpieces/voigt-horn.jpg',
+    'acousta-qw': '/images/Menu/masterpieces/acousta-qw.jpg',
+    'acousta-quarter-wave': '/images/Menu/masterpieces/acousta-qw.jpg',
+    'acousta-117': '/images/Menu/masterpieces/acousta-117.jpg',
+    'edilia': '/images/Menu/masterpieces/edilia.jpg',
+    'almira': '/images/Menu/masterpieces/almira.jpg',
+    'tp2': '/images/Menu/masterpieces/tp2.jpg',
+    'audiovector': '/images/Menu/masterpieces/audiovector.jpg',
+    'hegeman': '/images/Menu/masterpieces/hegeman.jpg',
+    'voigt-horn': '/images/Menu/masterpieces/voigt-horn.jpg',
     
     // Instruments
-    'concert-collection': '/images/menu/instruments/concert-collection.jpg',
-    'sinfonia-collection': '/images/menu/instruments/sinfonia-collection.jpg',
-    'philharmonic-collection': '/images/menu/instruments/philharmonic-collection.jpg',
-    'grand-opera-collection': '/images/menu/instruments/grand-opera-collection.jpg',
+    'concert-collection': '/images/Menu/instruments/concert-collection.jpg',
+    'sinfonia-collection': '/images/Menu/instruments/sinfonia-collection.jpg',
+    'philharmonic-collection': '/images/Menu/instruments/philharmonic-collection.jpg',
+    'grand-opera-collection': '/images/Menu/instruments/grand-opera-collection.jpg',
     
     // Ensemble - Fixed paths
-    'px4-amplifier': '/images/menu/Ensemble/PX4-Amplifier.avif',
-    'reference-cables': '/images/menu/Ensemble/Reference-Cables.avif',
-    'phase-equalisers': '/images/menu/Ensemble/Phase-Plugs.webp',
-    'lowther-badges': '/images/menu/Ensemble/Lowther-badges.avif',
-    'white-glove-residential': '/images/menu/Ensemble/White-Glove-residential.avif',
-    'white-glove-commercial': '/images/menu/Ensemble/Commercial-white-glove.avif',
+    'px4-amplifier': '/images/Menu/Ensemble/PX4-Amplifier.avif',
+    'reference-cables': '/images/Menu/Ensemble/Reference-Cables.avif',
+    'phase-equalisers': '/images/Menu/Ensemble/Phase-Plugs.webp',
+    'lowther-badges': '/images/Menu/Ensemble/Lowther-badges.avif',
+    'white-glove-residential': '/images/Menu/Ensemble/White-Glove-residential.avif',
+    'white-glove-commercial': '/images/Menu/Ensemble/Commercial-white-glove.avif',
     
     // Brand
-    'history': '/images/menu/brand/history.jpg',
-    'handcrafted': '/images/menu/brand/handcrafted.jpg',
-    'lasting-legacy': '/images/menu/brand/lasting-legacy.jpg',
-    'paul-voigt-era': '/images/menu/brand/paul-voigt-era.jpg',
-    'donald-chave-era': '/images/menu/brand/donald-chave-era.jpg',
+    'history': '/images/Menu/brand/history.jpg',
+    'handcrafted': '/images/Menu/brand/handcrafted.jpg',
+    'lasting-legacy': '/images/Menu/brand/lasting-legacy.jpg',
+    'paul-voigt-era': '/images/Menu/brand/paul-voigt-era.jpg',
+    'donald-chave-era': '/images/Menu/brand/donald-chave-era.jpg',
     
     // Speaker Making
-    'our-craft': '/images/menu/speaker-making/our-craft.jpg',
-    'build-your-own': '/images/menu/speaker-making/build-your-own.jpg',
+    'our-craft': '/images/Menu/speaker-making/our-craft.jpg',
+    'build-your-own': '/images/Menu/speaker-making/build-your-own.jpg',
     
     // Services
-    'refurbishments-upgrades': '/images/menu/services/vintage-repairs.jpg',
-    'warranty': '/images/menu/services/warranty.jpg',
-    'authenticity-checker': '/images/menu/services/authenticity-checker.jpg',
-    'listening-rooms': '/images/menu/services/listening-rooms.jpg',
-    'order-catalogue': '/images/menu/services/order-catalogue.jpg',
-    'oem-opportunities': '/images/menu/services/oem-opportunities.jpg'
+    'refurbishments-upgrades': '/images/Menu/services/vintage-repairs.jpg',
+    'warranty': '/images/Menu/services/warranty.jpg',
+    'authenticity-checker': '/images/Menu/services/authenticity-checker.jpg',
+    'listening-rooms': '/images/Menu/services/listening-rooms.jpg',
+    'order-catalogue': '/images/Menu/services/order-catalogue.jpg',
+    'oem-opportunities': '/images/Menu/services/oem-opportunities.jpg'
   };
 
   const lastYRef = useRef(0);
@@ -618,62 +618,62 @@ export default function SiteHeader({ nav }: Props) {
           {
             label: 'Masterpieces',
             children: [
-              { label: 'Acousta QW', href: '/loudspeakers/acousta-quarter-wave', image: '/images/menu/masterpieces/acousta-qw.jpg' },
-              { label: 'Acousta 117', href: '/loudspeakers/acousta-117', image: '/images/menu/masterpieces/acousta-117.jpg' },
-              { label: 'Edilia', href: '/loudspeakers/edilia', image: '/images/menu/masterpieces/edilia.jpg' },
-              { label: 'Almira', href: '/loudspeakers/almira', image: '/images/menu/masterpieces/almira.jpg' },
-              { label: 'TP2', href: '/loudspeakers/tp2', image: '/images/menu/masterpieces/tp2.jpg' },
-              { label: 'AudioVector', href: '/loudspeakers/audiovector', image: '/images/menu/masterpieces/audiovector.jpg' },
-              { label: 'Hegeman', href: '/loudspeakers/hegeman', image: '/images/menu/masterpieces/hegeman.jpg' },
-              { label: 'Voigt Horn', href: '/loudspeakers/voigt-horn', image: '/images/menu/masterpieces/voigt-horn.jpg' },
+              { label: 'Acousta QW', href: '/loudspeakers/acousta-quarter-wave', image: '/images/Menu/masterpieces/acousta-qw.jpg' },
+              { label: 'Acousta 117', href: '/loudspeakers/acousta-117', image: '/images/Menu/masterpieces/acousta-117.jpg' },
+              { label: 'Edilia', href: '/loudspeakers/edilia', image: '/images/Menu/masterpieces/edilia.jpg' },
+              { label: 'Almira', href: '/loudspeakers/almira', image: '/images/Menu/masterpieces/almira.jpg' },
+              { label: 'TP2', href: '/loudspeakers/tp2', image: '/images/Menu/masterpieces/tp2.jpg' },
+              { label: 'AudioVector', href: '/loudspeakers/audiovector', image: '/images/Menu/masterpieces/audiovector.jpg' },
+              { label: 'Hegeman', href: '/loudspeakers/hegeman', image: '/images/Menu/masterpieces/hegeman.jpg' },
+              { label: 'Voigt Horn', href: '/loudspeakers/voigt-horn', image: '/images/Menu/masterpieces/voigt-horn.jpg' },
             ]
           },
           {
             label: 'Instruments',
             children: [
-              { label: 'Concert Collection', href: '/collection/concert', image: '/images/menu/instruments/concert-collection.jpg' },
-              { label: 'Sinfonia Collection', href: '/collection/sinfonia', image: '/images/menu/instruments/sinfonia-collection.jpg' },
-              { label: 'Philharmonic Collection', href: '/collection/philharmonic', image: '/images/menu/instruments/philharmonic-collection.jpg' },
-              { label: 'Grand Opera Collection', href: '/collection/grand-opera', image: '/images/menu/instruments/grand-opera-collection.jpg' },
+              { label: 'Concert Collection', href: '/collection/concert', image: '/images/Menu/instruments/concert-collection.jpg' },
+              { label: 'Sinfonia Collection', href: '/collection/sinfonia', image: '/images/Menu/instruments/sinfonia-collection.jpg' },
+              { label: 'Philharmonic Collection', href: '/collection/philharmonic', image: '/images/Menu/instruments/philharmonic-collection.jpg' },
+              { label: 'Grand Opera Collection', href: '/collection/grand-opera', image: '/images/Menu/instruments/grand-opera-collection.jpg' },
             ]
           },
           {
             label: 'Lowther Ensemble',
             children: [
-              { label: 'PX4 Tube Amplifier', href: '/ensemble/px4-amplifier', image: '/images/menu/Ensemble/PX4-Amplifier.avif' },
-              { label: 'Lowther Reference Cables', href: '/ensemble/reference-cables', image: '/images/menu/Ensemble/Reference-Cables.avif' },
-              { label: 'Phase Plugs', href: '/ensemble/phase-plugs', image: '/images/menu/Ensemble/Phase-Plugs.webp' },
-              { label: 'Lowther Badges', href: '/ensemble/lowther-badges', image: '/images/menu/Ensemble/Lowther-badges.avif' },
-              { label: 'Residential System Design', href: '/ensemble/residential-system-design', image: '/images/menu/Ensemble/White-Glove-residential.avif' },
-              { label: 'Commercial System Design', href: '/ensemble/commercial-system-design', image: '/images/menu/Ensemble/Commercial-white-glove.avif' },
+              { label: 'PX4 Tube Amplifier', href: '/ensemble/px4-amplifier', image: '/images/Menu/Ensemble/PX4-Amplifier.avif' },
+              { label: 'Lowther Reference Cables', href: '/ensemble/reference-cables', image: '/images/Menu/Ensemble/Reference-Cables.avif' },
+              { label: 'Phase Plugs', href: '/ensemble/phase-plugs', image: '/images/Menu/Ensemble/Phase-Plugs.webp' },
+              { label: 'Lowther Badges', href: '/ensemble/lowther-badges', image: '/images/Menu/Ensemble/Lowther-badges.avif' },
+              { label: 'Residential System Design', href: '/ensemble/residential-system-design', image: '/images/Menu/Ensemble/White-Glove-residential.avif' },
+              { label: 'Commercial System Design', href: '/ensemble/commercial-system-design', image: '/images/Menu/Ensemble/Commercial-white-glove.avif' },
             ]
           },
           {
             label: 'The Brand',
             children: [
-              { label: 'History', href: '/history', image: '/images/menu/brand/history.jpg' },
-              { label: 'Handcrafted', href: '/brand/handcrafted', image: '/images/menu/brand/handcrafted.jpg' },
-              { label: 'Lasting Legacy', href: '/brand/lasting-legacy', image: '/images/menu/brand/lasting-legacy.jpg' },
-              { label: 'Paul Voigt Era', href: '/brand/paul-voigt-era', image: '/images/menu/brand/paul-voigt-era.jpg' },
-              { label: 'Donald Chave Era', href: '/brand/donald-chave-era', image: '/images/menu/brand/donald-chave-era.jpg' },
+              { label: 'History', href: '/history', image: '/images/Menu/brand/history.jpg' },
+              { label: 'Handcrafted', href: '/brand/handcrafted', image: '/images/Menu/brand/handcrafted.jpg' },
+              { label: 'Lasting Legacy', href: '/brand/lasting-legacy', image: '/images/Menu/brand/lasting-legacy.jpg' },
+              { label: 'Paul Voigt Era', href: '/brand/paul-voigt-era', image: '/images/Menu/brand/paul-voigt-era.jpg' },
+              { label: 'Donald Chave Era', href: '/brand/donald-chave-era', image: '/images/Menu/brand/donald-chave-era.jpg' },
             ]
           },
           {
             label: 'Speaker Making',
             children: [
-              { label: 'Our Craft', href: '/brand/our-craft', image: '/images/menu/speaker-making/our-craft.jpg' },
-              { label: 'Build Your Own', href: '/build-a-lowther', image: '/images/menu/speaker-making/build-your-own.jpg' },
+              { label: 'Our Craft', href: '/brand/our-craft', image: '/images/Menu/speaker-making/our-craft.jpg' },
+              { label: 'Build Your Own', href: '/build-a-lowther', image: '/images/Menu/speaker-making/build-your-own.jpg' },
             ]
           },
           {
             label: 'Services',
             children: [
-              { label: 'Refurbishments & Upgrades', href: '/services/refurbishments-upgrades', image: '/images/menu/services/vintage-repairs.jpg' },
-              { label: 'Warranty', href: '/warranty', image: '/images/menu/services/warranty.jpg' },
-              { label: 'Authenticity Checker', href: '/verify', image: '/images/menu/services/authenticity-checker.jpg' },
-              { label: 'Listening Rooms', href: '/services/listening-rooms', image: '/images/menu/services/listening-rooms.jpg' },
-              { label: 'Order a Catalogue', href: '/catalogue', image: '/images/menu/services/order-catalogue.jpg' },
-              { label: 'OEM Opportunities', href: '/services/oem-opportunities', image: '/images/menu/services/oem-opportunities.jpg' },
+              { label: 'Refurbishments & Upgrades', href: '/services/refurbishments-upgrades', image: '/images/Menu/services/vintage-repairs.jpg' },
+              { label: 'Warranty', href: '/warranty', image: '/images/Menu/services/warranty.jpg' },
+              { label: 'Authenticity Checker', href: '/verify', image: '/images/Menu/services/authenticity-checker.jpg' },
+              { label: 'Listening Rooms', href: '/services/listening-rooms', image: '/images/Menu/services/listening-rooms.jpg' },
+              { label: 'Order a Catalogue', href: '/catalogue', image: '/images/Menu/services/order-catalogue.jpg' },
+              { label: 'OEM Opportunities', href: '/services/oem-opportunities', image: '/images/Menu/services/oem-opportunities.jpg' },
             ]
           },
           {
