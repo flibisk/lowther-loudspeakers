@@ -1,110 +1,207 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { Resend } from 'resend';
+
+// Build-a-Lowther plan request handler - sends email via Resend and adds to Beehiiv
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { name, email, country, planTitle } = body;
 
-    // 1. Add to Beehiiv
-    // You'll need to add your Beehiiv API key to your environment variables
-    const beehiivApiKey = process.env.BEEHIIV_API_KEY;
-    const beehiivPublicationId = process.env.BEEHIIV_PUBLICATION_ID;
+    // Validate required fields
+    if (!name || !email || !planTitle) {
+      return NextResponse.json(
+        { success: false, message: 'Name, email, and plan title are required' },
+        { status: 400 }
+      );
+    }
 
-    if (beehiivApiKey && beehiivPublicationId) {
+    // Check if Resend API key is configured
+    if (!process.env.RESEND_API_KEY) {
+      console.error('RESEND_API_KEY is not configured');
+      return NextResponse.json(
+        { success: false, message: 'Email service not configured. Please contact support.' },
+        { status: 500 }
+      );
+    }
+
+    // Use configured email or fallback to sandbox
+    const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+
+    // Send email via Resend
+    const { data, error } = await resend.emails.send({
+      from: `Lowther Website <${fromEmail}>`,
+      to: [process.env.CONTACT_EMAIL || 'social@lowtherloudspeakers.com'],
+      replyTo: email,
+      subject: `Build-a-Lowther Plan Request: ${planTitle} from ${name}`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <style>
+              body {
+                font-family: 'Arial', sans-serif;
+                line-height: 1.6;
+                color: #333;
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+              }
+              .header {
+                background: linear-gradient(135deg, #c59862 0%, #b0874f 100%);
+                color: white;
+                padding: 30px;
+                text-align: center;
+                border-radius: 10px 10px 0 0;
+              }
+              .content {
+                background: #f9f9f9;
+                padding: 30px;
+                border-radius: 0 0 10px 10px;
+              }
+              .field {
+                margin-bottom: 20px;
+                padding: 15px;
+                background: white;
+                border-left: 4px solid #c59862;
+                border-radius: 4px;
+              }
+              .label {
+                font-weight: bold;
+                color: #c59862;
+                text-transform: uppercase;
+                font-size: 12px;
+                letter-spacing: 1px;
+                margin-bottom: 5px;
+              }
+              .value {
+                color: #333;
+                margin-top: 5px;
+              }
+              .plan-badge {
+                display: inline-block;
+                background: #c59862;
+                color: white;
+                padding: 8px 16px;
+                border-radius: 20px;
+                font-weight: bold;
+                margin-top: 10px;
+              }
+              .footer {
+                text-align: center;
+                margin-top: 30px;
+                padding-top: 20px;
+                border-top: 2px solid #e0e0e0;
+                color: #666;
+                font-size: 12px;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <h1 style="margin: 0; font-size: 28px; font-weight: normal;">New Build-a-Lowther Request</h1>
+              <div class="plan-badge">${planTitle}</div>
+            </div>
+            <div class="content">
+              <div class="field">
+                <div class="label">Name</div>
+                <div class="value">${name}</div>
+              </div>
+              
+              <div class="field">
+                <div class="label">Email Address</div>
+                <div class="value"><a href="mailto:${email}">${email}</a></div>
+              </div>
+              
+              ${country ? `
+              <div class="field">
+                <div class="label">Country</div>
+                <div class="value">${country}</div>
+              </div>
+              ` : ''}
+              
+              <div class="footer">
+                <p>This request was submitted through the Build-a-Lowther page.</p>
+                <p>Plan: ${planTitle}</p>
+                <p>Submitted: ${new Date().toLocaleString()}</p>
+              </div>
+            </div>
+          </body>
+        </html>
+      `,
+    });
+
+    if (error) {
+      console.error('Resend error:', error);
+      const errorMessage = error.message || 'Failed to send plan request';
+      console.error('Full error details:', JSON.stringify(error, null, 2));
+      return NextResponse.json(
+        { 
+          success: false, 
+          message: process.env.NODE_ENV === 'development' 
+            ? `Error: ${errorMessage}` 
+            : 'Failed to send plan request. Please try again or contact us directly.' 
+        },
+        { status: 500 }
+      );
+    }
+
+    // Add to Beehiiv subscriber list (optional, don't fail if it errors)
+    if (process.env.BEEHIIV_API_KEY && process.env.BEEHIIV_PUBLICATION_ID) {
       try {
+        const beehiivPayload = {
+          email,
+          reactivate_existing: false,
+          send_welcome_email: false,
+          utm_source: 'website',
+          utm_medium: 'build_a_lowther',
+          utm_campaign: planTitle,
+          referring_site: 'lowtherloudspeakers.com',
+          custom_fields: [
+            { name: 'full_name', value: name },
+            { name: 'country', value: country || '' },
+            { name: 'plan_requested', value: planTitle },
+            { name: 'lead_type', value: 'Build-a-Lowther Request' },
+          ],
+        };
+
+        console.log('Sending to Beehiiv:', JSON.stringify(beehiivPayload, null, 2));
+
         const beehiivResponse = await fetch(
-          `https://api.beehiiv.com/v2/publications/${beehiivPublicationId}/subscriptions`,
+          `https://api.beehiiv.com/v2/publications/${process.env.BEEHIIV_PUBLICATION_ID}/subscriptions`,
           {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${beehiivApiKey}`,
+              'Authorization': `Bearer ${process.env.BEEHIIV_API_KEY}`,
             },
-            body: JSON.stringify({
-              email: email,
-              reactivate_existing: false,
-              send_welcome_email: true,
-              utm_source: 'website',
-              utm_medium: 'build-a-lowther',
-              utm_campaign: planTitle,
-              // Add custom fields if you have them set up in Beehiiv
-              custom_fields: [
-                {
-                  name: 'full_name',
-                  value: name
-                },
-                {
-                  name: 'country',
-                  value: country
-                },
-                {
-                  name: 'plan_requested',
-                  value: planTitle
-                }
-              ],
-              // Tag for audience segmentation
-              tags: ['build-your-own']
-            }),
+            body: JSON.stringify(beehiivPayload),
           }
         );
 
+        const beehiivData = await beehiivResponse.json();
+
         if (!beehiivResponse.ok) {
-          console.error('Beehiiv API error:', await beehiivResponse.text());
+          console.error('Beehiiv API error (non-fatal):', beehiivData);
+        } else {
+          console.log('Successfully added to Beehiiv:', beehiivData);
         }
       } catch (beehiivError) {
-        console.error('Error adding to Beehiiv:', beehiivError);
-        // Continue even if Beehiiv fails - we still want to send the notification email
-      }
-    }
-
-    // 2. Send notification email to hello@lowtherloudpeakers.com
-    // You can use a service like Resend, SendGrid, or Postmark
-    // Example with Resend (you'll need to install: npm install resend)
-    
-    const resendApiKey = process.env.RESEND_API_KEY;
-    
-    if (resendApiKey) {
-      try {
-        const emailResponse = await fetch('https://api.resend.com/emails', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${resendApiKey}`,
-          },
-          body: JSON.stringify({
-            from: 'Build a Lowther <noreply@lowtherloudpeakers.com>',
-            to: ['hello@lowtherloudpeakers.com', 'peter@lowtherloudpeakers.com'],
-            subject: `New Plan Request: ${planTitle}`,
-            html: `
-              <h2>New Build a Lowther Plan Request</h2>
-              <p><strong>Plan:</strong> ${planTitle}</p>
-              <p><strong>Name:</strong> ${name}</p>
-              <p><strong>Email:</strong> ${email}</p>
-              <p><strong>Country:</strong> ${country}</p>
-              <p><strong>Submitted:</strong> ${new Date().toLocaleString()}</p>
-              <hr>
-              <p><em>This subscriber has been added to Beehiiv with the "build-your-own" tag.</em></p>
-            `,
-          }),
-        });
-
-        if (!emailResponse.ok) {
-          console.error('Email API error:', await emailResponse.text());
-        }
-      } catch (emailError) {
-        console.error('Error sending notification email:', emailError);
+        console.error('Beehiiv integration error (non-fatal):', beehiivError);
       }
     }
 
     return NextResponse.json({ 
       success: true, 
-      message: 'Form submitted successfully' 
+      message: 'Thank you! Your plan request has been sent. We\'ll email you the plans shortly.',
+      data,
     });
 
   } catch (error) {
-    console.error('Error processing form submission:', error);
+    console.error('Build-a-Lowther form error:', error);
     return NextResponse.json(
-      { success: false, message: 'Error processing form submission' },
+      { success: false, message: 'An error occurred while processing your request' },
       { status: 500 }
     );
   }
