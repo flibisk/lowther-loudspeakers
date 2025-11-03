@@ -31,7 +31,7 @@ type MenuView = 'main' | 'sub' | 'appointment' | 'locations' | 'languages';
 export function MobileMenu({ isOpen, onClose, menuItems, currentLanguage, onLanguageChange }: MobileMenuProps) {
   const [currentView, setCurrentView] = useState<MenuView>('main');
   const [currentSubMenu, setCurrentSubMenu] = useState<MenuItem | null>(null);
-  const [formData, setFormData] = useState<any>({});
+  const [formData, setFormData] = useState<Record<string, string>>({});
 
   // Reset view when menu closes
   useEffect(() => {
