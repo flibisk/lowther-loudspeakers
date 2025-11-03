@@ -8,9 +8,9 @@ import { generateSEOMetadata, generateStructuredData } from "@/lib/seo";
 import postsData from "@/lib/data/posts.json";
 
 interface BlogPostPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export async function generateStaticParams() {
@@ -20,7 +20,8 @@ export async function generateStaticParams() {
 }
 
 export async function generatePageMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
-  const post = postsData.find((p) => p.slug === params.slug);
+  const { slug } = await params;
+  const post = postsData.find((p) => p.slug === slug);
   
   if (!post) {
     return {};
@@ -39,8 +40,9 @@ export async function generatePageMetadata({ params }: BlogPostPageProps): Promi
   });
 }
 
-export default function BlogPostPage({ params }: BlogPostPageProps) {
-  const post = postsData.find((p) => p.slug === params.slug);
+export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  const { slug } = await params;
+  const post = postsData.find((p) => p.slug === slug);
 
   if (!post) {
     notFound();

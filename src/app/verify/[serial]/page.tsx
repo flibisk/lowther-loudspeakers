@@ -8,22 +8,24 @@ import { generateSEOMetadata } from "@/lib/seo";
 import { getMockRecord, mockNetworkInfo } from "@/lib/mockChain";
 
 interface VerifyPageProps {
-  params: {
+  params: Promise<{
     serial: string;
-  };
+  }>;
 }
 
 export async function generatePageMetadata({ params }: VerifyPageProps): Promise<Metadata> {
+  const { serial } = await params;
   return generateSEOMetadata({
-    title: `Verify Serial ${params.serial}`,
-    description: `Blockchain verification for Lowther loudspeaker serial number ${params.serial}`,
+    title: `Verify Serial ${serial}`,
+    description: `Blockchain verification for Lowther loudspeaker serial number ${serial}`,
     keywords: ["verification", "blockchain", "authenticity", "serial"],
-    url: `/verify/${params.serial}`,
+    url: `/verify/${serial}`,
   });
 }
 
-export default function VerifyPage({ params }: VerifyPageProps) {
-  const record = getMockRecord(params.serial);
+export default async function VerifyPage({ params }: VerifyPageProps) {
+  const { serial } = await params;
+  const record = getMockRecord(serial);
 
   if (!record) {
     notFound();
