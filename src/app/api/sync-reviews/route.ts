@@ -62,13 +62,29 @@ async function fetchReviewsFromGoogleSheets(): Promise<Review[]> {
       reviews = rows
         .filter(row => row.trim())
         .map((row, index) => {
-          // Simple CSV parsing (handles quoted strings with commas)
-          const match = row.match(/(?:^|,)(?:"([^"]*)"|([^,]*))/g);
-          if (!match || match.length < 2) return null;
+          // Proper CSV parsing that handles quoted strings with commas
+          const columns: string[] = [];
+          let current = '';
+          let inQuotes = false;
           
-          const content = (match[0] || '').replace(/^,?"?|"?$/g, '');
-          const reviewer = (match[1] || '').replace(/^,?"?|"?$/g, '');
-          const rating = parseInt((match[2] || '5').replace(/^,?"?|"?$/g, '')) || 5;
+          for (let i = 0; i < row.length; i++) {
+            const char = row[i];
+            
+            if (char === '"') {
+              inQuotes = !inQuotes;
+            } else if (char === ',' && !inQuotes) {
+              columns.push(current.trim());
+              current = '';
+            } else {
+              current += char;
+            }
+          }
+          columns.push(current.trim()); // Add last column
+          
+          // Remove quotes from columns
+          const content = columns[0]?.replace(/^"|"$/g, '') || '';
+          const reviewer = columns[1]?.replace(/^"|"$/g, '') || '';
+          const rating = parseInt(columns[2]?.replace(/^"|"$/g, '') || '5') || 5;
           
           if (!content || !reviewer) return null;
           
