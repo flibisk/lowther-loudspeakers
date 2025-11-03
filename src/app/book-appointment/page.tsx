@@ -18,6 +18,11 @@ export default function BookAppointmentPage() {
   });
 
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<{
+    type: 'success' | 'error' | null;
+    message: string;
+  }>({ type: null, message: '' });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({
@@ -26,11 +31,43 @@ export default function BookAppointmentPage() {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement actual form submission
-    console.log('Form submitted:', formData);
-    setSubmitted(true);
+    setIsSubmitting(true);
+    setSubmitStatus({ type: null, message: '' });
+
+    try {
+      const response = await fetch('/api/book-appointment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setSubmitted(true);
+        setSubmitStatus({
+          type: 'success',
+          message: data.message || 'Your appointment request has been sent successfully!',
+        });
+      } else {
+        setSubmitStatus({
+          type: 'error',
+          message: data.message || 'Failed to send appointment request. Please try again.',
+        });
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setSubmitStatus({
+        type: 'error',
+        message: 'An error occurred. Please try again or contact us directly.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -231,13 +268,23 @@ export default function BookAppointmentPage() {
                   />
                 </div>
 
+                {/* Submit Status Message */}
+                {submitStatus.type && (
+                  <div className={`p-4 rounded ${
+                    submitStatus.type === 'success' ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'
+                  }`}>
+                    {submitStatus.message}
+                  </div>
+                )}
+
                 {/* Submit Button */}
                 <div className="flex justify-center pt-4">
                   <Button
                     type="submit"
-                    className="bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 px-12 py-6 uppercase"
+                    disabled={isSubmitting}
+                    className="bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 px-12 py-6 uppercase disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Submit Request
+                    {isSubmitting ? 'Sending...' : 'Submit Request'}
                   </Button>
                 </div>
               </form>
