@@ -94,7 +94,7 @@ async function processBeehiivEmail(email: BeehiivEmail): Promise<BlogPost> {
   const images = imageMatches?.map(match => {
     const srcMatch = match.match(/src="([^"]+)"/);
     return srcMatch ? srcMatch[1] : null;
-  }).filter(Boolean) || [];
+  }).filter((img): img is string => img !== null) || [];
   
   // Download and store images locally
   const localImages = await downloadImages(images);
