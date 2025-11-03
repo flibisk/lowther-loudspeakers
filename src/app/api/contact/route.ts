@@ -28,11 +28,12 @@ export async function POST(request: NextRequest) {
     // Use onboarding@resend.dev for testing until domain is verified
     // Change this to your verified domain once ready
     const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+    const contactEmail = process.env.CONTACT_EMAIL || 'social@lowtherloudspeakers.com';
 
     // Send email via Resend
     const { data, error } = await resend.emails.send({
       from: `Lowther Website <${fromEmail}>`,
-      to: [process.env.CONTACT_EMAIL || 'contact@lowtherloudspeakers.com'],
+      to: contactEmail,
       replyTo: email,
       subject: `${segment || 'Contact'} Form Submission from ${name}`,
       html: `

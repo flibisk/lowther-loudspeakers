@@ -30,9 +30,11 @@ export async function POST(request: NextRequest) {
     const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
 
     // Send email via Resend
+    const contactEmail = process.env.CONTACT_EMAIL || 'social@lowtherloudspeakers.com';
+    
     const { data, error } = await resend.emails.send({
       from: `Lowther Website <${fromEmail}>`,
-      to: [process.env.CONTACT_EMAIL || 'social@lowtherloudspeakers.com'],
+      to: contactEmail,
       replyTo: email,
       subject: `Build-a-Lowther Plan Request: ${planTitle} from ${name}`,
       html: `
