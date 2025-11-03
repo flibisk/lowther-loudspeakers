@@ -1,9 +1,58 @@
+'use client';
+
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useState } from "react";
 
 export function Footer() {
+  const [email, setEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<{
+    type: 'success' | 'error' | null;
+    message: string;
+  }>({ type: null, message: '' });
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus({ type: null, message: '' });
+
+    try {
+      const response = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setSubmitStatus({
+          type: 'success',
+          message: data.message || 'Successfully subscribed!',
+        });
+        setEmail('');
+      } else {
+        setSubmitStatus({
+          type: 'error',
+          message: data.message || 'Failed to subscribe. Please try again.',
+        });
+      }
+    } catch (error) {
+      console.error('Newsletter subscription error:', error);
+      setSubmitStatus({
+        type: 'error',
+        message: 'An error occurred. Please try again.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <footer className="bg-black">
       <div className="w-full px-6 sm:px-6 lg:px-8 xl:px-12">
@@ -95,16 +144,35 @@ export function Footer() {
             <p className="text-white">
               Join the Lowther community by subscribing below.
             </p>
-            <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
-              <Input 
-                type="email" 
-                placeholder=""
-                className="flex-1 bg-neutral-800 border-neutral-700 text-white placeholder-neutral-400 h-12"
-              />
-              <Button variant="white" size="lowther" className="h-12 px-8 w-full sm:w-auto">
-                Subscribe
-              </Button>
-            </div>
+            <form onSubmit={handleNewsletterSubmit} className="space-y-3">
+              <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
+                <Input 
+                  type="email" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  required
+                  disabled={isSubmitting}
+                  className="flex-1 bg-neutral-800 border-neutral-700 text-white placeholder-neutral-400 h-12"
+                />
+                <Button 
+                  type="submit"
+                  variant="white" 
+                  size="lowther" 
+                  className="h-12 px-8 w-full sm:w-auto"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'Subscribing...' : 'Subscribe'}
+                </Button>
+              </div>
+              {submitStatus.type && (
+                <p className={`text-sm ${
+                  submitStatus.type === 'success' ? 'text-green-400' : 'text-red-400'
+                }`}>
+                  {submitStatus.message}
+                </p>
+              )}
+            </form>
           </div>
         </div>
 

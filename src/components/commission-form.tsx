@@ -19,11 +19,65 @@ export function CommissionForm({ isOpen, onClose, speakerName }: CommissionFormP
     questions: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<{
+    type: 'success' | 'error' | null;
+    message: string;
+  }>({ type: null, message: '' });
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log('Form submitted:', formData);
-    onClose();
+    setIsSubmitting(true);
+    setSubmitStatus({ type: null, message: '' });
+
+    try {
+      const response = await fetch('/api/commission', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          speakerName,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setSubmitStatus({
+          type: 'success',
+          message: data.message || 'Commission request sent successfully!',
+        });
+        // Reset form
+        setFormData({
+          fullName: '',
+          email: '',
+          phone: '',
+          address: '',
+          referrer: '',
+          questions: ''
+        });
+        // Close form after 2 seconds
+        setTimeout(() => {
+          onClose();
+          setSubmitStatus({ type: null, message: '' });
+        }, 2000);
+      } else {
+        setSubmitStatus({
+          type: 'error',
+          message: data.message || 'Failed to send request. Please try again.',
+        });
+      }
+    } catch (error) {
+      console.error('Error submitting commission form:', error);
+      setSubmitStatus({
+        type: 'error',
+        message: 'An error occurred. Please try again or contact us directly.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -183,6 +237,17 @@ export function CommissionForm({ isOpen, onClose, speakerName }: CommissionFormP
               </p>
             </div>
 
+            {/* Status Messages */}
+            {submitStatus.type && (
+              <div className={`p-4 rounded-lg ${
+                submitStatus.type === 'success' 
+                  ? 'bg-green-50 text-green-800 border border-green-200' 
+                  : 'bg-red-50 text-red-800 border border-red-200'
+              }`}>
+                <p className="text-sm">{submitStatus.message}</p>
+              </div>
+            )}
+
             {/* Submit Buttons */}
             <div className="flex gap-4 pt-4">
               <Button 
@@ -199,8 +264,9 @@ export function CommissionForm({ isOpen, onClose, speakerName }: CommissionFormP
                 variant="black" 
                 size="lowther"
                 className="flex-1"
+                disabled={isSubmitting}
               >
-                SEND ENQUIRY
+                {isSubmitting ? 'SENDING...' : 'SEND ENQUIRY'}
               </Button>
             </div>
           </form>

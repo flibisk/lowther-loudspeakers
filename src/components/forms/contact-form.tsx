@@ -39,7 +39,7 @@ export function ContactForm({ isOpen, onClose, segment = "Contact" }: ContactFor
     setSubmitStatus({ type: null, message: '' });
 
     try {
-      const response = await fetch('/api/form', {
+      const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
