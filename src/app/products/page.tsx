@@ -251,11 +251,6 @@ export default function ProductsPage() {
                         fill
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                         sizes="400px"
-                        onError={(e) => {
-                          // Fallback image logic
-                          const target = e.target as HTMLImageElement;
-                          target.src = '/images/placeholder.jpg';
-                        }}
                       />
                     </div>
                     <CardHeader className="pt-6 pb-6">
