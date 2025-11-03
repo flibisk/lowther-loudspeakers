@@ -14,14 +14,14 @@ export function generateDriveUnitAltText(
   category: string,
   index?: number
 ): string {
-  const collection = driveUnitsDatabase.collections[collectionSlug as keyof typeof driveUnitsDatabase.collections];
+  const collection = driveUnitsDatabase.data.find((item) => item.slug === collectionSlug && item.type === 'collection');
   
   if (!collection) {
     return `${collectionSlug} ${category} image`;
   }
 
   const collectionTitle = collection.title;
-  const feeling = collection.feeling;
+  const feeling = (collection as any).feeling || '';
   
   // Extract filename without extension for more specific descriptions
   const filename = imagePath.split('/').pop()?.split('.')[0] || '';
