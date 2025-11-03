@@ -4,8 +4,9 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { LanguageCurrencySelector } from "@/components/language-currency-selector";
-import { X, ChevronRight, ChevronLeft, Calendar, MapPin, Globe } from "lucide-react";
+import { LanguageSelectorSimple } from "@/components/language-selector-simple";
+import { CurrencySelector } from "@/components/currency-selector";
+import { X, ChevronRight, ChevronLeft, Calendar, MapPin, Globe, Banknote } from "lucide-react";
 
 interface MenuItem {
   label: string;
@@ -23,12 +24,14 @@ interface MobileMenuProps {
   onClose: () => void;
   menuItems: MenuItem[];
   currentLanguage: string;
-  onLanguageChange: (language: string, currency: string) => void;
+  currentCurrency: string;
+  onLanguageChange: (language: string) => void;
+  onCurrencyChange: (currency: string, region: string) => void;
 }
 
-type MenuView = 'main' | 'sub' | 'appointment' | 'locations' | 'languages';
+type MenuView = 'main' | 'sub' | 'appointment' | 'locations' | 'languages' | 'currency';
 
-export function MobileMenu({ isOpen, onClose, menuItems, currentLanguage, onLanguageChange }: MobileMenuProps) {
+export function MobileMenu({ isOpen, onClose, menuItems, currentLanguage, currentCurrency, onLanguageChange, onCurrencyChange }: MobileMenuProps) {
   const [currentView, setCurrentView] = useState<MenuView>('main');
   const [currentSubMenu, setCurrentSubMenu] = useState<MenuItem | null>(null);
   const [formData, setFormData] = useState<Record<string, string>>({});
@@ -415,17 +418,17 @@ export function MobileMenu({ isOpen, onClose, menuItems, currentLanguage, onLang
             <div className="px-6 py-8 pb-24">
               <div className="space-y-2">
                 {[
-                  { code: "en-GB", name: "United Kingdom", flag: "🇬🇧", currency: "GBP", currencySymbol: "£" },
-                  { code: "en-US", name: "United States", flag: "🇺🇸", currency: "USD", currencySymbol: "$" },
-                  { code: "en-EU", name: "Europe", flag: "🇪🇺", currency: "EUR", currencySymbol: "€" },
-                  { code: "ja-JP", name: "日本 (Japan)", flag: "🇯🇵", currency: "JPY", currencySymbol: "¥" },
-                  { code: "en-AU", name: "Australia", flag: "🇦🇺", currency: "AUD", currencySymbol: "A$" },
-                  { code: "en-CA", name: "Canada", flag: "🇨🇦", currency: "CAD", currencySymbol: "C$" },
+                  { code: "en", name: "English", nativeName: "English", flag: "🇬🇧" },
+                  { code: "fr", name: "French", nativeName: "Français", flag: "🇫🇷" },
+                  { code: "de", name: "German", nativeName: "Deutsch", flag: "🇩🇪" },
+                  { code: "ja", name: "Japanese", nativeName: "日本語", flag: "🇯🇵" },
+                  { code: "es", name: "Spanish", nativeName: "Español", flag: "🇪🇸" },
+                  { code: "it", name: "Italian", nativeName: "Italiano", flag: "🇮🇹" },
                 ].map((language) => (
                   <button
                     key={language.code}
                     onClick={() => {
-                      onLanguageChange(language.code, language.currency);
+                      onLanguageChange(language.code);
                       setCurrentView('main');
                     }}
                     className={`w-full text-left px-4 py-3 flex items-center justify-between hover:bg-neutral-800 transition-colors rounded-lg ${
@@ -434,12 +437,46 @@ export function MobileMenu({ isOpen, onClose, menuItems, currentLanguage, onLang
                   >
                     <div className="flex items-center gap-3">
                       <span className="text-lg">{language.flag}</span>
-                      <div className="flex flex-col">
-                        <span className="text-white font-medium">{language.name}</span>
-                        <span className="text-xs text-gray-400">{language.currency} {language.currencySymbol}</span>
-                      </div>
+                      <span className="text-white font-medium">{language.nativeName}</span>
                     </div>
                     {currentLanguage === language.code && (
+                      <svg className="w-5 h-5 text-[#c59862]" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : currentView === 'currency' ? (
+            <div className="px-6 py-8 pb-24">
+              <div className="space-y-2">
+                {[
+                  { code: "GB", name: "United Kingdom", flag: "🇬🇧", currency: "GBP", currencySymbol: "£" },
+                  { code: "US", name: "United States", flag: "🇺🇸", currency: "USD", currencySymbol: "$" },
+                  { code: "EU", name: "Europe", flag: "🇪🇺", currency: "EUR", currencySymbol: "€" },
+                  { code: "JP", name: "Japan", flag: "🇯🇵", currency: "JPY", currencySymbol: "¥" },
+                  { code: "AU", name: "Australia", flag: "🇦🇺", currency: "AUD", currencySymbol: "A$" },
+                  { code: "CA", name: "Canada", flag: "🇨🇦", currency: "CAD", currencySymbol: "C$" },
+                ].map((region) => (
+                  <button
+                    key={region.code}
+                    onClick={() => {
+                      onCurrencyChange(region.currency, region.code);
+                      setCurrentView('main');
+                    }}
+                    className={`w-full text-left px-4 py-3 flex items-center justify-between hover:bg-neutral-800 transition-colors rounded-lg ${
+                      currentCurrency === region.currency ? "bg-neutral-800" : ""
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-lg">{region.flag}</span>
+                      <div className="flex flex-col">
+                        <span className="text-white font-medium">{region.name}</span>
+                        <span className="text-xs text-gray-400">{region.currency} {region.currencySymbol}</span>
+                      </div>
+                    </div>
+                    {currentCurrency === region.currency && (
                       <svg className="w-5 h-5 text-[#c59862]" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
@@ -477,7 +514,7 @@ export function MobileMenu({ isOpen, onClose, menuItems, currentLanguage, onLang
                 <span className="text-xs font-medium">Locations</span>
               </button>
 
-              {/* Language & Currency Selector */}
+              {/* Language Selector */}
               <button
                 onClick={() => setCurrentView('languages')}
                 className="flex flex-col items-center gap-2 text-white hover:text-[#c59862] transition-colors group"
@@ -485,9 +522,24 @@ export function MobileMenu({ isOpen, onClose, menuItems, currentLanguage, onLang
                 <div className="p-3 rounded-full bg-neutral-800 group-hover:bg-[#c59862] transition-colors">
                   <Globe className="w-5 h-5 text-white" />
                 </div>
-                <LanguageCurrencySelector 
+                <LanguageSelectorSimple 
                   currentLanguage={currentLanguage} 
                   onLanguageChange={onLanguageChange}
+                  isMobile={true}
+                />
+              </button>
+
+              {/* Currency Selector */}
+              <button
+                onClick={() => setCurrentView('currency')}
+                className="flex flex-col items-center gap-2 text-white hover:text-[#c59862] transition-colors group"
+              >
+                <div className="p-3 rounded-full bg-neutral-800 group-hover:bg-[#c59862] transition-colors">
+                  <Banknote className="w-5 h-5 text-white" />
+                </div>
+                <CurrencySelector 
+                  currentCurrency={currentCurrency} 
+                  onCurrencyChange={onCurrencyChange}
                   isMobile={true}
                 />
               </button>

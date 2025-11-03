@@ -6,7 +6,8 @@ import { useDebounceValue } from 'usehooks-ts';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { Menu } from 'lucide-react';
-import { LanguageCurrencySelector } from '@/components/language-currency-selector';
+import { LanguageSelectorSimple } from '@/components/language-selector-simple';
+import { CurrencySelector } from '@/components/currency-selector';
 import { BookAppointmentForm } from '@/components/forms/book-appointment-form';
 import { ContactForm } from '@/components/forms/contact-form';
 import { PointsOfSaleForm } from '@/components/forms/points-of-sale-form';
@@ -19,14 +20,13 @@ type Props = {
 
 export default function SiteHeader({ nav }: Props) {
   const pathname = usePathname();
-  const { setCurrency } = useCurrency();
+  const { setCurrency, setLanguage, language, currency } = useCurrency();
   const [hidden, setHidden] = useState(false);
   const [solid, setSolid] = useState(false);
   const [onDark, setOnDark] = useState(true); // assume hero is dark
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [hoveredImage, setHoveredImage] = useState<string | null>(null);
-  const [currentLanguage, setCurrentLanguage] = useState<string>('en-GB');
   const [bookAppointmentOpen, setBookAppointmentOpen] = useState(false);
   const [contactFormOpen, setContactFormOpen] = useState(false);
   const [pointsOfSaleOpen, setPointsOfSaleOpen] = useState(false);
@@ -36,9 +36,12 @@ export default function SiteHeader({ nav }: Props) {
     setActiveDropdown(activeDropdown === dropdownName ? null : dropdownName);
   };
 
-  const handleLanguageCurrencyChange = (language: string, currency: string) => {
-    setCurrentLanguage(language);
-    setCurrency(currency, language);
+  const handleLanguageChange = (newLanguage: string) => {
+    setLanguage(newLanguage);
+  };
+
+  const handleCurrencyChange = (newCurrency: string, newRegion: string) => {
+    setCurrency(newCurrency, newRegion);
   };
 
   // Image mapping for individual link hover states
@@ -177,11 +180,16 @@ export default function SiteHeader({ nav }: Props) {
       >
         <div className="w-full px-6 sm:px-6 lg:px-8 xl:px-12">
           <div className="flex items-center justify-between h-10">
-            {/* Left Side - Language & Currency Selector */}
-            <div className="flex items-center">
-              <LanguageCurrencySelector 
-                currentLanguage={currentLanguage} 
-                onLanguageChange={handleLanguageCurrencyChange}
+            {/* Left Side - Language & Currency Selectors */}
+            <div className="flex items-center gap-3">
+              <LanguageSelectorSimple 
+                currentLanguage={language} 
+                onLanguageChange={handleLanguageChange}
+              />
+              <div className="h-4 w-px bg-neutral-700" />
+              <CurrencySelector 
+                currentCurrency={currency} 
+                onCurrencyChange={handleCurrencyChange}
               />
             </div>
 
@@ -686,8 +694,10 @@ export default function SiteHeader({ nav }: Props) {
             href: '/contact'
           },
         ]}
-        currentLanguage={currentLanguage}
-        onLanguageChange={handleLanguageCurrencyChange}
+        currentLanguage={language}
+        currentCurrency={currency}
+        onLanguageChange={handleLanguageChange}
+        onCurrencyChange={handleCurrencyChange}
       />
     </>
   );
