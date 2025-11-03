@@ -59,6 +59,14 @@ export default function SiteHeader({ nav }: Props) {
     'philharmonic-collection': '/images/menu/instruments/philharmonic-collection.jpg',
     'grand-opera-collection': '/images/menu/instruments/grand-opera-collection.jpg',
     
+    // Ensemble - Fixed paths
+    'px4-amplifier': '/images/menu/Ensemble/PX4-Amplifier.avif',
+    'reference-cables': '/images/menu/Ensemble/Reference-Cables.avif',
+    'phase-equalisers': '/images/menu/Ensemble/Phase-Plugs.webp',
+    'lowther-badges': '/images/menu/Ensemble/Lowther-badges.avif',
+    'white-glove-residential': '/images/menu/Ensemble/White-Glove-residential.avif',
+    'white-glove-commercial': '/images/menu/Ensemble/Commercial-white-glove.avif',
+    
     // Brand
     'history': '/images/menu/brand/history.jpg',
     'handcrafted': '/images/menu/brand/handcrafted.jpg',
@@ -76,15 +84,7 @@ export default function SiteHeader({ nav }: Props) {
     'authenticity-checker': '/images/menu/services/authenticity-checker.jpg',
     'listening-rooms': '/images/menu/services/listening-rooms.jpg',
     'order-catalogue': '/images/menu/services/order-catalogue.jpg',
-    'oem-opportunities': '/images/menu/services/oem-opportunities.jpg',
-    
-    // Ensemble
-    'px4-amplifier': '/images/menu/Ensemble/PX4-Amplifier.avif',
-    'reference-cables': '/images/menu/Ensemble/Reference-Cables.avif',
-    'phase-equalisers': '/images/menu/Ensemble/Phase-Plugs.webp',
-    'lowther-badges': '/images/menu/Ensemble/Lowther-badges.avif',
-    'white-glove-residential': '/images/menu/Ensemble/White-Glove-residential.avif',
-    'white-glove-commercial': '/images/menu/Ensemble/Commercial-white-glove.avif'
+    'oem-opportunities': '/images/menu/services/oem-opportunities.jpg'
   };
 
   const lastYRef = useRef(0);
