@@ -108,11 +108,7 @@ export function getCollectionInstruments(collectionSlug: string) {
  * @returns Instrument object or null
  */
 export function getInstrument(instrumentId: string) {
-  for (const collection of getAllCollections()) {
-    const instrument = collection.instruments.find(inst => inst.id === instrumentId);
-    if (instrument) return instrument;
-  }
-  return null;
+  return driveUnitsDatabase.data.find((item) => item.type === 'instrument' && item.id === instrumentId) || null;
 }
 
 /**
@@ -121,14 +117,10 @@ export function getInstrument(instrumentId: string) {
  * @returns Array of instrument objects
  */
 export function getInstrumentsByMagnetType(magnetType: string) {
-  const instruments: any[] = [];
-  for (const collection of getAllCollections()) {
-    const filtered = collection.instruments.filter(inst => 
-      inst.magnet_type.toLowerCase() === magnetType.toLowerCase()
-    );
-    instruments.push(...filtered);
-  }
-  return instruments;
+  return driveUnitsDatabase.data.filter((item) => 
+    item.type === 'instrument' && 
+    (item as any).magnet_type?.toLowerCase() === magnetType.toLowerCase()
+  );
 }
 
 /**
@@ -138,14 +130,11 @@ export function getInstrumentsByMagnetType(magnetType: string) {
  * @returns Array of instrument objects
  */
 export function getInstrumentsByPriceRange(minPrice: number, maxPrice: number) {
-  const instruments: any[] = [];
-  for (const collection of getAllCollections()) {
-    const filtered = collection.instruments.filter(inst => 
-      inst.price_value_gbp >= minPrice && inst.price_value_gbp <= maxPrice
-    );
-    instruments.push(...filtered);
-  }
-  return instruments;
+  return driveUnitsDatabase.data.filter((item) => 
+    item.type === 'instrument' && 
+    (item as any).price_value_gbp >= minPrice && 
+    (item as any).price_value_gbp <= maxPrice
+  );
 }
 
 /**
@@ -154,12 +143,9 @@ export function getInstrumentsByPriceRange(minPrice: number, maxPrice: number) {
  * @returns Array of instrument objects sorted by price
  */
 export function getInstrumentsSortedByPrice(ascending: boolean = true) {
-  const instruments: any[] = [];
-  for (const collection of getAllCollections()) {
-    instruments.push(...collection.instruments);
-  }
+  const instruments = driveUnitsDatabase.data.filter((item) => item.type === 'instrument');
   
-  return instruments.sort((a, b) => {
+  return instruments.sort((a: any, b: any) => {
     return ascending 
       ? a.price_value_gbp - b.price_value_gbp
       : b.price_value_gbp - a.price_value_gbp;
@@ -172,14 +158,10 @@ export function getInstrumentsSortedByPrice(ascending: boolean = true) {
  * @returns Array of instrument objects
  */
 export function getInstrumentsByImpedance(impedance: number) {
-  const instruments: any[] = [];
-  for (const collection of getAllCollections()) {
-    const filtered = collection.instruments.filter(inst => 
-      inst.impedance_options.includes(impedance)
-    );
-    instruments.push(...filtered);
-  }
-  return instruments;
+  return driveUnitsDatabase.data.filter((item) => 
+    item.type === 'instrument' && 
+    (item as any).impedance_options?.includes(impedance)
+  );
 }
 
 /**
@@ -188,14 +170,10 @@ export function getInstrumentsByImpedance(impedance: number) {
  * @returns Array of instrument objects
  */
 export function getInstrumentsByFrameSize(frameSize: string) {
-  const instruments: any[] = [];
-  for (const collection of getAllCollections()) {
-    const filtered = collection.instruments.filter(inst => 
-      inst.frame_size === frameSize
-    );
-    instruments.push(...filtered);
-  }
-  return instruments;
+  return driveUnitsDatabase.data.filter((item) => 
+    item.type === 'instrument' && 
+    (item as any).frame_size === frameSize
+  );
 }
 
 /**
@@ -219,7 +197,7 @@ export function getFeaturedInstruments(count: number = 3) {
   const featured: { [key: string]: any[] } = {};
   
   for (const collection of getAllCollections()) {
-    const instruments = [...collection.instruments];
+    const instruments = getCollectionInstruments(collection.slug);
     const shuffled = instruments.sort(() => Math.random() - 0.5);
     featured[collection.slug] = shuffled.slice(0, count);
   }
@@ -240,10 +218,7 @@ export function getInstrumentsSortedByCollectionTier(ascending: boolean = true) 
   const instruments: any[] = [];
   
   for (const collectionSlug of collectionOrder) {
-    const collection = getCollection(collectionSlug);
-    if (collection) {
-      instruments.push(...collection.instruments);
-    }
+    instruments.push(...getCollectionInstruments(collectionSlug));
   }
   
   return instruments;
@@ -254,12 +229,10 @@ export function getInstrumentsSortedByCollectionTier(ascending: boolean = true) 
  * @returns Array of commission-based instruments
  */
 export function getCommissionBasedInstruments() {
-  const instruments: any[] = [];
-  for (const collection of getAllCollections()) {
-    const filtered = collection.instruments.filter(inst => inst.commission_based === true);
-    instruments.push(...filtered);
-  }
-  return instruments;
+  return driveUnitsDatabase.data.filter((item) => 
+    item.type === 'instrument' && 
+    (item as any).commission_based === true
+  );
 }
 
 /**
@@ -267,12 +240,10 @@ export function getCommissionBasedInstruments() {
  * @returns Array of fixed-price instruments
  */
 export function getFixedPriceInstruments() {
-  const instruments: any[] = [];
-  for (const collection of getAllCollections()) {
-    const filtered = collection.instruments.filter(inst => inst.commission_based !== true);
-    instruments.push(...filtered);
-  }
-  return instruments;
+  return driveUnitsDatabase.data.filter((item) => 
+    item.type === 'instrument' && 
+    (item as any).commission_based !== true
+  );
 }
 
 /**
@@ -281,10 +252,8 @@ export function getFixedPriceInstruments() {
  * @returns Array of instruments with matching diameter
  */
 export function getInstrumentsByOverallDiameter(diameter: string) {
-  const instruments: any[] = [];
-  for (const collection of getAllCollections()) {
-    const filtered = collection.instruments.filter(inst => inst.overall_diameter === diameter);
-    instruments.push(...filtered);
-  }
-  return instruments;
+  return driveUnitsDatabase.data.filter((item) => 
+    item.type === 'instrument' && 
+    (item as any).overall_diameter === diameter
+  );
 }
