@@ -450,39 +450,129 @@ export function MobileMenu({ isOpen, onClose, menuItems, currentLanguage, curren
             </div>
           ) : currentView === 'currency' ? (
             <div className="px-6 py-8 pb-24">
-              <div className="space-y-2">
-                {[
-                  { code: "GB", name: "United Kingdom", flag: "🇬🇧", currency: "GBP", currencySymbol: "£" },
-                  { code: "US", name: "United States", flag: "🇺🇸", currency: "USD", currencySymbol: "$" },
-                  { code: "EU", name: "Europe", flag: "🇪🇺", currency: "EUR", currencySymbol: "€" },
-                  { code: "JP", name: "Japan", flag: "🇯🇵", currency: "JPY", currencySymbol: "¥" },
-                  { code: "AU", name: "Australia", flag: "🇦🇺", currency: "AUD", currencySymbol: "A$" },
-                  { code: "CA", name: "Canada", flag: "🇨🇦", currency: "CAD", currencySymbol: "C$" },
-                ].map((region) => (
-                  <button
-                    key={region.code}
-                    onClick={() => {
-                      onCurrencyChange(region.currency, region.code);
-                      setCurrentView('main');
-                    }}
-                    className={`w-full text-left px-4 py-3 flex items-center justify-between hover:bg-neutral-800 transition-colors rounded-lg ${
-                      currentCurrency === region.currency ? "bg-neutral-800" : ""
-                    }`}
+              {/* Search Input */}
+              <div className="mb-4">
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={formData.currencySearch || ''}
+                    onChange={(e) => handleInputChange('currencySearch', e.target.value)}
+                    placeholder="Search currencies..."
+                    className="w-full px-4 py-3 pr-10 bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#c59862] focus:border-transparent"
+                  />
+                  <svg 
+                    className="absolute right-3 top-3.5 h-5 w-5 text-gray-400" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
                   >
-                    <div className="flex items-center gap-3">
-                      <span className="text-lg">{region.flag}</span>
-                      <div className="flex flex-col">
-                        <span className="text-white font-medium">{region.name}</span>
-                        <span className="text-xs text-gray-400">{region.currency} {region.currencySymbol}</span>
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+              </div>
+              
+              {/* Currency List */}
+              <div className="space-y-2">
+                {(() => {
+                  const allRegions = [
+                    { code: "AE", name: "United Arab Emirates", flag: "🇦🇪", currency: "AED", currencySymbol: "د.إ" },
+                    { code: "AR", name: "Argentina", flag: "🇦🇷", currency: "ARS", currencySymbol: "$" },
+                    { code: "AU", name: "Australia", flag: "🇦🇺", currency: "AUD", currencySymbol: "A$" },
+                    { code: "BD", name: "Bangladesh", flag: "🇧🇩", currency: "BDT", currencySymbol: "৳" },
+                    { code: "BG", name: "Bulgaria", flag: "🇧🇬", currency: "BGN", currencySymbol: "лв" },
+                    { code: "BH", name: "Bahrain", flag: "🇧🇭", currency: "BHD", currencySymbol: ".د.ب" },
+                    { code: "BR", name: "Brazil", flag: "🇧🇷", currency: "BRL", currencySymbol: "R$" },
+                    { code: "CA", name: "Canada", flag: "🇨🇦", currency: "CAD", currencySymbol: "C$" },
+                    { code: "CH", name: "Switzerland", flag: "🇨🇭", currency: "CHF", currencySymbol: "CHF" },
+                    { code: "CL", name: "Chile", flag: "🇨🇱", currency: "CLP", currencySymbol: "$" },
+                    { code: "CN", name: "China", flag: "🇨🇳", currency: "CNY", currencySymbol: "¥" },
+                    { code: "CO", name: "Colombia", flag: "🇨🇴", currency: "COP", currencySymbol: "$" },
+                    { code: "CR", name: "Costa Rica", flag: "🇨🇷", currency: "CRC", currencySymbol: "₡" },
+                    { code: "CZ", name: "Czech Republic", flag: "🇨🇿", currency: "CZK", currencySymbol: "Kč" },
+                    { code: "DK", name: "Denmark", flag: "🇩🇰", currency: "DKK", currencySymbol: "kr" },
+                    { code: "EG", name: "Egypt", flag: "🇪🇬", currency: "EGP", currencySymbol: "E£" },
+                    { code: "EU", name: "Eurozone", flag: "🇪🇺", currency: "EUR", currencySymbol: "€" },
+                    { code: "GB", name: "United Kingdom", flag: "🇬🇧", currency: "GBP", currencySymbol: "£" },
+                    { code: "HK", name: "Hong Kong", flag: "🇭🇰", currency: "HKD", currencySymbol: "HK$" },
+                    { code: "HR", name: "Croatia", flag: "🇭🇷", currency: "HRK", currencySymbol: "kn" },
+                    { code: "HU", name: "Hungary", flag: "🇭🇺", currency: "HUF", currencySymbol: "Ft" },
+                    { code: "ID", name: "Indonesia", flag: "🇮🇩", currency: "IDR", currencySymbol: "Rp" },
+                    { code: "IL", name: "Israel", flag: "🇮🇱", currency: "ILS", currencySymbol: "₪" },
+                    { code: "IN", name: "India", flag: "🇮🇳", currency: "INR", currencySymbol: "₹" },
+                    { code: "IS", name: "Iceland", flag: "🇮🇸", currency: "ISK", currencySymbol: "kr" },
+                    { code: "JP", name: "Japan", flag: "🇯🇵", currency: "JPY", currencySymbol: "¥" },
+                    { code: "KE", name: "Kenya", flag: "🇰🇪", currency: "KES", currencySymbol: "KSh" },
+                    { code: "KR", name: "South Korea", flag: "🇰🇷", currency: "KRW", currencySymbol: "₩" },
+                    { code: "KW", name: "Kuwait", flag: "🇰🇼", currency: "KWD", currencySymbol: "د.ك" },
+                    { code: "LK", name: "Sri Lanka", flag: "🇱🇰", currency: "LKR", currencySymbol: "Rs" },
+                    { code: "MA", name: "Morocco", flag: "🇲🇦", currency: "MAD", currencySymbol: "د.م." },
+                    { code: "MX", name: "Mexico", flag: "🇲🇽", currency: "MXN", currencySymbol: "$" },
+                    { code: "MY", name: "Malaysia", flag: "🇲🇾", currency: "MYR", currencySymbol: "RM" },
+                    { code: "NG", name: "Nigeria", flag: "🇳🇬", currency: "NGN", currencySymbol: "₦" },
+                    { code: "NO", name: "Norway", flag: "🇳🇴", currency: "NOK", currencySymbol: "kr" },
+                    { code: "NZ", name: "New Zealand", flag: "🇳🇿", currency: "NZD", currencySymbol: "NZ$" },
+                    { code: "OM", name: "Oman", flag: "🇴🇲", currency: "OMR", currencySymbol: "ر.ع." },
+                    { code: "PE", name: "Peru", flag: "🇵🇪", currency: "PEN", currencySymbol: "S/." },
+                    { code: "PH", name: "Philippines", flag: "🇵🇭", currency: "PHP", currencySymbol: "₱" },
+                    { code: "PK", name: "Pakistan", flag: "🇵🇰", currency: "PKR", currencySymbol: "₨" },
+                    { code: "PL", name: "Poland", flag: "🇵🇱", currency: "PLN", currencySymbol: "zł" },
+                    { code: "QA", name: "Qatar", flag: "🇶🇦", currency: "QAR", currencySymbol: "ر.ق" },
+                    { code: "RO", name: "Romania", flag: "🇷🇴", currency: "RON", currencySymbol: "lei" },
+                    { code: "RU", name: "Russia", flag: "🇷🇺", currency: "RUB", currencySymbol: "₽" },
+                    { code: "SA", name: "Saudi Arabia", flag: "🇸🇦", currency: "SAR", currencySymbol: "ر.س" },
+                    { code: "SE", name: "Sweden", flag: "🇸🇪", currency: "SEK", currencySymbol: "kr" },
+                    { code: "SG", name: "Singapore", flag: "🇸🇬", currency: "SGD", currencySymbol: "S$" },
+                    { code: "TH", name: "Thailand", flag: "🇹🇭", currency: "THB", currencySymbol: "฿" },
+                    { code: "TR", name: "Turkey", flag: "🇹🇷", currency: "TRY", currencySymbol: "₺" },
+                    { code: "TW", name: "Taiwan", flag: "🇹🇼", currency: "TWD", currencySymbol: "NT$" },
+                    { code: "US", name: "United States", flag: "🇺🇸", currency: "USD", currencySymbol: "$" },
+                    { code: "VN", name: "Vietnam", flag: "🇻🇳", currency: "VND", currencySymbol: "₫" },
+                    { code: "ZA", name: "South Africa", flag: "🇿🇦", currency: "ZAR", currencySymbol: "R" },
+                  ];
+                  
+                  const searchTerm = (formData.currencySearch || '').toLowerCase();
+                  const filteredRegions = allRegions.filter(region => 
+                    !searchTerm || 
+                    region.name.toLowerCase().includes(searchTerm) ||
+                    region.currency.toLowerCase().includes(searchTerm) ||
+                    region.currencySymbol.includes(searchTerm)
+                  );
+                  
+                  if (filteredRegions.length === 0) {
+                    return (
+                      <div className="px-4 py-8 text-center text-sm text-gray-400">
+                        No currencies found
                       </div>
-                    </div>
-                    {currentCurrency === region.currency && (
-                      <svg className="w-5 h-5 text-[#c59862]" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    )}
-                  </button>
-                ))}
+                    );
+                  }
+                  
+                  return filteredRegions.map((region) => (
+                    <button
+                      key={region.code}
+                      onClick={() => {
+                        onCurrencyChange(region.currency, region.code);
+                        setCurrentView('main');
+                        handleInputChange('currencySearch', '');
+                      }}
+                      className={`w-full text-left px-4 py-3 flex items-center justify-between hover:bg-neutral-800 transition-colors rounded-lg ${
+                        currentCurrency === region.currency ? "bg-neutral-800" : ""
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-lg">{region.flag}</span>
+                        <div className="flex flex-col">
+                          <span className="text-white font-medium">{region.name}</span>
+                          <span className="text-xs text-gray-400">{region.currency} {region.currencySymbol}</span>
+                        </div>
+                      </div>
+                      {currentCurrency === region.currency && (
+                        <svg className="w-5 h-5 text-[#c59862]" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      )}
+                    </button>
+                  ));
+                })()}
               </div>
             </div>
           ) : null}
