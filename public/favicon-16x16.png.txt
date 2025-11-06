@@ -1,0 +1,12 @@
+PLACEHOLDER: Create favicon-16x16.png
+
+Required Specs:
+- Size: 16x16 pixels
+- Format: PNG
+- Content: Lowther logo/monogram
+- High contrast for visibility
+
+Replace this file with: favicon-16x16.png
+
+Use: https://realfavicongenerator.net/ to generate all sizes at once
+

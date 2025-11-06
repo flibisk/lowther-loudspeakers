@@ -27,11 +27,30 @@ export const metadata: Metadata = {
     title: "Lowther Loudspeakers - Handcrafted Excellence",
     description: "Discover the finest handcrafted loudspeakers from Lowther Loudspeakers. Masterpieces of acoustic engineering built to last a lifetime.",
     siteName: "Lowther Loudspeakers",
+    images: [
+      {
+        url: "/images/og/default.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Lowther Loudspeakers - Handcrafted Excellence",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Lowther Loudspeakers - Handcrafted Excellence",
     description: "Discover the finest handcrafted loudspeakers from Lowther Loudspeakers.",
+    images: ["/images/og/default.jpg"],
+  },
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: '32x32' },
+      { url: '/favicon-16x16.png', type: 'image/png', sizes: '16x16' },
+      { url: '/favicon-32x32.png', type: 'image/png', sizes: '32x32' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180' },
+    ],
   },
   robots: {
     index: true,
