@@ -71,6 +71,9 @@ export default function RootLayout({
 }>) {
   // Generate Organization schema for the entire site
   const organizationSchema = generateStructuredData("Organization", {});
+  
+  // Generate WebSite schema with sitelinks search box for Google
+  const websiteSchema = generateStructuredData("WebSite", {});
 
   return (
     <html lang="en" className={`${sarabun.variable} ${hvmuse.variable} scroll-smooth`}>
@@ -80,6 +83,13 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(organizationSchema),
+          }}
+        />
+        {/* WebSite Schema with Sitelinks Search Box for Google */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(websiteSchema),
           }}
         />
       </head>

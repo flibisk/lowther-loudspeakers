@@ -83,7 +83,7 @@ export function generateSEOMetadata({
   return metadata;
 }
 
-export function generateStructuredData(type: "Product" | "Article" | "Organization", data: Record<string, unknown>) {
+export function generateStructuredData(type: "Product" | "Article" | "Organization" | "WebSite" | "BreadcrumbList" | "FAQPage" | "ItemList", data: Record<string, unknown>) {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://lowtherloudspeakers.com";
 
   if (type === "Product") {
@@ -177,6 +177,73 @@ export function generateStructuredData(type: "Product" | "Article" | "Organizati
         "https://www.youtube.com/@lowtherloudspeakers",
         "https://twitter.com/lowtherspeakers",
       ],
+    };
+  }
+
+  if (type === "WebSite") {
+    return {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: "Lowther Loudspeakers",
+      url: baseUrl,
+      description: "Premium handcrafted loudspeakers and drive units. Trusted by audiophiles worldwide for over 90 years.",
+      publisher: {
+        "@type": "Organization",
+        name: "Lowther Loudspeakers",
+      },
+      potentialAction: {
+        "@type": "SearchAction",
+        target: {
+          "@type": "EntryPoint",
+          urlTemplate: `${baseUrl}/search?q={search_term_string}`,
+        },
+        "query-input": "required name=search_term_string",
+      },
+    };
+  }
+
+  if (type === "BreadcrumbList") {
+    const items = data.items as Array<{ name: string; url: string }>;
+    return {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: items.map((item, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        name: item.name,
+        item: `${baseUrl}${item.url}`,
+      })),
+    };
+  }
+
+  if (type === "FAQPage") {
+    const faqs = data.faqs as Array<{ question: string; answer: string }>;
+    return {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
+        },
+      })),
+    };
+  }
+
+  if (type === "ItemList") {
+    const items = data.items as Array<{ name: string; url: string; image?: string }>;
+    return {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      itemListElement: items.map((item, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        url: `${baseUrl}${item.url}`,
+        name: item.name,
+        image: item.image ? `${baseUrl}${item.image}` : undefined,
+      })),
     };
   }
 

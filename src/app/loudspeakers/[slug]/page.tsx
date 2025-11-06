@@ -42,6 +42,18 @@ export async function generateMetadata({ params }: SpeakerPageProps) {
     'voigt-horn': 'voigt-horn'
   };
 
+  // OG image mapping
+  const ogImageMapping: { [key: string]: string } = {
+    'acousta-quarter-wave': '/images/og/acousta-quarter-wave.png',
+    'acousta-117': '/images/og/acousta-117.jpg',
+    'edilia': '/images/og/edilia.jpg',
+    'almira': '/images/og/almira.webp',
+    'tp2': '/images/og/tp2.webp',
+    'audiovector': '/images/og/audiovector.webp',
+    'hegeman': '/images/og/hegeman.webp',
+    'voigt-horn': '/images/og/voigt-horn.avif'
+  };
+
   const speakerKey = reverseSlugMapping[slug] || slug;
   const speaker = speakersDatabase.speakers[speakerKey as keyof typeof speakersDatabase.speakers];
   
@@ -51,10 +63,33 @@ export async function generateMetadata({ params }: SpeakerPageProps) {
     };
   }
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://lowtherloudspeakers.com';
+  const ogImage = ogImageMapping[slug] || '/images/og/default.jpg';
+
   return {
     title: speaker.seo.meta_title,
     description: speaker.seo.meta_description,
     keywords: speaker.seo.keywords.join(', '),
+    openGraph: {
+      title: speaker.seo.meta_title,
+      description: speaker.seo.meta_description,
+      images: [
+        {
+          url: `${siteUrl}${ogImage}`,
+          width: 1200,
+          height: 630,
+          alt: speaker.seo.meta_title,
+        },
+      ],
+      type: 'website',
+      url: `${siteUrl}/loudspeakers/${slug}`,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: speaker.seo.meta_title,
+      description: speaker.seo.meta_description,
+      images: [ogImage],
+    },
   };
 }
 

@@ -8,6 +8,9 @@ import { LowtherForLifeSection } from '@/components/lowther-for-life-section';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { Mail, Phone, Facebook, Instagram } from 'lucide-react';
 
+// Note: Since this is a client component, metadata should be added in a parent layout or page.tsx wrapper
+// For now, we'll document the metadata that should be added
+
 export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: '',

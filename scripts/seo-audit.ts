@@ -91,6 +91,28 @@ function auditPage(filePath: string) {
     suggestions.push(`Description: "${description}"`);
   }
   
+  // Check for Open Graph image
+  const hasOGImage = content.includes('ogImage') || content.includes('image:');
+  if (hasMetadata && !hasOGImage) {
+    issues.push('Missing Open Graph image in metadata');
+    suggestions.push('Add OG image: Check /public/images/og/ for placeholder');
+  }
+  
+  // Check if OG image file exists
+  const ogImageMatch = content.match(/ogImage:\s*["']([^"']+)["']/);
+  if (ogImageMatch) {
+    const ogImagePath = path.join(process.cwd(), 'public', ogImageMatch[1]);
+    if (!fs.existsSync(ogImagePath)) {
+      // Check if placeholder exists
+      const placeholderPath = ogImagePath.replace(/\.(jpg|png|webp|avif)$/, '.placeholder');
+      if (fs.existsSync(placeholderPath)) {
+        suggestions.push('Replace OG placeholder with actual image (1200x630px)');
+      } else {
+        issues.push(`OG image file not found: ${ogImageMatch[1]}`);
+      }
+    }
+  }
+  
   // Check for generateSEOMetadata usage
   const usesHelper = content.includes('generateSEOMetadata');
   if (!usesHelper && hasMetadata) {
@@ -257,5 +279,8 @@ async function runAudit() {
 
 // Run the audit
 runAudit().catch(console.error);
+
+
+
 
 

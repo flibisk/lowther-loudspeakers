@@ -7,7 +7,19 @@ import { BlogSection } from "@/components/blog-section";
 import { BuildALowtherBanner } from "@/components/build-a-lowther-banner";
 import { ReviewsSection } from "@/components/reviews-section";
 import { HistoryBanner } from "@/components/history-banner";
+import { generateSEOMetadata } from "@/lib/seo";
+import { getPageMetadata } from "@/lib/metadata-config";
 import Link from "next/link";
+
+const pageMetadata = getPageMetadata("home");
+
+export const metadata = generateSEOMetadata({
+  title: pageMetadata.title,
+  description: pageMetadata.description,
+  keywords: pageMetadata.keywords,
+  image: pageMetadata.ogImage,
+  url: "/",
+});
 
 export default async function HomePage() {
   return (
