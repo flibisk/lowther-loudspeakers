@@ -2,18 +2,36 @@
 
 ## Welcome! 👋
 
-You're about to transform your Lowther website into a fully functional e-commerce platform with:
-- ✅ Live product data from your Shopify store
+You already have beautiful product overlays built (PM2A Sinfonia, etc.)! Now we're connecting them to your Shopify store to make everything functional:
+- ✅ Live product data with real prices
 - ✅ Multi-currency support (54 currencies!)
-- ✅ Working cart and checkout
+- ✅ Working "ADD TO BAG" button
+- ✅ Functional cart and checkout
 - ✅ Customer accounts
 - ✅ Wishlist functionality
+
+**Good news**: Your UI stays exactly the same - we're just adding the backend!
 
 ---
 
 ## 📚 Quick Guide Navigation
 
-### **1. Read This First** → `SHOPIFY_FINAL_RESULT.md`
+### **1. Read This First** → `SHOPIFY_INTEGRATION_APPROACH.md`
+**⏱️ 10 minutes**
+
+**IMPORTANT: Read this first!** 
+
+This explains how we'll connect your existing product overlays to Shopify:
+- What you already have (product modals with options)
+- What we'll integrate (real data, working cart)
+- How variant selection will work
+- File-by-file integration plan
+
+**This is your technical roadmap!**
+
+---
+
+### **2. Then Read** → `SHOPIFY_FINAL_RESULT.md`
 **⏱️ 5 minutes**
 
 See exactly what the final result will look like:
@@ -23,7 +41,7 @@ See exactly what the final result will look like:
 - Mobile experience
 - Admin experience
 
-**Read this to understand what you're getting!**
+**Read this to visualize the end result!**
 
 ---
 
