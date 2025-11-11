@@ -16,10 +16,23 @@ You already have beautiful product overlays built (PM2A Sinfonia, etc.)! Now we'
 
 ## 📚 Quick Guide Navigation
 
-### **1. Read This First** → `SHOPIFY_INTEGRATION_APPROACH.md`
-**⏱️ 10 minutes**
+### **1. Read This First** → `SHOPIFY_CURRENCY_VS_LANGUAGE.md`
+**⏱️ 5 minutes**
 
-**IMPORTANT: Read this first!** 
+**CRITICAL: Read this first!**
+
+Explains the difference between your two selectors:
+- **Language Selector** = UI text only (doesn't affect Shopify)
+- **Currency Selector** = Controls Shopify pricing
+- How they work independently
+- Examples of different combinations
+
+**Must read to understand how currency works!**
+
+---
+
+### **2. Then Read** → `SHOPIFY_INTEGRATION_APPROACH.md`
+**⏱️ 10 minutes**
 
 This explains how we'll connect your existing product overlays to Shopify:
 - What you already have (product modals with options)

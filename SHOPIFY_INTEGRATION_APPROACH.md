@@ -290,14 +290,19 @@ setDisplayPrice(variant.price);
 #### 7.1 Connect Currency Selector to Shopify
 File: `src/components/currency-selector.tsx`
 
+**IMPORTANT**: Currency selector (not language selector) controls Shopify pricing!
+
+- **Language Selector** = UI text only (English, French, German, etc.)
+- **Currency Selector** = Shopify prices (GBP, USD, EUR, JPY, etc.)
+
 When user changes currency:
 ```typescript
-const handleCurrencyChange = (newCurrency: string) => {
+const handleCurrencyChange = (newCurrency: string, regionCode: string) => {
   // Update currency context
-  setCurrency(newCurrency);
+  setCurrency(newCurrency, regionCode);
   
-  // Refetch all product prices in new currency
-  refetchProducts(newCurrency);
+  // Refetch all product prices in new currency from Shopify
+  refetchProducts(regionCode);  // Uses regionCode (GB, US, EU, JP)
   
   // Update cart prices
   updateCartPrices(newCurrency);
