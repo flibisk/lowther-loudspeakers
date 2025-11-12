@@ -767,8 +767,11 @@ export default function SinfoniaPage() {
                   <h2 className="font-display text-5xl mb-4" style={{ color: '#c59862' }}>
                     {selectedProduct.title}
                   </h2>
-                  <p className="text-xl text-gray-900 mb-8">
-                    {getCurrentPrice()} <span className="text-sm text-gray-600">VAT excluded</span>
+                  <p className="text-xl text-gray-900 mb-2">
+                    {getCurrentPrice()} <span className="text-sm text-gray-600">per drive unit</span>
+                  </p>
+                  <p className="text-sm text-gray-600 mb-8">
+                    VAT excluded
                   </p>
                 </div>
 
@@ -880,6 +883,10 @@ export default function SinfoniaPage() {
                   <Button
                     size="lg"
                     className="w-full bg-white hover:bg-black text-black hover:text-white border border-black font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
+                    onClick={() => {
+                      closeProductDetail();
+                      window.location.href = '/book-appointment';
+                    }}
                   >
                     Book an Appointment
                   </Button>
