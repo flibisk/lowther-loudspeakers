@@ -244,6 +244,9 @@ export default function SinfoniaPage() {
   // State for gallery
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
+  
+  // State for video overlay
+  const [isVideoOpen, setIsVideoOpen] = useState(false);
 
   // Try to fetch Shopify products (enhancement, not required)
   useEffect(() => {
@@ -277,15 +280,15 @@ export default function SinfoniaPage() {
 
   // Get current variant and price from Shopify if available
   const getCurrentVariant = (shopifyProduct: ShopifyProduct | null): ShopifyVariant | undefined => {
-    if (!shopifyProduct) return undefined;
+    if (!shopifyProduct || !selectedProduct) return undefined;
     return findVariantByOptions(shopifyProduct.variants, {
-      'Voice Coil': getVoiceCoil(shopifyProduct.id),
-      'Impedance': getImpedance(shopifyProduct.id),
+      'Voice Coil': getVoiceCoil(selectedProduct.id),
+      'Impedance': getImpedance(selectedProduct.id),
     });
   };
 
   const getCurrentPrice = (): string => {
-    if (selectedShopifyProduct) {
+    if (selectedShopifyProduct && selectedProduct) {
       const variant = getCurrentVariant(selectedShopifyProduct);
       if (variant) {
         return formatPrice(variant.price.amount, variant.price.currencyCode);
@@ -342,6 +345,17 @@ export default function SinfoniaPage() {
     }, 700);
   };
 
+  // Video functions
+  const openVideo = () => {
+    setIsVideoOpen(true);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeVideo = () => {
+    setIsVideoOpen(false);
+    document.body.style.overflow = '';
+  };
+
   // Gallery functions
   const openGallery = (index: number) => {
     setSelectedImage(index);
@@ -366,90 +380,118 @@ export default function SinfoniaPage() {
   };
 
   return (
-    <div className="min-h-screen">
-      <Breadcrumbs
-        items={[
-          { label: 'Home', href: '/' },
-          { label: 'Drive Units', href: '/category/drive-units' },
-          { label: 'Sinfonia Collection', href: '/collection/sinfonia' },
-        ]}
-      />
+    <div className="min-h-screen bg-white">
+      {/* Hero Sentinel for Nav */}
+      <div id="hero-sentinel" className="absolute top-0 left-0 w-full h-16" />
 
-      {/* Hero Section */}
-      <section data-surface="light" className="relative h-[70vh] bg-[#fafaf8]">
-        <div className="absolute inset-0">
-          <Image
-            src="/images/drive-units/sinfonia-collection/hero/Sinfonia-hero.avif"
-            alt="Sinfonia Collection Hero"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-transparent" />
-        </div>
-        <div className="relative h-full flex items-center justify-center text-center px-6">
-          <div className="max-w-4xl">
-            <ScrollReveal animation="fade-up">
-              <h1 className="font-display text-6xl md:text-7xl text-white mb-6">
-                Sinfonia Collection
-              </h1>
-              <p className="text-xl md:text-2xl text-white/90 max-w-2xl mx-auto">
-                Refined harmony in every note
-              </p>
-            </ScrollReveal>
+      {/* Hero Banner */}
+      <section data-surface="dark" className="relative min-h-[100vh] overflow-hidden">
+        <Image
+          src="/images/drive-units/sinfonia-collection/hero/Sinfonia-hero1.avif"
+          alt="The Sinfonia Collection"
+          fill
+          className="absolute inset-0 h-full w-full object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+        
+        <div className="absolute bottom-20 930:bottom-20 left-6 930:left-16 z-10 text-white max-w-xs sm:max-w-md 930:max-w-2xl">
+          <div className="flex items-center mb-2">
+            <div className="w-8 h-px bg-white mr-3"></div>
+            <span className="text-sm tracking-wider uppercase text-white/80">DRIVE UNITS</span>
           </div>
+          
+          <h1 className="font-display text-6xl font-bold leading-tight mb-4" style={{ color: '#c59862' }}>
+            The Sinfonia Collection
+          </h1>
+          
+          <p className="text-xl leading-relaxed">
+            Elevate your speakers with the Sinfonia Collection. Featuring enhanced diaphragms, refined paper treatment, and improved clarity across the spectrum.
+          </p>
         </div>
       </section>
 
-      {/* Introduction Section */}
+      {/* Breadcrumbs */}
+      <Breadcrumbs
+        items={[
+          { label: 'Home', href: '/' },
+          { label: 'Instruments', href: '/products' },
+          { label: 'The Sinfonia Collection' },
+        ]}
+      />
+
+      {/* Intro Section */}
       <section data-surface="light" className="py-24 bg-white">
         <div className="max-w-4xl mx-auto px-6 sm:px-8 lg:px-12">
           <ScrollReveal animation="fade-up">
-            <p className="text-lg md:text-xl text-gray-700 leading-relaxed mb-8">
-              The Sinfonia Collection represents a significant evolution in Lowther's storied heritage. Building upon nine decades of acoustic mastery, these drive units incorporate refined diaphragm technology and enhanced paper treatments that elevate performance while preserving the warmth and musicality that define the Lowther sound.
-            </p>
-            <p className="text-lg md:text-xl text-gray-700 leading-relaxed">
-              Each Sinfonia drive unit delivers exceptional clarity, improved transient response, and remarkable tonal accuracy. Whether you choose the classic warmth of our Alnico PM series or the dynamic precision of our Neodymium DX range, you'll experience a level of musical engagement that brings you closer to the artist's original vision.
-            </p>
+            <div className="space-y-6 text-center">
+              <h2 className="font-display text-4xl md:text-5xl leading-tight" style={{ color: '#c59862' }}>
+                Refined Harmony in Every Note
+              </h2>
+              <div className="space-y-6 text-lg text-gray-700 leading-relaxed">
+                <p>
+                  Drawing from the visionary designs of Paul Voigt and O.P. Lowther, the Sinfonia elevates our full-range philosophy with a newly developed premium diaphragm. Enhanced cone structures, refined spiders, and a proprietary paper treatment process harmonise to deliver noticeable refinements in clarity, resolution, and tonal accuracy. Yet, the soul of Lowther remains unaltered: that timeless, authentic sound which reveals music's deepest truths.
+                </p>
+                <p>
+                  These instruments integrate seamlessly into custom designs, providing a significant leap in performance - from crystal clear transient response to precise sound-stage imaging. Experience the warmth of natural materials, the precision of hand-wound voice coils, and the enduring legacy of Lowther.
+                </p>
+              </div>
+            </div>
           </ScrollReveal>
         </div>
       </section>
 
       {/* Video Section */}
-      <section data-surface="light" className="py-24 bg-[#fafaf8]">
+      <section data-surface="light" className="py-12 bg-[#fafaf8]">
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           <ScrollReveal animation="fade-up">
-            <div className="text-center mb-12">
-              <h2 className="font-display text-4xl md:text-5xl mb-4" style={{ color: '#c59862' }}>
-                {sinfoniaVideo.title}
-              </h2>
-            </div>
-          </ScrollReveal>
-
-          <ScrollReveal animation="fade-up" delay={200}>
-            <div className="relative aspect-video max-w-5xl mx-auto rounded-lg overflow-hidden shadow-2xl">
-              <a
-                href={sinfoniaVideo.youtubeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block relative group"
-              >
-                <Image
-                  src={sinfoniaVideo.thumbnail}
-                  alt={sinfoniaVideo.title}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center">
-                  <div className="w-20 h-20 rounded-full bg-white/90 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <div className="w-0 h-0 border-t-[12px] border-t-transparent border-l-[20px] border-l-black border-b-[12px] border-b-transparent ml-1" />
-                  </div>
+            <div 
+              className="relative aspect-video w-full overflow-hidden rounded-lg cursor-pointer group"
+              onClick={openVideo}
+            >
+              <Image
+                src={sinfoniaVideo.thumbnail}
+                alt={sinfoniaVideo.title}
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors duration-300 flex items-center justify-center">
+                <div className="w-20 h-20 rounded-full bg-white/90 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-0 h-0 border-t-8 border-t-transparent border-l-12 border-l-black border-b-8 border-b-transparent ml-1"></div>
                 </div>
-              </a>
+              </div>
             </div>
           </ScrollReveal>
         </div>
       </section>
+
+      {/* Video Overlay */}
+      {isVideoOpen && (
+        <div 
+          className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center"
+          onClick={closeVideo}
+        >
+          <button
+            onClick={closeVideo}
+            className="absolute top-8 right-8 text-white/80 hover:text-white transition-colors z-10"
+            aria-label="Close video"
+          >
+            <X className="w-8 h-8" />
+          </button>
+          <div className="relative w-[90vw] h-[90vh]" onClick={(e) => e.stopPropagation()}>
+            <iframe
+              width="100%"
+              height="100%"
+              src={`https://www.youtube.com/embed/${sinfoniaVideo.youtubeUrl.split('youtu.be/')[1]?.split('?')[0]}`}
+              title={sinfoniaVideo.title}
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="rounded-lg"
+            />
+          </div>
+        </div>
+      )}
 
       {/* Gallery Section */}
       <section data-surface="light" className="py-24 bg-white">
