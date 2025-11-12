@@ -36,6 +36,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   // Initialize cart from localStorage and reload when currency changes
   useEffect(() => {
     const initCart = async () => {
+      setIsLoading(true);
       const storedCartId = localStorage.getItem(CART_ID_KEY);
       
       if (storedCartId) {
