@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { LowtherForLifeSection } from '@/components/lowther-for-life-section';
 import { Breadcrumbs } from '@/components/breadcrumbs';
-import { X } from 'lucide-react';
+import { Heart, X } from 'lucide-react';
 import { useCart } from '@/contexts/cart-context';
 import { useCurrency } from '@/contexts/currency-context';
 import { useWishlist } from '@/contexts/wishlist-context';
@@ -615,45 +615,55 @@ export default function SinfoniaPage() {
                     <p className="text-lg text-gray-600 mb-6">
                       From {displayPrice}*
                     </p>
-                    <div className="flex flex-col gap-3">
-                      <Button 
-                        size="lg" 
+                    <div className="flex flex-col gap-3 w-full">
+                      <Button
+                        size="lg"
                         className="w-full bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
                         onClick={() => openProductDetail(product)}
                       >
                         BUY NOW
                       </Button>
-                      <Button 
-                        size="lg" 
-                        className="w-full bg-white hover:bg-black text-black hover:text-white border border-black font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
-                        onClick={() => openProductDetail(product)}
-                      >
-                        LEARN MORE
-                      </Button>
-                      <Button
-                        size="lg"
-                        variant="outline"
-                        className={`w-full border-[#c59862] font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase ${
-                          isInWishlist(product.id)
-                            ? 'bg-[#c59862] text-white hover:bg-[#c59862]/80'
-                            : 'text-[#c59862] hover:bg-[#c59862] hover:text-white'
-                        }`}
-                        onClick={() => {
-                          if (isInWishlist(product.id)) {
-                            removeFromWishlist(product.id);
-                          } else {
-                            addToWishlist({
-                              id: product.id,
-                              handle: product.handle,
-                              title: product.title,
-                              price: displayPrice,
-                              image: product.image,
-                            });
-                          }
-                        }}
-                      >
-                        {isInWishlist(product.id) ? '♥ SAVED' : '♡ SAVE'}
-                      </Button>
+                      <div className="flex items-center gap-3 w-full">
+                        <Button
+                          size="lg"
+                          className="flex-1 bg-white hover:bg-black text-black hover:text-white border border-black font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
+                          onClick={() => openProductDetail(product)}
+                        >
+                          LEARN MORE
+                        </Button>
+                        <button
+                          type="button"
+                          title={isInWishlist(product.id) ? 'Remove from wish list' : 'Save to wish list'}
+                          aria-label={isInWishlist(product.id) ? 'Remove from wish list' : 'Save to wish list'}
+                          className={`h-12 w-12 flex items-center justify-center rounded-full border transition-all duration-300 ${
+                            isInWishlist(product.id)
+                              ? 'bg-[#d82737] border-[#d82737] text-white hover:bg-[#b71d2b]'
+                              : 'bg-white border-[#c59862] text-[#c59862] hover:bg-[#c59862] hover:text-white'
+                          }`}
+                          onClick={() => {
+                            if (isInWishlist(product.id)) {
+                              removeFromWishlist(product.id);
+                            } else {
+                              addToWishlist({
+                                id: product.id,
+                                handle: product.handle,
+                                title: product.title,
+                                price: displayPrice,
+                                image: product.image,
+                              });
+                            }
+                          }}
+                        >
+                          <Heart
+                            className="w-5 h-5"
+                            strokeWidth={isInWishlist(product.id) ? 0 : 1.6}
+                            fill={isInWishlist(product.id) ? 'currentColor' : 'none'}
+                          />
+                          <span className="sr-only">
+                            {isInWishlist(product.id) ? 'Remove from wish list' : 'Save to wish list'}
+                          </span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </ScrollReveal>
