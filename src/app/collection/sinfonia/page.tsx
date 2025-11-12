@@ -664,7 +664,7 @@ export default function SinfoniaPage() {
                             {isInWishlist(product.id) ? 'Remove from wish list' : 'Save to wish list'}
                           </span>
                           <span
-                            className="wishlist-tooltip pointer-events-none absolute -top-9 left-1/2 -translate-x-1/2 rounded bg-black px-2 py-1 text-[10px] font-medium uppercase tracking-[2px] text-white opacity-0 transition-opacity duration-75 group-hover:opacity-100"
+                            className="wishlist-tooltip pointer-events-none absolute -bottom-9 left-1/2 -translate-x-1/2 rounded bg-black px-2 py-1 text-[10px] font-medium uppercase tracking-[2px] text-white opacity-0 transition-opacity duration-75 group-hover:opacity-100"
                           >
                             {isInWishlist(product.id) ? 'Saved' : 'Save to wish list'}
                           </span>
