@@ -23,6 +23,14 @@ const currencySymbols: Record<string, string> = {
   'CAD': 'C$',
 };
 
+function normalizeRegionForCurrency(currency: string, region: string): string {
+  if (currency === 'EUR') {
+    // Use France as the default storefront country for Eurozone requests
+    return region === 'EU' || !region ? 'FR' : region;
+  }
+  return region;
+}
+
 // Auto-detect currency/region based on geo-location
 async function detectRegionAndCurrency(): Promise<{ currency: string; region: string }> {
   try {
@@ -40,16 +48,16 @@ async function detectRegionAndCurrency(): Promise<{ currency: string; region: st
       'AU': { currency: 'AUD', region: 'AU' },
       'CA': { currency: 'CAD', region: 'CA' },
       // European countries
-      'FR': { currency: 'EUR', region: 'EU' },
-      'DE': { currency: 'EUR', region: 'EU' },
-      'IT': { currency: 'EUR', region: 'EU' },
-      'ES': { currency: 'EUR', region: 'EU' },
-      'NL': { currency: 'EUR', region: 'EU' },
-      'BE': { currency: 'EUR', region: 'EU' },
-      'AT': { currency: 'EUR', region: 'EU' },
-      'PT': { currency: 'EUR', region: 'EU' },
-      'IE': { currency: 'EUR', region: 'EU' },
-      'GR': { currency: 'EUR', region: 'EU' },
+      'FR': { currency: 'EUR', region: 'FR' },
+      'DE': { currency: 'EUR', region: 'DE' },
+      'IT': { currency: 'EUR', region: 'IT' },
+      'ES': { currency: 'EUR', region: 'ES' },
+      'NL': { currency: 'EUR', region: 'NL' },
+      'BE': { currency: 'EUR', region: 'BE' },
+      'AT': { currency: 'EUR', region: 'AT' },
+      'PT': { currency: 'EUR', region: 'PT' },
+      'IE': { currency: 'EUR', region: 'IE' },
+      'GR': { currency: 'EUR', region: 'GR' },
     };
     
     return regionMapping[countryCode] || { currency: 'GBP', region: 'GB' };
@@ -92,22 +100,24 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
       const savedLanguage = localStorage.getItem('lowther-language');
       
       if (savedCurrency && savedRegion && savedLanguage) {
+        const normalizedRegion = normalizeRegionForCurrency(savedCurrency, savedRegion);
         // User has preferences, use them
         setCurrencyState(savedCurrency);
-        setRegionState(savedRegion);
+        setRegionState(normalizedRegion);
         setLanguageState(savedLanguage);
       } else {
         // Auto-detect
         const detectedLang = detectBrowserLanguage();
         const { currency: detectedCurrency, region: detectedRegion } = await detectRegionAndCurrency();
+        const normalizedRegion = normalizeRegionForCurrency(detectedCurrency, detectedRegion);
         
         setCurrencyState(detectedCurrency);
-        setRegionState(detectedRegion);
+        setRegionState(normalizedRegion);
         setLanguageState(detectedLang);
         
         // Save auto-detected values
         localStorage.setItem('lowther-currency', detectedCurrency);
-        localStorage.setItem('lowther-region', detectedRegion);
+        localStorage.setItem('lowther-region', normalizedRegion);
         localStorage.setItem('lowther-language', detectedLang);
       }
       
@@ -118,12 +128,13 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const setCurrency = (newCurrency: string, newRegion: string) => {
+    const normalizedRegion = normalizeRegionForCurrency(newCurrency, newRegion);
     setCurrencyState(newCurrency);
-    setRegionState(newRegion);
+    setRegionState(normalizedRegion);
     
     if (typeof window !== 'undefined') {
       localStorage.setItem('lowther-currency', newCurrency);
-      localStorage.setItem('lowther-region', newRegion);
+      localStorage.setItem('lowther-region', normalizedRegion);
     }
   };
 

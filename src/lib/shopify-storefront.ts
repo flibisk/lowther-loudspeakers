@@ -136,7 +136,7 @@ export interface ShopifyCartLine {
 const CURRENCY_TO_COUNTRY: Record<string, string> = {
   'GBP': 'GB',
   'USD': 'US',
-  'EUR': 'EU',  // Eurozone
+  'EUR': 'FR',  // Default to France for Eurozone (ensure Markets configured)
   'JPY': 'JP',
   'AUD': 'AU',
   'CAD': 'CA',

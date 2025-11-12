@@ -11,15 +11,16 @@ interface Language {
   flag: string;
   currency: string;
   currencySymbol: string;
+  region: string;
 }
 
 const languagesWithCurrency: Language[] = [
-  { code: "en-GB", name: "United Kingdom", flag: "🇬🇧", currency: "GBP", currencySymbol: "£" },
-  { code: "en-US", name: "United States", flag: "🇺🇸", currency: "USD", currencySymbol: "$" },
-  { code: "en-EU", name: "Europe", flag: "🇪🇺", currency: "EUR", currencySymbol: "€" },
-  { code: "ja-JP", name: "日本 (Japan)", flag: "🇯🇵", currency: "JPY", currencySymbol: "¥" },
-  { code: "en-AU", name: "Australia", flag: "🇦🇺", currency: "AUD", currencySymbol: "A$" },
-  { code: "en-CA", name: "Canada", flag: "🇨🇦", currency: "CAD", currencySymbol: "C$" },
+  { code: "en-GB", name: "United Kingdom", flag: "🇬🇧", currency: "GBP", currencySymbol: "£", region: "GB" },
+  { code: "en-US", name: "United States", flag: "🇺🇸", currency: "USD", currencySymbol: "$", region: "US" },
+  { code: "en-FR", name: "Europe", flag: "🇪🇺", currency: "EUR", currencySymbol: "€", region: "FR" },
+  { code: "ja-JP", name: "日本 (Japan)", flag: "🇯🇵", currency: "JPY", currencySymbol: "¥", region: "JP" },
+  { code: "en-AU", name: "Australia", flag: "🇦🇺", currency: "AUD", currencySymbol: "A$", region: "AU" },
+  { code: "en-CA", name: "Canada", flag: "🇨🇦", currency: "CAD", currencySymbol: "C$", region: "CA" },
 ];
 
 interface LanguageCurrencySelectorProps {
@@ -57,6 +58,7 @@ export function LanguageCurrencySelector({
     if (typeof window !== 'undefined') {
       localStorage.setItem('lowther-language', language.code);
       localStorage.setItem('lowther-currency', language.currency);
+      localStorage.setItem('lowther-region', language.region);
     }
   };
 

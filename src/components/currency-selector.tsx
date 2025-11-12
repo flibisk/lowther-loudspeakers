@@ -29,7 +29,7 @@ const regions: Region[] = [
   { code: "CZ", name: "Czech Republic", flag: "🇨🇿", currency: "CZK", currencySymbol: "Kč" },
   { code: "DK", name: "Denmark", flag: "🇩🇰", currency: "DKK", currencySymbol: "kr" },
   { code: "EG", name: "Egypt", flag: "🇪🇬", currency: "EGP", currencySymbol: "E£" },
-  { code: "EU", name: "Eurozone", flag: "🇪🇺", currency: "EUR", currencySymbol: "€" },
+  { code: "FR", name: "Eurozone", flag: "🇪🇺", currency: "EUR", currencySymbol: "€" },
   { code: "GB", name: "United Kingdom", flag: "🇬🇧", currency: "GBP", currencySymbol: "£" },
   { code: "HK", name: "Hong Kong", flag: "🇭🇰", currency: "HKD", currencySymbol: "HK$" },
   { code: "HR", name: "Croatia", flag: "🇭🇷", currency: "HRK", currencySymbol: "kn" },
