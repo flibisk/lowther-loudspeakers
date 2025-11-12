@@ -28,7 +28,7 @@ const CART_ID_KEY = 'lowther_cart_id';
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<ShopifyCart | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const { currency } = useCurrency();
+  const { currency, region } = useCurrency();
 
   // Calculate total item count
   const itemCount = cart?.lines.reduce((total, line) => total + line.quantity, 0) ?? 0;
@@ -42,7 +42,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         // Only show loading if we have a cart to reload
         setIsLoading(true);
         // Try to fetch existing cart with current currency
-        const existingCart = await getCart(storedCartId, currency);
+        const existingCart = await getCart(storedCartId, currency, region);
         if (existingCart) {
           setCart(existingCart);
           setIsLoading(false);
@@ -58,18 +58,18 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     };
 
     initCart();
-  }, [currency]);
+  }, [currency, region]);
 
   // Refresh cart data
   const refreshCart = useCallback(async () => {
     const cartId = cart?.id || localStorage.getItem(CART_ID_KEY);
     if (!cartId) return;
 
-    const updatedCart = await getCart(cartId, currency);
+    const updatedCart = await getCart(cartId, currency, region);
     if (updatedCart) {
       setCart(updatedCart);
     }
-  }, [cart?.id, currency]);
+  }, [cart?.id, currency, region]);
 
   // Add item to cart
   const addItem = useCallback(async (variantId: string, quantity: number) => {
@@ -79,7 +79,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
       // Create cart if it doesn't exist
       if (!currentCartId) {
-        const newCart = await createCart(currency);
+        const newCart = await createCart(currency, region);
         if (!newCart) {
           throw new Error('Failed to create cart');
         }
@@ -89,7 +89,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
 
       // Add item to cart
-      const updatedCart = await addToCartAPI(currentCartId, variantId, quantity, currency);
+      const updatedCart = await addToCartAPI(currentCartId, variantId, quantity, currency, region);
       if (updatedCart) {
         setCart(updatedCart);
         localStorage.setItem(CART_ID_KEY, updatedCart.id);
@@ -99,7 +99,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  }, [cart?.id, currency]);
+  }, [cart?.id, currency, region]);
 
   // Update item quantity
   const updateItem = useCallback(async (lineId: string, quantity: number) => {
@@ -108,7 +108,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
     setIsLoading(true);
     try {
-      const updatedCart = await updateCartLine(cartId, lineId, quantity, currency);
+      const updatedCart = await updateCartLine(cartId, lineId, quantity, currency, region);
       if (updatedCart) {
         setCart(updatedCart);
       }
@@ -117,7 +117,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  }, [cart?.id, currency]);
+  }, [cart?.id, currency, region]);
 
   // Remove item from cart
   const removeItem = useCallback(async (lineId: string) => {
@@ -126,7 +126,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
     setIsLoading(true);
     try {
-      const updatedCart = await removeFromCartAPI(cartId, lineId, currency);
+      const updatedCart = await removeFromCartAPI(cartId, lineId, currency, region);
       if (updatedCart) {
         setCart(updatedCart);
       }
@@ -135,7 +135,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  }, [cart?.id, currency]);
+  }, [cart?.id, currency, region]);
 
   return (
     <CartContext.Provider

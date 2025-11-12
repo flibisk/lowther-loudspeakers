@@ -226,7 +226,7 @@ const sinfoniaCraftsmanshipContent = [
 
 export default function SinfoniaPage() {
   const { addItem, isLoading: cartLoading } = useCart();
-  const { currency } = useCurrency();
+  const { currency, region } = useCurrency();
   const { addItem: addToWishlist, isInWishlist, removeItem: removeFromWishlist } = useWishlist();
   
   // Shopify products (optional enhancement)
@@ -254,7 +254,7 @@ export default function SinfoniaPage() {
   useEffect(() => {
     const fetchShopifyProducts = async () => {
       try {
-        const products = await getCollectionProducts('the-symphonic-collection', currency);
+        const products = await getCollectionProducts('the-symphonic-collection', currency, region);
         if (products.length > 0) {
           setShopifyProducts(products);
           setShopifyLoaded(true);
@@ -266,7 +266,7 @@ export default function SinfoniaPage() {
     };
 
     fetchShopifyProducts();
-  }, [currency]);
+  }, [currency, region]);
 
   // Helper functions for product options
   const getVoiceCoil = (productId: string) => voiceCoil[productId] || 'Aluminium';

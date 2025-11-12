@@ -203,6 +203,13 @@ export function getCountryCodeFromCurrency(currencyCode: string): string {
   return CURRENCY_TO_COUNTRY[currencyCode] || 'GB'; // Default to GB
 }
 
+function resolveCountryCode(currencyCode: string, providedCountryCode?: string): string {
+  if (providedCountryCode && providedCountryCode.length === 2) {
+    return providedCountryCode.toUpperCase();
+  }
+  return getCountryCodeFromCurrency(currencyCode);
+}
+
 // ============================================================================
 // LOCALIZATION QUERIES
 // ============================================================================
@@ -259,9 +266,10 @@ export async function getAvailableCountries(): Promise<ShopifyAvailableCountry[]
  */
 export async function getProduct(
   handle: string,
-  currencyCode: string = 'GBP'
+  currencyCode: string = 'GBP',
+  countryCode?: string,
 ): Promise<ShopifyProduct | null> {
-  const countryCode = getCountryCodeFromCurrency(currencyCode);
+  const countryCodeToUse = resolveCountryCode(currencyCode, countryCode);
   
   const query = `
     query getProduct($handle: String!, $country: CountryCode!) @inContext(country: $country) {
@@ -317,7 +325,7 @@ export async function getProduct(
     const { data, errors } = await client.request(
       query,
       withStorefrontHeaders({
-        variables: { handle, country: countryCode },
+        variables: { handle, country: countryCodeToUse },
       }),
     );
 
@@ -352,9 +360,10 @@ export async function getProduct(
  */
 export async function getCollectionProducts(
   collectionHandle: string,
-  currencyCode: string = 'GBP'
+  currencyCode: string = 'GBP',
+  countryCode?: string,
 ): Promise<ShopifyProduct[]> {
-  const countryCode = getCountryCodeFromCurrency(currencyCode);
+  const countryCodeToUse = resolveCountryCode(currencyCode, countryCode);
   
   const query = `
     query getCollection($handle: String!, $country: CountryCode!) @inContext(country: $country) {
@@ -416,7 +425,7 @@ export async function getCollectionProducts(
     const { data, errors } = await client.request(
       query,
       withStorefrontHeaders({
-        variables: { handle: collectionHandle, country: countryCode },
+        variables: { handle: collectionHandle, country: countryCodeToUse },
       }),
     );
 
@@ -451,8 +460,11 @@ export async function getCollectionProducts(
 /**
  * Create a new cart
  */
-export async function createCart(currencyCode: string = 'GBP'): Promise<ShopifyCart | null> {
-  const countryCode = getCountryCodeFromCurrency(currencyCode);
+export async function createCart(
+  currencyCode: string = 'GBP',
+  countryCode?: string,
+): Promise<ShopifyCart | null> {
+  const countryCodeToUse = resolveCountryCode(currencyCode, countryCode);
   
   const mutation = `
     mutation createCart($country: CountryCode!) @inContext(country: $country) {
@@ -518,7 +530,7 @@ export async function createCart(currencyCode: string = 'GBP'): Promise<ShopifyC
     const { data, errors } = await client.request(
       mutation,
       withStorefrontHeaders({
-        variables: { country: countryCode },
+        variables: { country: countryCodeToUse },
       }),
     );
 
@@ -549,9 +561,10 @@ export async function addToCart(
   cartId: string,
   variantId: string,
   quantity: number = 1,
-  currencyCode: string = 'GBP'
+  currencyCode: string = 'GBP',
+  countryCode?: string,
 ): Promise<ShopifyCart | null> {
-  const countryCode = getCountryCodeFromCurrency(currencyCode);
+  const countryCodeToUse = resolveCountryCode(currencyCode, countryCode);
   
   const mutation = `
     mutation addToCart($cartId: ID!, $lines: [CartLineInput!]!, $country: CountryCode!) @inContext(country: $country) {
@@ -620,7 +633,7 @@ export async function addToCart(
         variables: {
           cartId,
           lines: [{ merchandiseId: variantId, quantity }],
-          country: countryCode,
+          country: countryCodeToUse,
         },
       }),
     );
@@ -652,9 +665,10 @@ export async function updateCartLine(
   cartId: string,
   lineId: string,
   quantity: number,
-  currencyCode: string = 'GBP'
+  currencyCode: string = 'GBP',
+  countryCode?: string,
 ): Promise<ShopifyCart | null> {
-  const countryCode = getCountryCodeFromCurrency(currencyCode);
+  const countryCodeToUse = resolveCountryCode(currencyCode, countryCode);
   
   const mutation = `
     mutation updateCartLine($cartId: ID!, $lines: [CartLineUpdateInput!]!, $country: CountryCode!) @inContext(country: $country) {
@@ -723,7 +737,7 @@ export async function updateCartLine(
         variables: {
           cartId,
           lines: [{ id: lineId, quantity }],
-          country: countryCode,
+          country: countryCodeToUse,
         },
       }),
     );
@@ -754,9 +768,10 @@ export async function updateCartLine(
 export async function removeFromCart(
   cartId: string,
   lineId: string,
-  currencyCode: string = 'GBP'
+  currencyCode: string = 'GBP',
+  countryCode?: string,
 ): Promise<ShopifyCart | null> {
-  const countryCode = getCountryCodeFromCurrency(currencyCode);
+  const countryCodeToUse = resolveCountryCode(currencyCode, countryCode);
   
   const mutation = `
     mutation removeFromCart($cartId: ID!, $lineIds: [ID!]!, $country: CountryCode!) @inContext(country: $country) {
@@ -825,7 +840,7 @@ export async function removeFromCart(
         variables: {
           cartId,
           lineIds: [lineId],
-          country: countryCode,
+          country: countryCodeToUse,
         },
       }),
     );
@@ -853,8 +868,12 @@ export async function removeFromCart(
 /**
  * Get existing cart by ID with currency context
  */
-export async function getCart(cartId: string, currencyCode: string = 'GBP'): Promise<ShopifyCart | null> {
-  const countryCode = getCountryCodeFromCurrency(currencyCode);
+export async function getCart(
+  cartId: string,
+  currencyCode: string = 'GBP',
+  countryCode?: string,
+): Promise<ShopifyCart | null> {
+  const countryCodeToUse = resolveCountryCode(currencyCode, countryCode);
   
   const query = `
     query getCart($cartId: ID!, $country: CountryCode!) @inContext(country: $country) {
@@ -918,9 +937,9 @@ export async function getCart(cartId: string, currencyCode: string = 'GBP'): Pro
     const { data, errors } = await client.request(
       query,
       withStorefrontHeaders({
-        variables: { 
+        variables: {
           cartId,
-          country: countryCode,
+          country: countryCodeToUse,
         },
       }),
     );
