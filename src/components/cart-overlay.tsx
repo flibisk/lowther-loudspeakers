@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { X, Minus, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/contexts/cart-context';
+import { useCurrency } from '@/contexts/currency-context';
 import { formatPrice } from '@/lib/shopify-storefront';
 
 interface CartOverlayProps {
@@ -14,6 +15,7 @@ interface CartOverlayProps {
 
 export function CartOverlay({ isOpen, onClose }: CartOverlayProps) {
   const { cart, isLoading, updateItem, removeItem } = useCart();
+  const { currency } = useCurrency();
   const [updatingItems, setUpdatingItems] = useState<Set<string>>(new Set());
 
   const handleUpdateQuantity = async (lineId: string, newQuantity: number) => {
@@ -71,7 +73,12 @@ export function CartOverlay({ isOpen, onClose }: CartOverlayProps) {
 
         {/* Cart Content */}
         <div className="flex-1 overflow-y-auto p-6">
-          {!cart || cart.lines.length === 0 ? (
+          {isLoading ? (
+            <div className="flex flex-col items-center justify-center h-full">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#c59862] mb-4"></div>
+              <p className="text-gray-600">Updating prices...</p>
+            </div>
+          ) : !cart || cart.lines.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center">
               <svg
                 className="w-24 h-24 text-gray-300 mb-4"
