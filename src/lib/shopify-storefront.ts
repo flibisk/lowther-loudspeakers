@@ -866,6 +866,121 @@ export async function removeFromCart(
 }
 
 /**
+ * Update cart buyer identity (e.g., country) to align currency
+ */
+export async function updateCartBuyerIdentity(
+  cartId: string,
+  currencyCode: string = 'GBP',
+  countryCode?: string,
+): Promise<ShopifyCart | null> {
+  const countryCodeToUse = resolveCountryCode(currencyCode, countryCode);
+
+  const mutation = `
+    mutation updateCartBuyerIdentity($cartId: ID!, $buyerIdentity: CartBuyerIdentityInput!, $country: CountryCode!) @inContext(country: $country) {
+      cartBuyerIdentityUpdate(cartId: $cartId, buyerIdentity: $buyerIdentity) {
+        cart {
+          id
+          checkoutUrl
+          lines(first: 50) {
+            edges {
+              node {
+                id
+                quantity
+                merchandise {
+                  ... on ProductVariant {
+                    id
+                    title
+                    product {
+                      title
+                      handle
+                    }
+                    price {
+                      amount
+                      currencyCode
+                    }
+                    image {
+                      url
+                      altText
+                      width
+                      height
+                    }
+                    selectedOptions {
+                      name
+                      value
+                    }
+                  }
+                }
+                cost {
+                  totalAmount {
+                    amount
+                    currencyCode
+                  }
+                }
+              }
+            }
+          }
+          cost {
+            totalAmount {
+              amount
+              currencyCode
+            }
+            subtotalAmount {
+              amount
+              currencyCode
+            }
+          }
+        }
+        userErrors {
+          code
+          message
+          field
+        }
+      }
+    }
+  `;
+
+  try {
+    const client = getClient();
+    const { data, errors } = await client.request(
+      mutation,
+      withStorefrontHeaders({
+        variables: {
+          cartId,
+          buyerIdentity: {
+            countryCode: countryCodeToUse,
+          },
+          country: countryCodeToUse,
+        },
+      }),
+    );
+
+    if (errors) {
+      console.error('Shopify API errors:', errors);
+      return null;
+    }
+
+    const userErrors = data?.cartBuyerIdentityUpdate?.userErrors;
+    if (userErrors && userErrors.length > 0) {
+      console.error('Shopify cartBuyerIdentityUpdate errors:', userErrors);
+      return null;
+    }
+
+    const cart = data?.cartBuyerIdentityUpdate?.cart;
+    if (!cart) return null;
+
+    return {
+      id: cart.id,
+      checkoutUrl: cart.checkoutUrl,
+      lines: cart.lines.edges.map((edge: any) => edge.node),
+      cost: cart.cost,
+    };
+  } catch (error) {
+    console.error('Error updating cart buyer identity:', error);
+    return null;
+  }
+}
+
+/**
  * Get existing cart by ID with currency context
  */
 export async function getCart(

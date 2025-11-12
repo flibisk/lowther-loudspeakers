@@ -7,6 +7,7 @@ import {
   updateCartLine,
   removeFromCart as removeFromCartAPI,
   getCart,
+  updateCartBuyerIdentity,
   type ShopifyCart,
 } from '@/lib/shopify-storefront';
 import { useCurrency } from '@/contexts/currency-context';
@@ -44,7 +45,16 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         // Try to fetch existing cart with current currency
         const existingCart = await getCart(storedCartId, currency, region);
         if (existingCart) {
-          setCart(existingCart);
+          let cartToUse = existingCart;
+
+          if (existingCart.cost?.totalAmount?.currencyCode !== currency) {
+            const alignedCart = await updateCartBuyerIdentity(storedCartId, currency, region);
+            if (alignedCart) {
+              cartToUse = alignedCart;
+            }
+          }
+
+          setCart(cartToUse);
           setIsLoading(false);
           return;
         }
@@ -67,6 +77,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
     const updatedCart = await getCart(cartId, currency, region);
     if (updatedCart) {
+      if (updatedCart.cost?.totalAmount?.currencyCode !== currency) {
+        const alignedCart = await updateCartBuyerIdentity(cartId, currency, region);
+        if (alignedCart) {
+          setCart(alignedCart);
+          return;
+        }
+      }
+
       setCart(updatedCart);
     }
   }, [cart?.id, currency, region]);
