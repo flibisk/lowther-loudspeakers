@@ -588,43 +588,51 @@ export default function SinfoniaPage() {
           </ScrollReveal>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
-            {sinfoniaProducts.map((product, index) => (
-              <ScrollReveal key={product.id} animation="fade-up" delay={index * 100}>
-                <div className="flex flex-col items-center text-center">
-                  <div className="relative w-full mb-6 overflow-hidden">
-                    <Image
-                      src={product.image}
-                      alt={product.title}
-                      width={500}
-                      height={500}
-                      className="w-full h-auto object-contain"
-                    />
+            {sinfoniaProducts.map((product, index) => {
+              // Find matching Shopify product for live pricing
+              const shopifyMatch = shopifyLoaded ? shopifyProducts.find(sp => sp.handle === product.handle) : null;
+              const displayPrice = shopifyMatch 
+                ? formatPrice(shopifyMatch.priceRange.minVariantPrice.amount, shopifyMatch.priceRange.minVariantPrice.currencyCode)
+                : product.price;
+
+              return (
+                <ScrollReveal key={product.id} animation="fade-up" delay={index * 100}>
+                  <div className="flex flex-col items-center text-center">
+                    <div className="relative w-full mb-6 overflow-hidden">
+                      <Image
+                        src={product.image}
+                        alt={product.title}
+                        width={500}
+                        height={500}
+                        className="w-full h-auto object-contain"
+                      />
+                    </div>
+                    <h3 className="font-display text-3xl mb-2" style={{ color: '#c59862' }}>
+                      {product.title}
+                    </h3>
+                    <p className="text-lg text-gray-600 mb-6">
+                      From {displayPrice}*
+                    </p>
+                    <div className="flex flex-col gap-3">
+                      <Button 
+                        size="lg" 
+                        className="w-full bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
+                        onClick={() => openProductDetail(product)}
+                      >
+                        BUY NOW
+                      </Button>
+                      <Button 
+                        size="lg" 
+                        className="w-full bg-white hover:bg-black text-black hover:text-white border border-black font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
+                        onClick={() => openProductDetail(product)}
+                      >
+                        LEARN MORE
+                      </Button>
+                    </div>
                   </div>
-                  <h3 className="font-display text-3xl mb-2" style={{ color: '#c59862' }}>
-                    {product.title}
-                  </h3>
-                  <p className="text-lg text-gray-600 mb-6">
-                    From {product.price}*
-                  </p>
-                  <div className="flex flex-col gap-3">
-                    <Button 
-                      size="lg" 
-                      className="w-full bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
-                      onClick={() => openProductDetail(product)}
-                    >
-                      BUY NOW
-                    </Button>
-                    <Button 
-                      size="lg" 
-                      className="w-full bg-white hover:bg-black text-black hover:text-white border border-black font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
-                      onClick={() => openProductDetail(product)}
-                    >
-                      LEARN MORE
-                    </Button>
-                  </div>
-                </div>
-              </ScrollReveal>
-            ))}
+                </ScrollReveal>
+              );
+            })}
           </div>
 
           <ScrollReveal animation="fade-up">
