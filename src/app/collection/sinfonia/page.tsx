@@ -635,10 +635,10 @@ export default function SinfoniaPage() {
                           type="button"
                           title={isInWishlist(product.id) ? 'Remove from wish list' : 'Save to wish list'}
                           aria-label={isInWishlist(product.id) ? 'Remove from wish list' : 'Save to wish list'}
-                          className={`group relative flex h-12 min-w-[3rem] items-center justify-center rounded border px-4 font-sarabun text-xs tracking-[3px] uppercase transition-all duration-200 ${
+                          className={`group relative flex h-10 w-10 items-center justify-center rounded-full transition-all duration-200 ${
                             isInWishlist(product.id)
-                              ? 'bg-[#c59862] border-[#c59862] text-white hover:bg-[#b78955]'
-                              : 'bg-white border-[#c59862] text-[#c59862] hover:bg-[#c59862] hover:text-white'
+                              ? 'text-[#c59862]'
+                              : 'text-[#c59862] hover:text-[#b78955]'
                           }`}
                           onClick={() => {
                             if (isInWishlist(product.id)) {
@@ -655,9 +655,10 @@ export default function SinfoniaPage() {
                           }}
                         >
                           <Heart
-                            className="w-5 h-5"
+                            className="w-5 h-5 transition-transform duration-200 group-hover:scale-110"
                             strokeWidth={isInWishlist(product.id) ? 0 : 1.6}
-                            fill={isInWishlist(product.id) ? 'currentColor' : 'none'}
+                            fill={isInWishlist(product.id) ? '#c59862' : 'none'}
+                            color={isInWishlist(product.id) ? '#c59862' : undefined}
                           />
                           <span className="sr-only">
                             {isInWishlist(product.id) ? 'Remove from wish list' : 'Save to wish list'}
