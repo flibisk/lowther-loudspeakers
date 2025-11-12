@@ -1,0 +1,135 @@
+'use client';
+
+import React from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useWishlist } from '@/contexts/wishlist-context';
+
+export default function WishlistPage() {
+  const { items, itemCount, removeItem, clearWishlist } = useWishlist();
+
+  return (
+    <div className="min-h-screen bg-white pt-32 pb-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="mb-12">
+          <h1 className="text-4xl md:text-5xl font-display text-[#c59862] mb-4">
+            Your Wishlist
+          </h1>
+          <div className="flex items-center justify-between">
+            <p className="text-lg text-gray-600">
+              {itemCount === 0 ? 'Your wishlist is empty' : `${itemCount} ${itemCount === 1 ? 'item' : 'items'} saved`}
+            </p>
+            {itemCount > 0 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={clearWishlist}
+                className="text-red-600 border-red-600 hover:bg-red-50"
+              >
+                Clear All
+              </Button>
+            )}
+          </div>
+        </div>
+
+        {/* Empty State */}
+        {itemCount === 0 ? (
+          <div className="text-center py-16">
+            <svg
+              className="mx-auto h-24 w-24 text-gray-300 mb-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+              />
+            </svg>
+            <h2 className="text-2xl font-display text-gray-900 mb-4">
+              Your wishlist is empty
+            </h2>
+            <p className="text-gray-600 mb-8">
+              Save your favorite products to easily find them later
+            </p>
+            <Link href="/collection/sinfonia">
+              <Button
+                size="lg"
+                className="bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
+              >
+                Explore Products
+              </Button>
+            </Link>
+          </div>
+        ) : (
+          /* Wishlist Grid */
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {items.map((item) => (
+              <div
+                key={item.id}
+                className="group relative bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
+              >
+                {/* Remove Button */}
+                <button
+                  onClick={() => removeItem(item.id)}
+                  className="absolute top-4 right-4 z-10 bg-white rounded-full p-2 shadow-md hover:bg-red-50 hover:text-red-600 transition-colors"
+                  aria-label="Remove from wishlist"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+
+                {/* Product Image */}
+                <Link href={`/collection/sinfonia#${item.handle}`}>
+                  <div className="relative w-full h-64 bg-gray-100">
+                    <Image
+                      src={item.image}
+                      alt={item.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-contain p-4 group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                </Link>
+
+                {/* Product Info */}
+                <div className="p-6">
+                  <Link href={`/collection/sinfonia#${item.handle}`}>
+                    <h3 className="text-xl font-display text-gray-900 mb-2 group-hover:text-[#c59862] transition-colors">
+                      {item.title}
+                    </h3>
+                  </Link>
+                  <p className="text-lg text-gray-600 mb-4">
+                    From {item.price}*
+                  </p>
+                  <Link href={`/collection/sinfonia#${item.handle}`}>
+                    <Button
+                      size="lg"
+                      className="w-full bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
+                    >
+                      View Details
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Additional Info */}
+        {itemCount > 0 && (
+          <div className="mt-16 text-center">
+            <p className="text-sm text-gray-500">
+              * Prices exclude VAT. Final price will be calculated at checkout based on your location.
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+

@@ -9,6 +9,7 @@ import { Breadcrumbs } from '@/components/breadcrumbs';
 import { X } from 'lucide-react';
 import { useCart } from '@/contexts/cart-context';
 import { useCurrency } from '@/contexts/currency-context';
+import { useWishlist } from '@/contexts/wishlist-context';
 import {
   getCollectionProducts,
   formatPrice,
@@ -226,6 +227,7 @@ const sinfoniaCraftsmanshipContent = [
 export default function SinfoniaPage() {
   const { addItem, isLoading: cartLoading } = useCart();
   const { currency } = useCurrency();
+  const { addItem: addToWishlist, isInWishlist, removeItem: removeFromWishlist } = useWishlist();
   
   // Shopify products (optional enhancement)
   const [shopifyProducts, setShopifyProducts] = useState<ShopifyProduct[]>([]);
@@ -627,6 +629,30 @@ export default function SinfoniaPage() {
                         onClick={() => openProductDetail(product)}
                       >
                         LEARN MORE
+                      </Button>
+                      <Button
+                        size="lg"
+                        variant="outline"
+                        className={`w-full border-[#c59862] font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase ${
+                          isInWishlist(product.id)
+                            ? 'bg-[#c59862] text-white hover:bg-[#c59862]/80'
+                            : 'text-[#c59862] hover:bg-[#c59862] hover:text-white'
+                        }`}
+                        onClick={() => {
+                          if (isInWishlist(product.id)) {
+                            removeFromWishlist(product.id);
+                          } else {
+                            addToWishlist({
+                              id: product.id,
+                              handle: product.handle,
+                              title: product.title,
+                              price: displayPrice,
+                              image: product.image,
+                            });
+                          }
+                        }}
+                      >
+                        {isInWishlist(product.id) ? '♥ SAVED' : '♡ SAVE'}
                       </Button>
                     </div>
                   </div>

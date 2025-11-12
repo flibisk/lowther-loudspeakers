@@ -15,6 +15,7 @@ import { MobileMenu } from '@/components/mobile-menu';
 import { CartOverlay } from '@/components/cart-overlay';
 import { useCurrency } from '@/contexts/currency-context';
 import { useCart } from '@/contexts/cart-context';
+import { useWishlist } from '@/contexts/wishlist-context';
 
 type Props = {
   nav: Array<{ label: string; href: string; children?: Array<{ label: string; href: string; desc?: string }> }>;
@@ -24,6 +25,7 @@ export default function SiteHeader({ nav }: Props) {
   const pathname = usePathname();
   const { setCurrency, setLanguage, language, currency } = useCurrency();
   const { itemCount } = useCart();
+  const { itemCount: wishlistCount } = useWishlist();
   const [hidden, setHidden] = useState(false);
   const [solid, setSolid] = useState(false);
   const [onDark, setOnDark] = useState(true); // assume hero is dark
@@ -293,7 +295,8 @@ export default function SiteHeader({ nav }: Props) {
 
           {/* Right Side - User Actions */}
           <div className="flex items-center space-x-1">
-            <button
+            <Link
+              href="/account"
               aria-label="Account"
               className={clsx(
                 'inline-flex items-center justify-center rounded-md p-2 hover:bg-neutral-100 transition-colors',
@@ -303,18 +306,24 @@ export default function SiteHeader({ nav }: Props) {
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
-            </button>
-            <button
+            </Link>
+            <Link
+              href="/wishlist"
               aria-label="Wishlist"
               className={clsx(
-                'inline-flex items-center justify-center rounded-md p-2 hover:bg-neutral-100 transition-colors',
+                'inline-flex items-center justify-center rounded-md p-2 hover:bg-neutral-100 transition-colors relative',
                 onDark && !solid ? 'text-white hover:bg-white/10' : 'text-neutral-900'
               )}
             >
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
               </svg>
-            </button>
+              {wishlistCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-[#c59862] text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                  {wishlistCount}
+                </span>
+              )}
+            </Link>
             <button
               onClick={() => setCartOpen(true)}
               className={clsx(
@@ -374,16 +383,21 @@ export default function SiteHeader({ nav }: Props) {
 
             {/* Right - User Actions */}
             <div className="flex items-center space-x-4">
-              <button className="text-white hover:text-neutral-300 transition-colors">
+              <Link href="/account" className="text-white hover:text-neutral-300 transition-colors">
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
-              </button>
-              <button className="text-white hover:text-neutral-300 transition-colors">
+              </Link>
+              <Link href="/wishlist" className="text-white hover:text-neutral-300 transition-colors relative">
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
-              </button>
+                {wishlistCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-[#c59862] text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                    {wishlistCount}
+                  </span>
+                )}
+              </Link>
               <button
                 onClick={() => setCartOpen(true)}
                 className="text-white hover:text-neutral-300 transition-colors relative"

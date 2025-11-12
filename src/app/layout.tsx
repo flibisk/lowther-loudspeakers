@@ -6,6 +6,7 @@ import { Footer } from "@/components/footer";
 import { generateStructuredData } from "@/lib/seo";
 import { CurrencyProvider } from "@/contexts/currency-context";
 import { CartProvider } from "@/contexts/cart-context";
+import { WishlistProvider } from "@/contexts/wishlist-context";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -116,14 +117,16 @@ export default function RootLayout({
       <body className="font-body antialiased">
         <CurrencyProvider>
           <CartProvider>
-            <SiteHeader nav={NAV} />
-            <div className="min-h-screen flex flex-col">
-              <main className="flex-1">
-                {children}
-              </main>
-              <Footer />
-            </div>
-            <Analytics />
+            <WishlistProvider>
+              <SiteHeader nav={NAV} />
+              <div className="min-h-screen flex flex-col">
+                <main className="flex-1">
+                  {children}
+                </main>
+                <Footer />
+              </div>
+              <Analytics />
+            </WishlistProvider>
           </CartProvider>
         </CurrencyProvider>
       </body>
