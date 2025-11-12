@@ -635,9 +635,9 @@ export default function SinfoniaPage() {
                           type="button"
                           title={isInWishlist(product.id) ? 'Remove from wish list' : 'Save to wish list'}
                           aria-label={isInWishlist(product.id) ? 'Remove from wish list' : 'Save to wish list'}
-                          className={`h-12 w-12 flex items-center justify-center rounded-full border transition-all duration-300 ${
+                          className={`group relative flex h-12 min-w-[3rem] items-center justify-center rounded border px-4 font-sarabun text-xs tracking-[3px] uppercase transition-all duration-200 ${
                             isInWishlist(product.id)
-                              ? 'bg-[#d82737] border-[#d82737] text-white hover:bg-[#b71d2b]'
+                              ? 'bg-[#c59862] border-[#c59862] text-white hover:bg-[#b78955]'
                               : 'bg-white border-[#c59862] text-[#c59862] hover:bg-[#c59862] hover:text-white'
                           }`}
                           onClick={() => {
@@ -661,6 +661,11 @@ export default function SinfoniaPage() {
                           />
                           <span className="sr-only">
                             {isInWishlist(product.id) ? 'Remove from wish list' : 'Save to wish list'}
+                          </span>
+                          <span
+                            className="wishlist-tooltip pointer-events-none absolute -top-9 left-1/2 -translate-x-1/2 rounded bg-black px-2 py-1 text-[10px] font-medium uppercase tracking-[2px] text-white opacity-0 transition-opacity duration-75 group-hover:opacity-100"
+                          >
+                            {isInWishlist(product.id) ? 'Saved' : 'Save to wish list'}
                           </span>
                         </button>
                       </div>
