@@ -36,10 +36,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   // Initialize cart from localStorage and reload when currency changes
   useEffect(() => {
     const initCart = async () => {
-      setIsLoading(true);
       const storedCartId = localStorage.getItem(CART_ID_KEY);
       
       if (storedCartId) {
+        // Only show loading if we have a cart to reload
+        setIsLoading(true);
         // Try to fetch existing cart with current currency
         const existingCart = await getCart(storedCartId, currency);
         if (existingCart) {
@@ -49,9 +50,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         }
         // If cart doesn't exist, clear the stored ID
         localStorage.removeItem(CART_ID_KEY);
+        setIsLoading(false);
+      } else {
+        // No cart exists, just set loading to false
+        setIsLoading(false);
       }
-      
-      setIsLoading(false);
     };
 
     initCart();
