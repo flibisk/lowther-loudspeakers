@@ -108,16 +108,9 @@ export default function SiteHeader({ nav }: Props) {
   }, []);
 
   useEffect(() => {
-    const last = lastYRef.current;
-    const curr = yDebounced;
-
-    const delta = curr - last;
-    const threshold = 6;
-
-    if (Math.abs(delta) > threshold) {
-      setHidden(delta > 0 && curr > 80); // hide on scroll down sooner
-    }
-    lastYRef.current = curr;
+    // Keep header always visible for e-commerce experience
+    setHidden(false);
+    lastYRef.current = yDebounced;
   }, [yDebounced]);
 
   // Intersection observers to control transparency and colour inversion
