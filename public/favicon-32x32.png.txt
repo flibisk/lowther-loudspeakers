@@ -10,3 +10,7 @@ Replace this file with: favicon-32x32.png
 
 Use: https://realfavicongenerator.net/ to generate all sizes at once
 
+
+
+
+

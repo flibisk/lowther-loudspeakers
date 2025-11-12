@@ -1,19 +1,28 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { LowtherForLifeSection } from '@/components/lowther-for-life-section';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { X } from 'lucide-react';
+import { useCart } from '@/contexts/cart-context';
+import { useCurrency } from '@/contexts/currency-context';
+import {
+  getCollectionProducts,
+  formatPrice,
+  findVariantByOptions,
+  type ShopifyProduct,
+  type ShopifyVariant,
+} from '@/lib/shopify-storefront';
 
-// Product data for Sinfonia Collection drive units
-const sinfoniaProducts = [
-  {
-    id: 'pm2a-sinfonia',
-    title: 'PM2A Sinfonia',
-    price: '£1,130',
+// Static product metadata (images, specs, etc.)
+const productMetadata: Record<string, {
+  image: string;
+  specs: Array<{ label: string; value: string; highlighted: boolean }>;
+}> = {
+  'lowther-pm2a-sinfonia': {
     image: '/images/drive-units/sinfonia-collection/gallery/PM2A-Sinfonia-transparent.webp',
     specs: [
       { label: 'Frame Size', value: '8 Inch', highlighted: true },
@@ -24,10 +33,7 @@ const sinfoniaProducts = [
       { label: 'Clean Air Efficiency', value: '97dB', highlighted: true },
     ],
   },
-  {
-    id: 'pm3a-sinfonia',
-    title: 'PM3A Sinfonia',
-    price: '£1,485',
+  'lowther-pm3a-sinfonia': {
     image: '/images/drive-units/sinfonia-collection/gallery/PM3A-Sinfonia-transparent.webp',
     specs: [
       { label: 'Frame Size', value: '8 Inch', highlighted: true },
@@ -38,10 +44,7 @@ const sinfoniaProducts = [
       { label: 'Clean Air Efficiency', value: '93dB', highlighted: true },
     ],
   },
-  {
-    id: 'pm4a-sinfonia',
-    title: 'PM4A Sinfonia',
-    price: '£1,430',
+  'lowther-pm4a-sinfonia': {
     image: '/images/drive-units/sinfonia-collection/gallery/PM4A-Sinfonia-transparent.webp',
     specs: [
       { label: 'Frame Size', value: '8 Inch', highlighted: true },
@@ -52,10 +55,7 @@ const sinfoniaProducts = [
       { label: 'Clean Air Efficiency', value: '98dB', highlighted: true },
     ],
   },
-  {
-    id: 'pm5a-sinfonia',
-    title: 'PM5A Sinfonia',
-    price: '£1,110',
+  'lowther-pm5a-sinfonia': {
     image: '/images/drive-units/sinfonia-collection/gallery/PM5A-Sinfonia-transparent.webp',
     specs: [
       { label: 'Frame Size', value: '8 Inch', highlighted: true },
@@ -66,10 +66,7 @@ const sinfoniaProducts = [
       { label: 'Clean Air Efficiency', value: '95dB', highlighted: true },
     ],
   },
-  {
-    id: 'pm6a-sinfonia',
-    title: 'PM6A Sinfonia',
-    price: '£965',
+  'lowther-pm6a-sinfonia': {
     image: '/images/drive-units/sinfonia-collection/gallery/PM6A-Sinfonia-transparent.webp',
     specs: [
       { label: 'Frame Size', value: '8 Inch', highlighted: true },
@@ -80,10 +77,7 @@ const sinfoniaProducts = [
       { label: 'Clean Air Efficiency', value: '96dB', highlighted: true },
     ],
   },
-  {
-    id: 'pm7a-sinfonia',
-    title: 'PM7A Sinfonia',
-    price: '£1,085',
+  'lowther-pm7a-sinfonia': {
     image: '/images/drive-units/sinfonia-collection/gallery/PM7A-Sinfonia-transparent.webp',
     specs: [
       { label: 'Frame Size', value: '8 Inch', highlighted: true },
@@ -94,10 +88,7 @@ const sinfoniaProducts = [
       { label: 'Clean Air Efficiency', value: '96dB', highlighted: true },
     ],
   },
-  {
-    id: 'dx2-sinfonia',
-    title: 'DX2 Sinfonia',
-    price: '£865',
+  'lowther-dx2-sinfonia': {
     image: '/images/drive-units/sinfonia-collection/gallery/DX2-Sinfonia-transparent.webp',
     specs: [
       { label: 'Frame Size', value: '8 Inch', highlighted: true },
@@ -108,10 +99,7 @@ const sinfoniaProducts = [
       { label: 'Clean Air Efficiency', value: '96dB', highlighted: true },
     ],
   },
-  {
-    id: 'dx3-sinfonia',
-    title: 'DX3 Sinfonia',
-    price: '£910',
+  'lowther-dx3-sinfonia': {
     image: '/images/drive-units/sinfonia-collection/gallery/DX3-Sinfonia-transparent.webp',
     specs: [
       { label: 'Frame Size', value: '8 Inch', highlighted: true },
@@ -122,10 +110,7 @@ const sinfoniaProducts = [
       { label: 'Clean Air Efficiency', value: '98dB', highlighted: true },
     ],
   },
-  {
-    id: 'dx4-sinfonia',
-    title: 'DX4 Sinfonia',
-    price: '£990',
+  'lowther-dx4-sinfonia': {
     image: '/images/drive-units/sinfonia-collection/gallery/DX4-Sinfonia-transparent.webp',
     specs: [
       { label: 'Frame Size', value: '8 Inch', highlighted: true },
@@ -136,7 +121,7 @@ const sinfoniaProducts = [
       { label: 'Clean Air Efficiency', value: '99dB', highlighted: true },
     ],
   },
-];
+};
 
 // Gallery images (non-transparent only)
 const galleryImages = [
@@ -152,7 +137,7 @@ const sinfoniaVideo = {
   title: 'Refined Harmony in Every Note',
 };
 
-// Generic Handcrafted in Great Britain content (same as Philharmonic and Concert)
+// Generic Handcrafted in Great Britain content
 const genericCraftsmanshipContent = [
   {
     title: 'Hand-Wound Voice Coils',
@@ -199,198 +184,234 @@ const sinfoniaCraftsmanshipContent = [
     image: '/images/drive-units/sinfonia-collection/gallery/PM4A-sinfonia-back-close-up.avif',
   },
   {
-    title: 'Improved Clarity',
-    description: 'The harmonious combination of enhanced cone structures, refined spiders, and advanced treatment processes results in a remarkable leap in sonic performance. Crystal-clear transient response, precise sound-stage imaging, and improved resolution reveal music\'s deepest truths with unprecedented authenticity.',
+    title: 'Precision Engineering',
+    description: 'Every Sinfonia drive unit benefits from the latest advances in precision manufacturing while maintaining our commitment to hand assembly. The result is exceptional consistency and performance that honours our heritage while embracing innovation.',
     image: '/images/drive-units/sinfonia-collection/gallery/DX3-Sinfonia-resting-on-its-side.avif',
   },
 ];
 
-// Customer quotes
-const customerQuotes = [
-  '"The new Sinfonias brought my system to life again."',
-  '"I replaced my old drivers with the Sinfonias and couldn\'t believe the difference. The clarity and depth are just beautiful."',
-  '"There\'s a smoothness now that makes long listening sessions effortless. They feel like Lowthers refined to perfection."',
-  '"Straight out of the box they sounded stunning, and after a few days they just kept opening up."',
-  '"It\'s the same unmistakable Lowther sound, but with a new level of detail and ease. I can hear deeper into every recording."',
-  '"They look beautiful, but it\'s the sound that stops you."',
-  '"I didn\'t expect such a big leap forward. The new cone and spider treatment make them feel faster and more natural."',
-  '"They brought my TP1s to another level. The sound is balanced, effortless, and full of life."',
-];
-
-export default function SinfoniaCollectionPage() {
-  const [selectedImage, setSelectedImage] = useState<number | null>(null);
-  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<typeof sinfoniaProducts[0] | null>(null);
+export default function SinfoniaPage() {
+  const { addItem, isLoading: cartLoading } = useCart();
+  const { currency } = useCurrency();
+  
+  // State for products from Shopify
+  const [products, setProducts] = useState<ShopifyProduct[]>([]);
+  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
+  
+  // State for product detail overlay
+  const [selectedProduct, setSelectedProduct] = useState<ShopifyProduct | null>(null);
   const [isProductOpen, setIsProductOpen] = useState(false);
-  const [quantity, setQuantity] = useState<{ [key: string]: number }>({});
-  const [voiceCoil, setVoiceCoil] = useState<{ [key: string]: string }>({});
-  const [impedance, setImpedance] = useState<{ [key: string]: string }>({});
-  const [isVideoOpen, setIsVideoOpen] = useState(false);
+  
+  // State for product options (per product ID)
+  const [voiceCoil, setVoiceCoil] = useState<Record<string, string>>({});
+  const [impedance, setImpedance] = useState<Record<string, string>>({});
+  const [quantity, setQuantity] = useState<Record<string, number>>({});
+  
+  // State for gallery
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<number | null>(null);
 
+  // Fetch products from Shopify
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setIsLoadingProducts(true);
+      const fetchedProducts = await getCollectionProducts('the-symphonic-collection', currency);
+      setProducts(fetchedProducts);
+      setIsLoadingProducts(false);
+    };
+
+    fetchProducts();
+  }, [currency]);
+
+  // Helper functions for product options
+  const getVoiceCoil = (productId: string) => voiceCoil[productId] || 'Aluminium';
+  const getImpedance = (productId: string) => impedance[productId] || '8 Ohms';
+  const getProductQuantity = (productId: string) => quantity[productId] || 1;
+
+  const handleQuantityChange = (productId: string, value: string) => {
+    const numValue = parseInt(value);
+    if (!isNaN(numValue) && numValue > 0) {
+      setQuantity({ ...quantity, [productId]: numValue });
+    }
+  };
+
+  // Get current variant based on selected options
+  const getCurrentVariant = (product: ShopifyProduct): ShopifyVariant | undefined => {
+    return findVariantByOptions(product.variants, {
+      'Voice Coil': getVoiceCoil(product.id),
+      'Impedance': getImpedance(product.id),
+    });
+  };
+
+  // Get current price for a product
+  const getCurrentPrice = (product: ShopifyProduct): string => {
+    const variant = getCurrentVariant(product);
+    if (variant) {
+      return formatPrice(variant.price.amount, variant.price.currencyCode);
+    }
+    return formatPrice(product.priceRange.minVariantPrice.amount, product.priceRange.minVariantPrice.currencyCode);
+  };
+
+  // Handle add to bag
+  const handleAddToBag = async (product: ShopifyProduct) => {
+    const variant = getCurrentVariant(product);
+    if (!variant) {
+      alert('Please select product options');
+      return;
+    }
+
+    if (!variant.availableForSale) {
+      alert('This product is currently unavailable');
+      return;
+    }
+
+    await addItem(variant.id, getProductQuantity(product.id));
+    
+    // Show success feedback
+    alert(`Added ${getProductQuantity(product.id)}x ${product.title} to your bag!`);
+    closeProductDetail();
+  };
+
+  // Product detail overlay functions
+  const openProductDetail = (product: ShopifyProduct) => {
+    setSelectedProduct(product);
+    setIsProductOpen(true);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeProductDetail = () => {
+    setIsProductOpen(false);
+    setTimeout(() => {
+      setSelectedProduct(null);
+      document.body.style.overflow = '';
+    }, 700);
+  };
+
+  // Gallery functions
   const openGallery = (index: number) => {
     setSelectedImage(index);
     setIsGalleryOpen(true);
+    document.body.style.overflow = 'hidden';
   };
 
   const closeGallery = () => {
     setIsGalleryOpen(false);
     setSelectedImage(null);
+    document.body.style.overflow = '';
   };
 
   const navigateGallery = (direction: 'prev' | 'next') => {
     if (selectedImage === null) return;
+    
     if (direction === 'prev') {
       setSelectedImage(selectedImage === 0 ? galleryImages.length - 1 : selectedImage - 1);
     } else {
-      setSelectedImage((selectedImage + 1) % galleryImages.length);
+      setSelectedImage(selectedImage === galleryImages.length - 1 ? 0 : selectedImage + 1);
     }
   };
 
-  const openProductDetail = (product: typeof sinfoniaProducts[0]) => {
-    setSelectedProduct(product);
-    // Small delay to allow the DOM to render before triggering animation
-    setTimeout(() => setIsProductOpen(true), 50);
-  };
-
-  const closeProductDetail = () => {
-    setIsProductOpen(false);
-    setTimeout(() => setSelectedProduct(null), 600);
-  };
-
-  const handleQuantityChange = (productId: string, value: string) => {
-    const num = parseInt(value) || 1;
-    setQuantity({ ...quantity, [productId]: Math.max(1, num) });
-  };
-
-  const getProductQuantity = (productId: string) => quantity[productId] || 1;
-  const getVoiceCoil = (productId: string) => voiceCoil[productId] || 'aluminium';
-  const getImpedance = (productId: string) => impedance[productId] || '8';
-
-  const openVideo = () => setIsVideoOpen(true);
-  const closeVideo = () => setIsVideoOpen(false);
-
   return (
-    <div className="min-h-screen bg-white">
-      {/* Hero Sentinel for Nav */}
-      <div id="hero-sentinel" className="absolute top-0 left-0 w-full h-16" />
-
-      {/* Hero Banner */}
-      <section data-surface="dark" className="relative min-h-[100vh] overflow-hidden">
-        <Image
-          src="/images/drive-units/sinfonia-collection/hero/Sinfonia-hero1.avif"
-          alt="The Sinfonia Collection"
-          fill
-          className="absolute inset-0 h-full w-full object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
-        
-        <div className="absolute bottom-20 930:bottom-20 left-6 930:left-16 z-10 text-white max-w-xs sm:max-w-md 930:max-w-2xl">
-          <div className="flex items-center mb-2">
-            <div className="w-8 h-px bg-white mr-3"></div>
-            <span className="text-sm tracking-wider uppercase text-white/80">DRIVE UNITS</span>
-          </div>
-          
-          <h1 className="font-display text-6xl font-bold leading-tight mb-4" style={{ color: '#c59862' }}>
-            The Sinfonia Collection
-          </h1>
-          
-          <p className="text-xl leading-relaxed">
-            Elevate your speakers with the Sinfonia Collection. Featuring enhanced diaphragms, refined paper treatment, and improved clarity across the spectrum.
-          </p>
-        </div>
-      </section>
-
-      {/* Breadcrumbs */}
-      <Breadcrumbs 
+    <div className="min-h-screen">
+      <Breadcrumbs
         items={[
           { label: 'Home', href: '/' },
-          { label: 'Instruments', href: '/products' },
-          { label: 'The Sinfonia Collection' }
+          { label: 'Drive Units', href: '/category/drive-units' },
+          { label: 'Sinfonia Collection', href: '/collection/sinfonia' },
         ]}
       />
 
-      {/* Intro Section */}
+      {/* Hero Section */}
+      <section data-surface="light" className="relative h-[70vh] bg-[#fafaf8]">
+        <div className="absolute inset-0">
+          <Image
+            src="/images/drive-units/sinfonia-collection/hero/Sinfonia-hero.avif"
+            alt="Sinfonia Collection Hero"
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-transparent" />
+        </div>
+        <div className="relative h-full flex items-center justify-center text-center px-6">
+          <div className="max-w-4xl">
+            <ScrollReveal animation="fade-up">
+              <h1 className="font-display text-6xl md:text-7xl text-white mb-6">
+                Sinfonia Collection
+              </h1>
+              <p className="text-xl md:text-2xl text-white/90 max-w-2xl mx-auto">
+                Refined harmony in every note
+              </p>
+            </ScrollReveal>
+          </div>
+        </div>
+      </section>
+
+      {/* Introduction Section */}
       <section data-surface="light" className="py-24 bg-white">
         <div className="max-w-4xl mx-auto px-6 sm:px-8 lg:px-12">
           <ScrollReveal animation="fade-up">
-            <div className="space-y-6 text-center">
-              <h2 className="font-display text-4xl md:text-5xl leading-tight" style={{ color: '#c59862' }}>
-                Refined Harmony in Every Note
-              </h2>
-              <div className="space-y-6 text-lg text-gray-700 leading-relaxed">
-                <p>
-                  Drawing from the visionary designs of Paul Voigt and O.P. Lowther, the Sinfonia elevates our full-range philosophy with a newly developed premium diaphragm. Enhanced cone structures, refined spiders, and a proprietary paper treatment process harmonise to deliver noticeable refinements in clarity, resolution, and tonal accuracy. Yet, the soul of Lowther remains unaltered: that timeless, authentic sound which reveals music's deepest truths.
-                </p>
-                <p>
-                  These instruments integrate seamlessly into custom designs, providing a significant leap in performance - from crystal clear transient response to precise sound-stage imaging. Experience the warmth of natural materials, the precision of hand-wound voice coils, and the enduring legacy of Lowther.
-                </p>
-              </div>
-            </div>
+            <p className="text-lg md:text-xl text-gray-700 leading-relaxed mb-8">
+              The Sinfonia Collection represents a significant evolution in Lowther's storied heritage. Building upon nine decades of acoustic mastery, these drive units incorporate refined diaphragm technology and enhanced paper treatments that elevate performance while preserving the warmth and musicality that define the Lowther sound.
+            </p>
+            <p className="text-lg md:text-xl text-gray-700 leading-relaxed">
+              Each Sinfonia drive unit delivers exceptional clarity, improved transient response, and remarkable tonal accuracy. Whether you choose the classic warmth of our Alnico PM series or the dynamic precision of our Neodymium DX range, you'll experience a level of musical engagement that brings you closer to the artist's original vision.
+            </p>
           </ScrollReveal>
         </div>
       </section>
 
       {/* Video Section */}
-      <section data-surface="light" className="py-12 bg-[#fafaf8]">
+      <section data-surface="light" className="py-24 bg-[#fafaf8]">
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           <ScrollReveal animation="fade-up">
-            <div 
-              className="relative aspect-video w-full overflow-hidden rounded-lg cursor-pointer group"
-              onClick={openVideo}
-            >
-              <Image
-                src={sinfoniaVideo.thumbnail}
-                alt={sinfoniaVideo.title}
-                fill
-                className="object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors duration-300 flex items-center justify-center">
-                <div className="w-20 h-20 rounded-full bg-white/90 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <div className="w-0 h-0 border-t-8 border-t-transparent border-l-12 border-l-black border-b-8 border-b-transparent ml-1"></div>
+            <div className="text-center mb-12">
+              <h2 className="font-display text-4xl md:text-5xl mb-4" style={{ color: '#c59862' }}>
+                {sinfoniaVideo.title}
+              </h2>
+            </div>
+          </ScrollReveal>
+
+          <ScrollReveal animation="fade-up" delay={200}>
+            <div className="relative aspect-video max-w-5xl mx-auto rounded-lg overflow-hidden shadow-2xl">
+              <a
+                href={sinfoniaVideo.youtubeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block relative group"
+              >
+                <Image
+                  src={sinfoniaVideo.thumbnail}
+                  alt={sinfoniaVideo.title}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center">
+                  <div className="w-20 h-20 rounded-full bg-white/90 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <div className="w-0 h-0 border-t-[12px] border-t-transparent border-l-[20px] border-l-black border-b-[12px] border-b-transparent ml-1" />
+                  </div>
                 </div>
-              </div>
+              </a>
             </div>
           </ScrollReveal>
         </div>
       </section>
 
-      {/* Video Overlay */}
-      {isVideoOpen && (
-        <div 
-          className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center"
-          onClick={closeVideo}
-        >
-          <button
-            onClick={closeVideo}
-            className="absolute top-8 right-8 text-white/80 hover:text-white transition-colors z-10"
-            aria-label="Close video"
-          >
-            <X className="w-8 h-8" />
-          </button>
-          <div className="relative w-[90vw] h-[90vh]" onClick={(e) => e.stopPropagation()}>
-            <iframe
-              width="100%"
-              height="100%"
-              src={`https://www.youtube.com/embed/${sinfoniaVideo.youtubeUrl.split('youtu.be/')[1]?.split('?')[0]}`}
-              title={sinfoniaVideo.title}
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="rounded-lg"
-            />
-          </div>
-        </div>
-      )}
-
       {/* Gallery Section */}
       <section data-surface="light" className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <ScrollReveal animation="fade-up">
+            <div className="text-center mb-16">
+              <h2 className="font-display text-4xl md:text-5xl mb-4" style={{ color: '#c59862' }}>
+                Gallery
+              </h2>
+            </div>
+          </ScrollReveal>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {galleryImages.map((image, index) => (
-              <ScrollReveal key={index} animation="scale" delay={index * 100}>
-                <div 
-                  className="relative aspect-square overflow-hidden rounded-lg bg-white shadow-sm cursor-pointer group"
+              <ScrollReveal key={index} animation="fade-up" delay={index * 100}>
+                <div
+                  className="relative aspect-square rounded-lg overflow-hidden cursor-pointer group"
                   onClick={() => openGallery(index)}
                 >
                   <Image
@@ -469,45 +490,56 @@ export default function SinfoniaCollectionPage() {
             </div>
           </ScrollReveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
-            {sinfoniaProducts.map((product, index) => (
-              <ScrollReveal key={product.id} animation="fade-up" delay={index * 100}>
-                <div className="flex flex-col items-center text-center">
-                  <div className="relative w-full mb-6 overflow-hidden">
-                    <Image
-                      src={product.image}
-                      alt={product.title}
-                      width={500}
-                      height={500}
-                      className="w-full h-auto object-contain"
-                    />
-                  </div>
-                  <h3 className="font-display text-3xl mb-2" style={{ color: '#c59862' }}>
-                    {product.title}
-                  </h3>
-                  <p className="text-lg text-gray-600 mb-6">
-                    From {product.price}*
-                  </p>
-                  <div className="flex flex-col gap-3">
-                    <Button 
-                      size="lg" 
-                      className="w-full bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
-                      onClick={() => openProductDetail(product)}
-                    >
-                      BUY NOW
-                    </Button>
-                    <Button 
-                      size="lg" 
-                      className="w-full bg-white hover:bg-black text-black hover:text-white border border-black font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
-                      onClick={() => openProductDetail(product)}
-                    >
-                      LEARN MORE
-                    </Button>
-                  </div>
-                </div>
-              </ScrollReveal>
-            ))}
-          </div>
+          {isLoadingProducts ? (
+            <div className="text-center py-12">
+              <p className="text-gray-600">Loading products...</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
+              {products.map((product, index) => {
+                const metadata = productMetadata[product.handle];
+                if (!metadata) return null;
+
+                return (
+                  <ScrollReveal key={product.id} animation="fade-up" delay={index * 100}>
+                    <div className="flex flex-col items-center text-center">
+                      <div className="relative w-full mb-6 overflow-hidden">
+                        <Image
+                          src={metadata.image}
+                          alt={product.title}
+                          width={500}
+                          height={500}
+                          className="w-full h-auto object-contain"
+                        />
+                      </div>
+                      <h3 className="font-display text-3xl mb-2" style={{ color: '#c59862' }}>
+                        {product.title}
+                      </h3>
+                      <p className="text-lg text-gray-600 mb-6">
+                        From {getCurrentPrice(product)}*
+                      </p>
+                      <div className="flex flex-col gap-3">
+                        <Button 
+                          size="lg" 
+                          className="w-full bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
+                          onClick={() => openProductDetail(product)}
+                        >
+                          BUY NOW
+                        </Button>
+                        <Button 
+                          size="lg" 
+                          className="w-full bg-white hover:bg-black text-black hover:text-white border border-black font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
+                          onClick={() => openProductDetail(product)}
+                        >
+                          LEARN MORE
+                        </Button>
+                      </div>
+                    </div>
+                  </ScrollReveal>
+                );
+              })}
+            </div>
+          )}
 
           <ScrollReveal animation="fade-up">
             <p className="text-center text-sm text-gray-600">
@@ -592,56 +624,26 @@ export default function SinfoniaCollectionPage() {
         </div>
       </section>
 
-      {/* Customer Quotes Section */}
-      <section data-surface="light" className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-          <ScrollReveal animation="fade-up">
-            <div className="text-center mb-16">
-              <h2 className="font-display text-4xl md:text-5xl mb-4" style={{ color: '#c59862' }}>
-                What Owners Say
-              </h2>
-              <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-                Real experiences from Sinfonia Collection owners around the world
-              </p>
-            </div>
-          </ScrollReveal>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {customerQuotes.map((quote, index) => (
-              <ScrollReveal key={index} animation="fade-up" delay={index * 100}>
-                <div className="bg-[#fafaf8] p-8 rounded-lg shadow-sm h-full flex items-center justify-center">
-                  <blockquote className="text-center">
-                    <p className="text-gray-700 leading-relaxed italic">
-                      {quote}
-                    </p>
-                  </blockquote>
-                </div>
-              </ScrollReveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Lowther for Life Video Section */}
+      {/* Lowther for Life Section */}
       <LowtherForLifeSection />
 
       {/* Product Detail Overlay */}
       {selectedProduct && (
-        <div 
+        <div
           className={`fixed inset-0 bg-white z-50 transition-opacity duration-700 ${
             isProductOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
           }`}
         >
           <div className="h-full flex flex-col md:flex-row">
             {/* Left: Product Image */}
-            <div 
+            <div
               className={`w-full md:w-1/2 relative bg-[#fafaf8] flex items-center justify-center p-12 transition-transform duration-[600ms] ease-out ${
                 isProductOpen ? 'translate-x-0' : '-translate-x-full'
               }`}
             >
               <div className="relative w-full h-full max-w-lg">
                 <Image
-                  src={selectedProduct.image}
+                  src={productMetadata[selectedProduct.handle]?.image || ''}
                   alt={selectedProduct.title}
                   fill
                   className="object-contain"
@@ -672,14 +674,14 @@ export default function SinfoniaCollectionPage() {
                     {selectedProduct.title}
                   </h2>
                   <p className="text-xl text-gray-900 mb-8">
-                    {selectedProduct.price} <span className="text-sm text-gray-600">VAT excluded</span>
+                    {getCurrentPrice(selectedProduct)} <span className="text-sm text-gray-600">VAT excluded</span>
                   </p>
                 </div>
 
                 {/* Specifications */}
                 <div className="mb-8">
                   <div className="space-y-3">
-                    {selectedProduct.specs.map((spec, i) => (
+                    {productMetadata[selectedProduct.handle]?.specs.map((spec, i) => (
                       <div key={i} className="flex justify-between py-3 border-b border-gray-200">
                         <span className="text-gray-600">{spec.label}</span>
                         <span 
@@ -703,9 +705,9 @@ export default function SinfoniaCollectionPage() {
                     </label>
                     <div className="flex gap-3">
                       <button
-                        onClick={() => setVoiceCoil({ ...voiceCoil, [selectedProduct.id]: 'aluminium' })}
+                        onClick={() => setVoiceCoil({ ...voiceCoil, [selectedProduct.id]: 'Aluminium' })}
                         className={`flex-1 py-3 px-4 text-sm border rounded transition-all ${
-                          getVoiceCoil(selectedProduct.id) === 'aluminium'
+                          getVoiceCoil(selectedProduct.id) === 'Aluminium'
                             ? 'bg-black text-white border-black'
                             : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
                         }`}
@@ -713,9 +715,9 @@ export default function SinfoniaCollectionPage() {
                         Aluminium
                       </button>
                       <button
-                        onClick={() => setVoiceCoil({ ...voiceCoil, [selectedProduct.id]: 'silver' })}
+                        onClick={() => setVoiceCoil({ ...voiceCoil, [selectedProduct.id]: 'Silver' })}
                         className={`flex-1 py-3 px-4 text-sm border rounded transition-all ${
-                          getVoiceCoil(selectedProduct.id) === 'silver'
+                          getVoiceCoil(selectedProduct.id) === 'Silver'
                             ? 'bg-black text-white border-black'
                             : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
                         }`}
@@ -732,9 +734,9 @@ export default function SinfoniaCollectionPage() {
                     </label>
                     <div className="flex gap-3">
                       <button
-                        onClick={() => setImpedance({ ...impedance, [selectedProduct.id]: '8' })}
+                        onClick={() => setImpedance({ ...impedance, [selectedProduct.id]: '8 Ohms' })}
                         className={`flex-1 py-3 px-4 text-sm border rounded transition-all ${
-                          getImpedance(selectedProduct.id) === '8'
+                          getImpedance(selectedProduct.id) === '8 Ohms'
                             ? 'bg-black text-white border-black'
                             : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
                         }`}
@@ -742,9 +744,9 @@ export default function SinfoniaCollectionPage() {
                         8 Ohms
                       </button>
                       <button
-                        onClick={() => setImpedance({ ...impedance, [selectedProduct.id]: '15' })}
+                        onClick={() => setImpedance({ ...impedance, [selectedProduct.id]: '15 Ohms' })}
                         className={`flex-1 py-3 px-4 text-sm border rounded transition-all ${
-                          getImpedance(selectedProduct.id) === '15'
+                          getImpedance(selectedProduct.id) === '15 Ohms'
                             ? 'bg-black text-white border-black'
                             : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
                         }`}
@@ -774,8 +776,10 @@ export default function SinfoniaCollectionPage() {
                   <Button
                     size="lg"
                     className="w-full bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
+                    onClick={() => handleAddToBag(selectedProduct)}
+                    disabled={cartLoading}
                   >
-                    ADD TO BAG
+                    {cartLoading ? 'ADDING...' : 'ADD TO BAG'}
                   </Button>
                   <Button
                     size="lg"
@@ -792,4 +796,3 @@ export default function SinfoniaCollectionPage() {
     </div>
   );
 }
-

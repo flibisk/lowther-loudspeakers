@@ -10,3 +10,7 @@ Replace this file with: favicon-16x16.png
 
 Use: https://realfavicongenerator.net/ to generate all sizes at once
 
+
+
+
+

@@ -1,0 +1,18 @@
+client_id = "681132a25ed89ad37ace5f761f631af8"
+name = "Lowther Store"
+application_url = "https://example.com"
+embedded = false
+
+[auth]
+redirect_urls = ["https://example.com/auth/callback"]
+
+[access_scopes]
+scopes = "unauthenticated_read_product_listings,unauthenticated_read_checkouts,unauthenticated_write_checkouts"
+
+[webhooks]
+api_version = "2025-01"
+
+[build]
+automatically_update_urls_on_dev = false
+
+dev_store_url = "9f9944-a3.myshopify.com"

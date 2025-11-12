@@ -14,3 +14,7 @@ Replace this file with: apple-touch-icon.png
 
 Use: https://realfavicongenerator.net/ to generate all sizes at once
 
+
+
+
+

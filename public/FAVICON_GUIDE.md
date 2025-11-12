@@ -116,3 +116,7 @@ After adding the files:
 - **Apple Touch Icon Spec**: https://developer.apple.com/design/human-interface-guidelines/app-icons
 - **Next.js Icons Documentation**: https://nextjs.org/docs/app/api-reference/file-conventions/metadata/app-icons
 
+
+
+
+
