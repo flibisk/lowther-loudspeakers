@@ -129,6 +129,16 @@ export interface ShopifyCartLine {
   };
 }
 
+export interface ShopifyAvailableCountry {
+  isoCode: string;
+  name: string;
+  currency: {
+    isoCode: string;
+    name: string;
+    symbol: string;
+  } | null;
+}
+
 // ============================================================================
 // CURRENCY TO COUNTRY CODE MAPPING
 // ============================================================================
@@ -191,6 +201,53 @@ const CURRENCY_TO_COUNTRY: Record<string, string> = {
 
 export function getCountryCodeFromCurrency(currencyCode: string): string {
   return CURRENCY_TO_COUNTRY[currencyCode] || 'GB'; // Default to GB
+}
+
+// ============================================================================
+// LOCALIZATION QUERIES
+// ============================================================================
+
+export async function getAvailableCountries(): Promise<ShopifyAvailableCountry[]> {
+  const query = `
+    query getAvailableCountries {
+      localization {
+        availableCountries {
+          isoCode
+          name
+          currency {
+            isoCode
+            name
+            symbol
+          }
+        }
+      }
+    }
+  `;
+
+  try {
+    const client = getClient();
+    const { data, errors } = await client.request(
+      query,
+      withStorefrontHeaders(),
+    );
+
+    if (errors) {
+      console.error('Shopify API errors:', errors);
+      return [];
+    }
+
+    const countries = data?.localization?.availableCountries ?? [];
+    return countries
+      .filter((country: any) => country.currency?.isoCode)
+      .map((country: any) => ({
+        isoCode: country.isoCode,
+        name: country.name,
+        currency: country.currency,
+      }));
+  } catch (error) {
+    console.error('Error fetching available countries:', error);
+    return [];
+  }
 }
 
 // ============================================================================

@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "seo-audit": "tsx scripts/seo-audit.ts",
+    "shopify:currencies": "tsx scripts/list-storefront-currencies.ts",
     "test:shopify": "tsx src/lib/test-shopify-connection.ts",
     "test:admin": "tsx src/lib/test-admin-api.ts",
     "test:integration": "tsx src/lib/test-integration.ts"
