@@ -58,9 +58,10 @@ export function LanguageSelectorSimple({
   const updateButtonPosition = () => {
     if (buttonRef.current) {
       const rect = buttonRef.current.getBoundingClientRect();
+      // Use fixed positioning relative to viewport (no scrollY/scrollX needed)
       setButtonPosition({
-        top: rect.bottom + window.scrollY + 4,
-        left: rect.left + window.scrollX
+        top: rect.bottom + 4,
+        left: rect.left
       });
     }
   };
