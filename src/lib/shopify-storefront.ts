@@ -394,9 +394,11 @@ export async function getCollectionProducts(
 /**
  * Create a new cart
  */
-export async function createCart(): Promise<ShopifyCart | null> {
+export async function createCart(currencyCode: string = 'GBP'): Promise<ShopifyCart | null> {
+  const countryCode = getCountryCodeFromCurrency(currencyCode);
+  
   const mutation = `
-    mutation createCart {
+    mutation createCart($country: CountryCode!) @inContext(country: $country) {
       cartCreate {
         cart {
           id
@@ -458,7 +460,9 @@ export async function createCart(): Promise<ShopifyCart | null> {
     const client = getClient();
     const { data, errors } = await client.request(
       mutation,
-      withStorefrontHeaders(),
+      withStorefrontHeaders({
+        variables: { country: countryCode },
+      }),
     );
 
     if (errors) {
@@ -482,15 +486,18 @@ export async function createCart(): Promise<ShopifyCart | null> {
 }
 
 /**
- * Add items to cart
+ * Add items to cart with currency context
  */
 export async function addToCart(
   cartId: string,
   variantId: string,
-  quantity: number = 1
+  quantity: number = 1,
+  currencyCode: string = 'GBP'
 ): Promise<ShopifyCart | null> {
+  const countryCode = getCountryCodeFromCurrency(currencyCode);
+  
   const mutation = `
-    mutation addToCart($cartId: ID!, $lines: [CartLineInput!]!) {
+    mutation addToCart($cartId: ID!, $lines: [CartLineInput!]!, $country: CountryCode!) @inContext(country: $country) {
       cartLinesAdd(cartId: $cartId, lines: $lines) {
         cart {
           id
@@ -556,6 +563,7 @@ export async function addToCart(
         variables: {
           cartId,
           lines: [{ merchandiseId: variantId, quantity }],
+          country: countryCode,
         },
       }),
     );
@@ -581,15 +589,18 @@ export async function addToCart(
 }
 
 /**
- * Update cart line quantity
+ * Update cart line quantity with currency context
  */
 export async function updateCartLine(
   cartId: string,
   lineId: string,
-  quantity: number
+  quantity: number,
+  currencyCode: string = 'GBP'
 ): Promise<ShopifyCart | null> {
+  const countryCode = getCountryCodeFromCurrency(currencyCode);
+  
   const mutation = `
-    mutation updateCartLine($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
+    mutation updateCartLine($cartId: ID!, $lines: [CartLineUpdateInput!]!, $country: CountryCode!) @inContext(country: $country) {
       cartLinesUpdate(cartId: $cartId, lines: $lines) {
         cart {
           id
@@ -655,6 +666,7 @@ export async function updateCartLine(
         variables: {
           cartId,
           lines: [{ id: lineId, quantity }],
+          country: countryCode,
         },
       }),
     );
@@ -680,14 +692,17 @@ export async function updateCartLine(
 }
 
 /**
- * Remove line from cart
+ * Remove line from cart with currency context
  */
 export async function removeFromCart(
   cartId: string,
-  lineId: string
+  lineId: string,
+  currencyCode: string = 'GBP'
 ): Promise<ShopifyCart | null> {
+  const countryCode = getCountryCodeFromCurrency(currencyCode);
+  
   const mutation = `
-    mutation removeFromCart($cartId: ID!, $lineIds: [ID!]!) {
+    mutation removeFromCart($cartId: ID!, $lineIds: [ID!]!, $country: CountryCode!) @inContext(country: $country) {
       cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
         cart {
           id
@@ -753,6 +768,7 @@ export async function removeFromCart(
         variables: {
           cartId,
           lineIds: [lineId],
+          country: countryCode,
         },
       }),
     );
@@ -778,11 +794,13 @@ export async function removeFromCart(
 }
 
 /**
- * Get existing cart by ID
+ * Get existing cart by ID with currency context
  */
-export async function getCart(cartId: string): Promise<ShopifyCart | null> {
+export async function getCart(cartId: string, currencyCode: string = 'GBP'): Promise<ShopifyCart | null> {
+  const countryCode = getCountryCodeFromCurrency(currencyCode);
+  
   const query = `
-    query getCart($cartId: ID!) {
+    query getCart($cartId: ID!, $country: CountryCode!) @inContext(country: $country) {
       cart(id: $cartId) {
         id
         checkoutUrl
@@ -843,7 +861,10 @@ export async function getCart(cartId: string): Promise<ShopifyCart | null> {
     const { data, errors } = await client.request(
       query,
       withStorefrontHeaders({
-        variables: { cartId },
+        variables: { 
+          cartId,
+          country: countryCode,
+        },
       }),
     );
 
