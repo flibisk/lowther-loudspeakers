@@ -1,27 +1,48 @@
-'use client';
+"use client";
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { LowtherForLifeSection } from '@/components/lowther-for-life-section';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { X } from 'lucide-react';
 import { ProductActionButtons } from '@/components/product-action-buttons';
+import { useShopifyCollection } from '@/hooks/use-shopify-collection';
+import { formatPrice, type ShopifyProduct } from '@/lib/shopify-storefront';
 
 export default function LowtherBadgesPage() {
   const [selectedProduct, setSelectedProduct] = useState<boolean>(false);
   const [isProductOpen, setIsProductOpen] = useState(false);
   const [quantity, setQuantity] = useState<number>(1);
+  const [selectedShopifyProduct, setSelectedShopifyProduct] = useState<ShopifyProduct | null>(null);
+
+  const { productMap } = useShopifyCollection('accessories');
+
+  const getDisplayPrice = () => {
+    const shopifyMatch = productMap.get('official-lowther-badges');
+    if (shopifyMatch) {
+      return formatPrice(
+        shopifyMatch.priceRange.minVariantPrice.amount,
+        shopifyMatch.priceRange.minVariantPrice.currencyCode,
+      );
+    }
+    return '£60.00';
+  };
 
   const openProductDetail = () => {
     setSelectedProduct(true);
+    const match = productMap.get('official-lowther-badges') ?? null;
+    setSelectedShopifyProduct(match);
     setTimeout(() => setIsProductOpen(true), 50);
   };
 
   const closeProductDetail = () => {
     setIsProductOpen(false);
-    setTimeout(() => setSelectedProduct(false), 600);
+    setTimeout(() => {
+      setSelectedProduct(false);
+      setSelectedShopifyProduct(null);
+    }, 600);
   };
 
   const handleQuantityChange = (value: number) => {
@@ -29,6 +50,23 @@ export default function LowtherBadgesPage() {
       setQuantity(value);
     }
   };
+
+  const getOverlayPrice = () => {
+    if (selectedShopifyProduct) {
+      return formatPrice(
+        selectedShopifyProduct.priceRange.minVariantPrice.amount,
+        selectedShopifyProduct.priceRange.minVariantPrice.currencyCode,
+      );
+    }
+    return '£60.00';
+  };
+
+  useEffect(() => {
+    if (isProductOpen) {
+      const match = productMap.get('official-lowther-badges') ?? null;
+      setSelectedShopifyProduct(match);
+    }
+  }, [isProductOpen, productMap]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -116,7 +154,7 @@ export default function LowtherBadgesPage() {
                   Official Lowther Badges
                 </h3>
                 <p className="text-lg text-gray-600 mb-2">
-                  £60.00
+                  {getDisplayPrice()}
                 </p>
                 <p className="text-sm text-gray-600 mb-8">
                   Price per pair
@@ -127,7 +165,7 @@ export default function LowtherBadgesPage() {
                       id: 'official-lowther-badges',
                       handle: 'official-lowther-badges',
                       title: 'Official Lowther Badges',
-                      price: '£60.00',
+                      price: getDisplayPrice(),
                       image: '/images/ensemble/lowther-badges/hero/Official-Lowther-Badges-Hero.webp',
                     }}
                     onPrimary={openProductDetail}
@@ -186,7 +224,7 @@ export default function LowtherBadgesPage() {
                     Official Lowther Badges
                   </h2>
                   <p className="text-xl text-gray-900 mb-2">
-                    £60.00
+                    {getOverlayPrice()}
                   </p>
                   <p className="text-sm text-gray-600 mb-8">
                     Price per pair

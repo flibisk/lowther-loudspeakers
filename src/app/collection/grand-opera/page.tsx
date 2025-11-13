@@ -1,13 +1,15 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { LowtherForLifeSection } from '@/components/lowther-for-life-section';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { X } from 'lucide-react';
 import { ProductActionButtons } from '@/components/product-action-buttons';
+import { useShopifyCollection } from '@/hooks/use-shopify-collection';
+import { formatPrice, type ShopifyProduct } from '@/lib/shopify-storefront';
 
 // Product data for Grand Opera Collection drive units
 const grandOperaProducts = [
@@ -131,6 +133,20 @@ export default function GrandOperaCollectionPage() {
   const [isProductOpen, setIsProductOpen] = useState(false);
   const [voiceCoil, setVoiceCoil] = useState<{ [key: string]: string }>({});
   const [impedance, setImpedance] = useState<{ [key: string]: string }>({});
+  const [selectedShopifyProduct, setSelectedShopifyProduct] = useState<ShopifyProduct | null>(null);
+
+  const { productMap } = useShopifyCollection('the-grand-opera-collection');
+
+  const getDisplayPrice = (product: typeof grandOperaProducts[number]) => {
+    const shopifyMatch = productMap.get(product.handle ?? product.id);
+    if (shopifyMatch) {
+      return formatPrice(
+        shopifyMatch.priceRange.minVariantPrice.amount,
+        shopifyMatch.priceRange.minVariantPrice.currencyCode,
+      );
+    }
+    return product.price;
+  };
 
   const openGallery = (index: number) => {
     setSelectedImage(index);
@@ -153,16 +169,37 @@ export default function GrandOperaCollectionPage() {
 
   const openProductDetail = (product: typeof grandOperaProducts[0]) => {
     setSelectedProduct(product);
+    const match = productMap.get(product.handle ?? product.id) ?? null;
+    setSelectedShopifyProduct(match);
     setTimeout(() => setIsProductOpen(true), 50);
   };
 
   const closeProductDetail = () => {
     setIsProductOpen(false);
-    setTimeout(() => setSelectedProduct(null), 600);
+    setTimeout(() => {
+      setSelectedProduct(null);
+      setSelectedShopifyProduct(null);
+    }, 600);
   };
 
-  const getVoiceCoil = (productId: string) => voiceCoil[productId] || 'aluminium';
-  const getImpedance = (productId: string) => impedance[productId] || '8';
+  const getVoiceCoil = (productId: string) => voiceCoil[productId] || 'Aluminium';
+  const getImpedance = (productId: string) => impedance[productId] || '8 Ohms';
+  const getOverlayPrice = () => {
+    if (selectedShopifyProduct) {
+      return formatPrice(
+        selectedShopifyProduct.priceRange.minVariantPrice.amount,
+        selectedShopifyProduct.priceRange.minVariantPrice.currencyCode,
+      );
+    }
+    return selectedProduct?.price ?? '';
+  };
+
+  useEffect(() => {
+    if (selectedProduct) {
+      const match = productMap.get(selectedProduct.handle ?? selectedProduct.id) ?? null;
+      setSelectedShopifyProduct(match);
+    }
+  }, [productMap, selectedProduct]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -319,7 +356,9 @@ export default function GrandOperaCollectionPage() {
           </ScrollReveal>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
-            {grandOperaProducts.map((product, index) => (
+            {grandOperaProducts.map((product, index) => {
+              const displayPrice = getDisplayPrice(product);
+              return (
               <ScrollReveal key={product.id} animation="fade-up" delay={index * 100}>
                 <div className="flex flex-col items-center text-center">
                   <div className="relative w-full mb-6 overflow-hidden">
@@ -335,14 +374,14 @@ export default function GrandOperaCollectionPage() {
                     {product.title}
                   </h3>
                   <p className="text-lg text-gray-600 mb-6">
-                    {product.price}
+                    {displayPrice}
                   </p>
                   <ProductActionButtons
                     product={{
                       id: product.id,
                       handle: product.handle ?? product.id,
                       title: product.title,
-                      price: product.price,
+                      price: displayPrice,
                       image: product.image,
                     }}
                     onPrimary={() => openProductDetail(product)}
@@ -351,7 +390,8 @@ export default function GrandOperaCollectionPage() {
                   />
                 </div>
               </ScrollReveal>
-            ))}
+            );
+            })}
           </div>
 
           <ScrollReveal animation="fade-up">
@@ -517,7 +557,7 @@ export default function GrandOperaCollectionPage() {
                     {selectedProduct.title}
                   </h2>
                   <p className="text-xl text-gray-900 mb-8">
-                    {selectedProduct.price}
+                    {getOverlayPrice()}
                   </p>
                 </div>
 
@@ -548,9 +588,9 @@ export default function GrandOperaCollectionPage() {
                     </label>
                     <div className="flex gap-3">
                       <button
-                        onClick={() => setVoiceCoil({ ...voiceCoil, [selectedProduct.id]: 'aluminium' })}
+                        onClick={() => setVoiceCoil({ ...voiceCoil, [selectedProduct.id]: 'Aluminium' })}
                         className={`flex-1 py-3 px-4 text-sm border rounded transition-all ${
-                          getVoiceCoil(selectedProduct.id) === 'aluminium'
+                          getVoiceCoil(selectedProduct.id) === 'Aluminium'
                             ? 'bg-black text-white border-black'
                             : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
                         }`}
@@ -558,9 +598,9 @@ export default function GrandOperaCollectionPage() {
                         Aluminium
                       </button>
                       <button
-                        onClick={() => setVoiceCoil({ ...voiceCoil, [selectedProduct.id]: 'silver' })}
+                        onClick={() => setVoiceCoil({ ...voiceCoil, [selectedProduct.id]: 'Silver' })}
                         className={`flex-1 py-3 px-4 text-sm border rounded transition-all ${
-                          getVoiceCoil(selectedProduct.id) === 'silver'
+                          getVoiceCoil(selectedProduct.id) === 'Silver'
                             ? 'bg-black text-white border-black'
                             : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
                         }`}
@@ -577,9 +617,9 @@ export default function GrandOperaCollectionPage() {
                     </label>
                     <div className="flex gap-3">
                       <button
-                        onClick={() => setImpedance({ ...impedance, [selectedProduct.id]: '8' })}
+                        onClick={() => setImpedance({ ...impedance, [selectedProduct.id]: '8 Ohms' })}
                         className={`flex-1 py-3 px-4 text-sm border rounded transition-all ${
-                          getImpedance(selectedProduct.id) === '8'
+                          getImpedance(selectedProduct.id) === '8 Ohms'
                             ? 'bg-black text-white border-black'
                             : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
                         }`}
@@ -587,9 +627,9 @@ export default function GrandOperaCollectionPage() {
                         8 Ohms
                       </button>
                       <button
-                        onClick={() => setImpedance({ ...impedance, [selectedProduct.id]: '15' })}
+                        onClick={() => setImpedance({ ...impedance, [selectedProduct.id]: '15 Ohms' })}
                         className={`flex-1 py-3 px-4 text-sm border rounded transition-all ${
-                          getImpedance(selectedProduct.id) === '15'
+                          getImpedance(selectedProduct.id) === '15 Ohms'
                             ? 'bg-black text-white border-black'
                             : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
                         }`}

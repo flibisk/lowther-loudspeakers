@@ -2,13 +2,15 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { LowtherForLifeSection } from '@/components/lowther-for-life-section';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { X } from 'lucide-react';
 import { ProductActionButtons } from '@/components/product-action-buttons';
+import { useShopifyCollection } from '@/hooks/use-shopify-collection';
+import { formatPrice, type ShopifyProduct } from '@/lib/shopify-storefront';
 
 /**
  * SHOPIFY INTEGRATION GUIDE:
@@ -172,6 +174,20 @@ export default function PhilharmonicCollectionPage() {
   const [quantity, setQuantity] = useState<{ [key: string]: number }>({});
   const [voiceCoil, setVoiceCoil] = useState<{ [key: string]: string }>({});
   const [impedance, setImpedance] = useState<{ [key: string]: string }>({});
+  const [selectedShopifyProduct, setSelectedShopifyProduct] = useState<ShopifyProduct | null>(null);
+
+  const { productMap } = useShopifyCollection('the-philharmonic-collection');
+
+  const getDisplayPrice = (product: typeof philharmonicProducts[number]) => {
+    const shopifyMatch = productMap.get(product.shopifyHandle ?? product.id);
+    if (shopifyMatch) {
+      return formatPrice(
+        shopifyMatch.priceRange.minVariantPrice.amount,
+        shopifyMatch.priceRange.minVariantPrice.currencyCode,
+      );
+    }
+    return `${product.price}${product.priceNote ?? ''}`;
+  };
 
   const openGallery = (index: number) => {
     setSelectedImage(index);
@@ -194,13 +210,18 @@ export default function PhilharmonicCollectionPage() {
 
   const openProductDetail = (product: typeof philharmonicProducts[0]) => {
     setSelectedProduct(product);
+    const match = productMap.get(product.shopifyHandle ?? product.id) ?? null;
+    setSelectedShopifyProduct(match);
     // Small delay to allow the DOM to render before triggering animation
     setTimeout(() => setIsProductOpen(true), 50);
   };
 
   const closeProductDetail = () => {
     setIsProductOpen(false);
-    setTimeout(() => setSelectedProduct(null), 600);
+    setTimeout(() => {
+      setSelectedProduct(null);
+      setSelectedShopifyProduct(null);
+    }, 600);
   };
 
   const handleQuantityChange = (productId: string, value: string) => {
@@ -209,8 +230,25 @@ export default function PhilharmonicCollectionPage() {
   };
 
   const getProductQuantity = (productId: string) => quantity[productId] || 1;
-  const getVoiceCoil = (productId: string) => voiceCoil[productId] || 'aluminium';
-  const getImpedance = (productId: string) => impedance[productId] || '8';
+  const getVoiceCoil = (productId: string) => voiceCoil[productId] || 'Aluminium';
+  const getImpedance = (productId: string) => impedance[productId] || '8 Ohms';
+  const getOverlayPrice = () => {
+    if (selectedShopifyProduct) {
+      return formatPrice(
+        selectedShopifyProduct.priceRange.minVariantPrice.amount,
+        selectedShopifyProduct.priceRange.minVariantPrice.currencyCode,
+      );
+    }
+    if (!selectedProduct) return '';
+    return `${selectedProduct.price}${selectedProduct.priceNote ?? ''}`;
+  };
+
+  useEffect(() => {
+    if (selectedProduct) {
+      const match = productMap.get(selectedProduct.shopifyHandle ?? selectedProduct.id) ?? null;
+      setSelectedShopifyProduct(match);
+    }
+  }, [productMap, selectedProduct]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -361,7 +399,9 @@ export default function PhilharmonicCollectionPage() {
           </ScrollReveal>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
-            {philharmonicProducts.map((product, index) => (
+            {philharmonicProducts.map((product, index) => {
+              const displayPrice = getDisplayPrice(product);
+              return (
               <ScrollReveal key={product.id} animation="fade-up" delay={index * 100}>
                 <div className="flex flex-col items-center text-center">
                   <div className="relative w-full mb-6 overflow-hidden">
@@ -377,14 +417,14 @@ export default function PhilharmonicCollectionPage() {
                     {product.title}
                   </h3>
                   <p className="text-lg text-gray-600 mb-6">
-                    From {product.price}*
+                    From {displayPrice}
                   </p>
                   <ProductActionButtons
                     product={{
                       id: product.id,
                       handle: product.shopifyHandle ?? product.id,
                       title: product.title,
-                      price: `${product.price}${product.priceNote ?? ''}`,
+                      price: displayPrice,
                       image: product.image,
                     }}
                     onPrimary={() => openProductDetail(product)}
@@ -392,7 +432,8 @@ export default function PhilharmonicCollectionPage() {
                   />
                 </div>
               </ScrollReveal>
-            ))}
+            );
+            })}
           </div>
 
           <ScrollReveal animation="fade-up">
@@ -450,7 +491,7 @@ export default function PhilharmonicCollectionPage() {
                     {selectedProduct.title}
                   </h2>
                   <p className="text-xl text-gray-900 mb-8">
-                    {selectedProduct.price} <span className="text-sm text-gray-600">VAT excluded</span>
+                    {getOverlayPrice()} <span className="text-sm text-gray-600">VAT excluded</span>
                   </p>
                 </div>
 
@@ -475,9 +516,9 @@ export default function PhilharmonicCollectionPage() {
                     </label>
                     <div className="flex gap-3">
                       <button
-                        onClick={() => setVoiceCoil({ ...voiceCoil, [selectedProduct.id]: 'aluminium' })}
+                        onClick={() => setVoiceCoil({ ...voiceCoil, [selectedProduct.id]: 'Aluminium' })}
                         className={`flex-1 py-3 px-4 text-sm border rounded transition-all ${
-                          getVoiceCoil(selectedProduct.id) === 'aluminium'
+                          getVoiceCoil(selectedProduct.id) === 'Aluminium'
                             ? 'bg-black text-white border-black'
                             : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
                         }`}
@@ -485,9 +526,9 @@ export default function PhilharmonicCollectionPage() {
                         Aluminium
                       </button>
                       <button
-                        onClick={() => setVoiceCoil({ ...voiceCoil, [selectedProduct.id]: 'silver' })}
+                        onClick={() => setVoiceCoil({ ...voiceCoil, [selectedProduct.id]: 'Silver' })}
                         className={`flex-1 py-3 px-4 text-sm border rounded transition-all ${
-                          getVoiceCoil(selectedProduct.id) === 'silver'
+                          getVoiceCoil(selectedProduct.id) === 'Silver'
                             ? 'bg-black text-white border-black'
                             : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
                         }`}
@@ -504,9 +545,9 @@ export default function PhilharmonicCollectionPage() {
                     </label>
                     <div className="flex gap-3">
                       <button
-                        onClick={() => setImpedance({ ...impedance, [selectedProduct.id]: '8' })}
+                        onClick={() => setImpedance({ ...impedance, [selectedProduct.id]: '8 Ohms' })}
                         className={`flex-1 py-3 px-4 text-sm border rounded transition-all ${
-                          getImpedance(selectedProduct.id) === '8'
+                          getImpedance(selectedProduct.id) === '8 Ohms'
                             ? 'bg-black text-white border-black'
                             : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
                         }`}
@@ -514,9 +555,9 @@ export default function PhilharmonicCollectionPage() {
                         8 Ohms
                       </button>
                       <button
-                        onClick={() => setImpedance({ ...impedance, [selectedProduct.id]: '15' })}
+                        onClick={() => setImpedance({ ...impedance, [selectedProduct.id]: '15 Ohms' })}
                         className={`flex-1 py-3 px-4 text-sm border rounded transition-all ${
-                          getImpedance(selectedProduct.id) === '15'
+                          getImpedance(selectedProduct.id) === '15 Ohms'
                             ? 'bg-black text-white border-black'
                             : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
                         }`}

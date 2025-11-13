@@ -1,19 +1,21 @@
-'use client';
+"use client";
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { LowtherForLifeSection } from '@/components/lowther-for-life-section';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { X } from 'lucide-react';
 import { ProductActionButtons } from '@/components/product-action-buttons';
+import { useShopifyCollection } from '@/hooks/use-shopify-collection';
+import { findVariantByOptions, formatPrice, type ShopifyProduct, type ShopifyVariant } from '@/lib/shopify-storefront';
 
 // Product data for Reference Cables
 const cableProducts = [
   {
     id: 'speaker-cables',
-    handle: 'speaker-cables',
+    handle: 'lowther-speaker-cables',
     title: 'Lowther Speaker Cables',
     price: '£3,300.00',
     image: '/images/ensemble/reference-cables/gallery/Speaker-cables-transparent.avif',
@@ -41,7 +43,7 @@ const cableProducts = [
   },
   {
     id: 'spdif-cable',
-    handle: 'spdif-cable',
+    handle: 'lowther-spdif-cable',
     title: 'Lowther SPDIF Cable',
     price: '£1,500.00',
     image: '/images/ensemble/reference-cables/gallery/SPDIF-holder-transparent.avif.jpg',
@@ -55,7 +57,7 @@ const cableProducts = [
   },
   {
     id: 'usb-cable',
-    handle: 'usb-cable',
+    handle: 'lowther-usb-cable',
     title: 'Lowther USB',
     price: '£1,500.00',
     image: '/images/ensemble/reference-cables/gallery/USB-cable-transparent.webp',
@@ -69,7 +71,7 @@ const cableProducts = [
   },
   {
     id: 'mains-cable',
-    handle: 'mains-cable',
+    handle: 'lowther-mains-cable',
     title: 'Lowther Mains Cable',
     price: '£1,995.60',
     image: '/images/ensemble/reference-cables/gallery/Mains-cable-transparent.avif',
@@ -83,7 +85,7 @@ const cableProducts = [
   },
   {
     id: 'mains-filter',
-    handle: 'mains-filter',
+    handle: 'lowther-mains-filter',
     title: 'Lowther Mains Filter',
     price: '£6,000.00',
     image: '/images/ensemble/reference-cables/gallery/Mains-filter-holder-transparent.jpg',
@@ -102,6 +104,20 @@ export default function ReferenceCablesPage() {
   const [isProductOpen, setIsProductOpen] = useState(false);
   const [selectedLength, setSelectedLength] = useState<{ [key: string]: string }>({});
   const [quantity, setQuantity] = useState<number>(1);
+  const [selectedShopifyProduct, setSelectedShopifyProduct] = useState<ShopifyProduct | null>(null);
+
+  const { productMap } = useShopifyCollection('accessories');
+
+  const getDisplayPrice = (product: typeof cableProducts[number]) => {
+    const shopifyMatch = productMap.get(product.handle ?? product.id);
+    if (shopifyMatch) {
+      return formatPrice(
+        shopifyMatch.priceRange.minVariantPrice.amount,
+        shopifyMatch.priceRange.minVariantPrice.currencyCode,
+      );
+    }
+    return product.price;
+  };
 
   const openProductDetail = (product: typeof cableProducts[0]) => {
     setSelectedProduct(product);
@@ -109,12 +125,17 @@ export default function ReferenceCablesPage() {
     if (product.hasLengthOptions && product.lengthOptions.length > 0) {
       setSelectedLength({ ...selectedLength, [product.id]: product.lengthOptions[0] });
     }
+    const match = productMap.get(product.handle ?? product.id) ?? null;
+    setSelectedShopifyProduct(match);
     setTimeout(() => setIsProductOpen(true), 50);
   };
 
   const closeProductDetail = () => {
     setIsProductOpen(false);
-    setTimeout(() => setSelectedProduct(null), 600);
+    setTimeout(() => {
+      setSelectedProduct(null);
+      setSelectedShopifyProduct(null);
+    }, 600);
   };
 
   const handleQuantityChange = (value: number) => {
@@ -126,6 +147,40 @@ export default function ReferenceCablesPage() {
   const getSelectedLength = (productId: string, defaultLength: string) => {
     return selectedLength[productId] || defaultLength;
   };
+
+  const getCurrentVariant = (): ShopifyVariant | undefined => {
+    if (!selectedShopifyProduct || !selectedProduct) return undefined;
+
+    if (selectedProduct.hasLengthOptions && selectedProduct.lengthOptions.length > 0) {
+      const lengthValue = getSelectedLength(selectedProduct.id, selectedProduct.lengthOptions[0]);
+      return findVariantByOptions(selectedShopifyProduct.variants, { Length: lengthValue });
+    }
+
+    return selectedShopifyProduct.variants?.[0];
+  };
+
+  const getOverlayPrice = () => {
+    const variant = getCurrentVariant();
+    if (variant) {
+      return formatPrice(variant.price.amount, variant.price.currencyCode);
+    }
+
+    if (selectedShopifyProduct) {
+      return formatPrice(
+        selectedShopifyProduct.priceRange.minVariantPrice.amount,
+        selectedShopifyProduct.priceRange.minVariantPrice.currencyCode,
+      );
+    }
+
+    return selectedProduct?.price ?? '';
+  };
+
+  useEffect(() => {
+    if (selectedProduct) {
+      const match = productMap.get(selectedProduct.handle ?? selectedProduct.id) ?? null;
+      setSelectedShopifyProduct(match);
+    }
+  }, [productMap, selectedProduct]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -212,7 +267,9 @@ export default function ReferenceCablesPage() {
           </ScrollReveal>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mb-16">
-            {cableProducts.map((product, index) => (
+            {cableProducts.map((product, index) => {
+              const displayPrice = getDisplayPrice(product);
+              return (
               <ScrollReveal key={product.id} animation="fade-up" delay={index * 100}>
                 <div className="flex flex-col items-center text-center h-full">
                   <div className="relative w-full mb-6 flex items-center justify-center" style={{ minHeight: '400px' }}>
@@ -229,7 +286,7 @@ export default function ReferenceCablesPage() {
                       {product.title}
                     </h3>
                     <p className="text-lg text-gray-600 mb-6">
-                      {product.price}
+                      {displayPrice}
                     </p>
                     <div className="mt-auto w-full">
                       <ProductActionButtons
@@ -237,7 +294,7 @@ export default function ReferenceCablesPage() {
                           id: product.id,
                           handle: product.handle,
                           title: product.title,
-                          price: product.price,
+                          price: displayPrice,
                           image: product.image,
                         }}
                         onPrimary={() => openProductDetail(product)}
@@ -247,7 +304,8 @@ export default function ReferenceCablesPage() {
                   </div>
                 </div>
               </ScrollReveal>
-            ))}
+            );
+            })}
           </div>
         </div>
       </section>
@@ -298,7 +356,7 @@ export default function ReferenceCablesPage() {
                     {selectedProduct.title}
                   </h2>
                   <p className="text-xl text-gray-900 mb-8">
-                    {selectedProduct.price}
+                    {getOverlayPrice()}
                   </p>
                   <div className="space-y-4 text-gray-700 leading-relaxed">
                     <p>{selectedProduct.description}</p>

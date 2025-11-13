@@ -1,19 +1,21 @@
-'use client';
+"use client";
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { LowtherForLifeSection } from '@/components/lowther-for-life-section';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { X } from 'lucide-react';
 import { ProductActionButtons } from '@/components/product-action-buttons';
+import { useShopifyCollection } from '@/hooks/use-shopify-collection';
+import { formatPrice, type ShopifyProduct } from '@/lib/shopify-storefront';
 
 // Product data for PX4 Amplifier
 const px4Products = [
   {
     id: 'px4-green-push-pull',
-    handle: 'px4-green-push-pull',
+    handle: 'lowther-px4-valve-amplifier',
     title: 'PX4 Green/Black',
     price: 'From £12,000*',
     image: '/images/ensemble/px4-amplifier/gallery/Green-Lowther-PX4-Tube-Amplifier-transparent.avif',
@@ -61,6 +63,20 @@ export default function PX4AmplifierPage() {
   const [selectedColor, setSelectedColor] = useState<string>('green');
   const [selectedTopology, setSelectedTopology] = useState<string>('push-pull');
   const [quantity, setQuantity] = useState<number>(1);
+  const [selectedShopifyProduct, setSelectedShopifyProduct] = useState<ShopifyProduct | null>(null);
+
+  const { productMap } = useShopifyCollection('accessories');
+
+  const getDisplayPrice = (product: typeof px4Products[number]) => {
+    const shopifyMatch = productMap.get(product.handle ?? product.id);
+    if (shopifyMatch) {
+      return formatPrice(
+        shopifyMatch.priceRange.minVariantPrice.amount,
+        shopifyMatch.priceRange.minVariantPrice.currencyCode,
+      );
+    }
+    return product.price;
+  };
 
   const openGallery = (index: number) => {
     setSelectedImage(index);
@@ -83,12 +99,17 @@ export default function PX4AmplifierPage() {
 
   const openProductDetail = (product: typeof px4Products[0]) => {
     setSelectedProduct(product);
+    const match = productMap.get(product.handle ?? product.id) ?? null;
+    setSelectedShopifyProduct(match);
     setTimeout(() => setIsProductOpen(true), 50);
   };
 
   const closeProductDetail = () => {
     setIsProductOpen(false);
-    setTimeout(() => setSelectedProduct(null), 600);
+    setTimeout(() => {
+      setSelectedProduct(null);
+      setSelectedShopifyProduct(null);
+    }, 600);
   };
 
   const handleQuantityChange = (value: number) => {
@@ -96,6 +117,23 @@ export default function PX4AmplifierPage() {
       setQuantity(value);
     }
   };
+
+  const getOverlayPrice = () => {
+    if (selectedShopifyProduct) {
+      return formatPrice(
+        selectedShopifyProduct.priceRange.minVariantPrice.amount,
+        selectedShopifyProduct.priceRange.minVariantPrice.currencyCode,
+      );
+    }
+    return selectedProduct?.price ?? '';
+  };
+
+  useEffect(() => {
+    if (selectedProduct) {
+      const match = productMap.get(selectedProduct.handle ?? selectedProduct.id) ?? null;
+      setSelectedShopifyProduct(match);
+    }
+  }, [productMap, selectedProduct]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -254,7 +292,9 @@ export default function PX4AmplifierPage() {
           </ScrollReveal>
 
           <div className="grid grid-cols-1 gap-12 mb-16">
-            {px4Products.map((product, index) => (
+            {px4Products.map((product, index) => {
+              const displayPrice = getDisplayPrice(product);
+              return (
               <ScrollReveal key={product.id} animation="fade-up" delay={index * 100}>
                 <div className="flex flex-col items-center text-center">
                   <div className="relative w-full mb-6 overflow-hidden max-w-2xl">
@@ -270,14 +310,14 @@ export default function PX4AmplifierPage() {
                     {product.title}
                   </h3>
                   <p className="text-lg text-gray-600 mb-6">
-                    {product.price}
+                    {displayPrice}
                   </p>
                   <ProductActionButtons
                     product={{
                       id: product.id,
                       handle: product.handle ?? product.id,
                       title: product.title,
-                      price: product.price,
+                      price: displayPrice,
                       image: product.image,
                     }}
                     onPrimary={() => openProductDetail(product)}
@@ -285,7 +325,8 @@ export default function PX4AmplifierPage() {
                   />
                 </div>
               </ScrollReveal>
-            ))}
+            );
+            })}
           </div>
 
           <ScrollReveal animation="fade-up">
@@ -368,7 +409,7 @@ export default function PX4AmplifierPage() {
                     {selectedProduct.title}
                   </h2>
                   <p className="text-xl text-gray-900 mb-8">
-                    {selectedProduct.price}
+                    {getOverlayPrice()}
                   </p>
                 </div>
 
