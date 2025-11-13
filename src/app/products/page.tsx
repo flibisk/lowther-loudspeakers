@@ -95,6 +95,13 @@ const collections = [
     description: "Our flagship collection representing the pinnacle of acoustic achievement.",
     image: "/images/Menu/instruments/grand-opera-collection.jpg",
     href: "/collection/grand-opera"
+  },
+  {
+    id: "super-tweeter",
+    title: "The Lowther Supertweeter",
+    description: "Extends the final octave with DX or PM magnet assemblies for seamless integration.",
+    image: "/images/Menu/instruments/super-tweeter.jpg",
+    href: "/collection/super-tweeter"
   }
 ];
 

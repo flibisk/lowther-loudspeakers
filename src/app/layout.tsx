@@ -79,6 +79,7 @@ const NAV = [
     { label: 'Grand Opera', href: '/collection/grand-opera' },
     { label: 'Philharmonic', href: '/collection/philharmonic' },
     { label: 'Concert', href: '/collection/concert' },
+    { label: 'Supertweeter', href: '/collection/super-tweeter' },
   ]},
   { label: 'Cables', href: '/category/cables' },
   { label: 'Build', href: '/build-a-lowther' },
