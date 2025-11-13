@@ -155,13 +155,26 @@ export default function SuperTweeterPage() {
   }, [productMap, selectedProduct]);
 
   const magnetOptionName = useMemo(() => {
-    if (!selectedShopifyProduct?.options?.length) return "Magnet";
+    const variants = selectedShopifyProduct?.variants ?? [];
+    if (!variants.length) return "Magnet";
+
+    const optionNames = new Set<string>();
+    for (const variant of variants) {
+      for (const option of variant.selectedOptions) {
+        optionNames.add(option.name);
+      }
+    }
+
+    if (!optionNames.size) {
+      return "Magnet";
+    }
+
     const normalize = (value: string) => value.trim().toLowerCase().replace(/[^a-z0-9]/g, "");
-    const match =
-      selectedShopifyProduct.options.find((option) =>
-        normalize(option.name).includes("magnet"),
-      )?.name ?? selectedShopifyProduct.options[0].name;
-    return match;
+    const magnetName =
+      Array.from(optionNames).find((name) => normalize(name).includes("magnet")) ??
+      Array.from(optionNames)[0];
+
+    return magnetName ?? "Magnet";
   }, [selectedShopifyProduct]);
 
   const getCurrentVariant = (): ShopifyVariant | undefined => {
