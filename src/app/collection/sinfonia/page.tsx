@@ -626,7 +626,7 @@ export default function SinfoniaPage() {
                       <div className="flex items-center gap-3 w-full">
                         <Button
                           size="lg"
-                          className="flex-1 bg-white hover:bg-black text-black hover:text-white border border-black font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
+                          className="flex-1 h-12 bg-white hover:bg-black text-black hover:text-white border border-black font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
                           onClick={() => openProductDetail(product)}
                         >
                           LEARN MORE
