@@ -7,12 +7,12 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { fullName, email, phone, address, referrer, questions, speakerName } = body;
+    const { fullName, email, phone, country, address, referrer, questions, speakerName } = body;
 
     // Validate required fields
-    if (!fullName || !email) {
+    if (!fullName || !email || !country) {
       return NextResponse.json(
-        { success: false, message: 'Name and email are required' },
+        { success: false, message: 'Name, email, and country are required' },
         { status: 400 }
       );
     }
@@ -129,6 +129,11 @@ export async function POST(request: NextRequest) {
                 <div class="value" style="white-space: pre-wrap;">${address}</div>
               </div>
               ` : ''}
+
+              <div class="field">
+                <div class="label">Country</div>
+                <div class="value">${country}</div>
+              </div>
               
               ${referrer ? `
               <div class="field">
@@ -184,6 +189,7 @@ export async function POST(request: NextRequest) {
           custom_fields: [
             { name: 'full_name', value: fullName },
             { name: 'phone', value: phone || '' },
+            { name: 'country', value: country },
             { name: 'speaker_interest', value: speakerName },
             { name: 'lead_type', value: 'Commission Request' },
           ],

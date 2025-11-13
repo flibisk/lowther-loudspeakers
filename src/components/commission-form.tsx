@@ -14,6 +14,7 @@ export function CommissionForm({ isOpen, onClose, speakerName }: CommissionFormP
     fullName: '',
     email: '',
     phone: '',
+    country: '',
     address: '',
     referrer: '',
     questions: ''
@@ -54,6 +55,7 @@ export function CommissionForm({ isOpen, onClose, speakerName }: CommissionFormP
           fullName: '',
           email: '',
           phone: '',
+          country: '',
           address: '',
           referrer: '',
           questions: ''
@@ -180,6 +182,23 @@ export function CommissionForm({ isOpen, onClose, speakerName }: CommissionFormP
                 placeholder="+44 20 1234 5678"
               />
             </div>
+
+          {/* Country */}
+          <div>
+            <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-2">
+              Country *
+            </label>
+            <input
+              type="text"
+              id="country"
+              name="country"
+              value={formData.country}
+              onChange={handleChange}
+              required
+              className="w-full p-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#c59862] focus:border-transparent"
+              placeholder="Where will your Lowthers live?"
+            />
+          </div>
 
             {/* Address */}
             <div>
