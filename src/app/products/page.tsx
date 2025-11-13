@@ -100,7 +100,7 @@ const collections = [
     id: "super-tweeter",
     title: "The Lowther Supertweeter",
     description: "Extends the final octave with DX or PM magnet assemblies for seamless integration.",
-    image: "/images/Menu/instruments/super-tweeter.jpg",
+    image: "/images/drive-units/super-tweeter/gallery/Super Tweeter - Product Image.jpg",
     href: "/collection/super-tweeter"
   }
 ];
