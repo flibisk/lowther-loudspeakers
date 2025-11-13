@@ -335,6 +335,10 @@ export default function PhasePlugsPage() {
                   <Button
                     size="lg"
                     className="w-full bg-white hover:bg-black text-black hover:text-white border border-black font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
+                    onClick={() => {
+                      closeProductDetail();
+                      window.location.href = '/book-appointment';
+                    }}
                   >
                     Book an Appointment
                   </Button>

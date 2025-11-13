@@ -3,17 +3,31 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { ScrollReveal } from '@/components/scroll-reveal';
 
+type AppointmentType = 'phone' | 'visit';
+
+interface AppointmentFormState {
+  appointmentType: AppointmentType;
+  name: string;
+  phone: string;
+  email: string;
+  country: string;
+  date: string;
+  time: string;
+  message: string;
+}
+
 export default function BookAppointmentPage() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<AppointmentFormState>({
+    appointmentType: 'phone',
     name: '',
-    email: '',
     phone: '',
-    preferredDate: '',
-    preferredTime: '',
-    location: 'norfolk',
-    interest: '',
+    email: '',
+    country: '',
+    date: '',
+    time: '',
     message: '',
   });
 
@@ -24,11 +38,8 @@ export default function BookAppointmentPage() {
     message: string;
   }>({ type: null, message: '' });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+  const updateForm = (field: keyof AppointmentFormState, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,13 +47,36 @@ export default function BookAppointmentPage() {
     setIsSubmitting(true);
     setSubmitStatus({ type: null, message: '' });
 
+    const location = formData.appointmentType === 'visit' ? 'norfolk' : 'phone_call';
+    const interest =
+      formData.appointmentType === 'visit' ? 'Listening Room Visit' : 'Phone Consultation';
+
+    const messageSegments = [];
+    if (formData.country) {
+      messageSegments.push(`Country: ${formData.country}`);
+    }
+    if (formData.message) {
+      messageSegments.push(formData.message);
+    }
+
+    const apiPayload = {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      preferredDate: formData.date,
+      preferredTime: formData.time,
+      location,
+      interest,
+      message: messageSegments.join('\n\n'),
+    };
+
     try {
       const response = await fetch('/api/book-appointment', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(apiPayload),
       });
 
       const data = await response.json();
@@ -52,6 +86,16 @@ export default function BookAppointmentPage() {
         setSubmitStatus({
           type: 'success',
           message: data.message || 'Your appointment request has been sent successfully!',
+        });
+        setFormData({
+          appointmentType: 'phone',
+          name: '',
+          phone: '',
+          email: '',
+          country: '',
+          date: '',
+          time: '',
+          message: '',
         });
       } else {
         setSubmitStatus({
@@ -78,7 +122,7 @@ export default function BookAppointmentPage() {
       {/* Hero Banner */}
       <section data-surface="dark" className="relative h-[60vh] overflow-hidden">
         <Image
-          src="/images/speakers/hegeman/gallery/Hegeman - Detail Shot.jpg"
+          src="/images/listening-rooms/hero/Edilia-in-a-listening-room.webp"
           alt="Book an Appointment"
           fill
           className="absolute inset-0 h-full w-full object-cover"
@@ -97,7 +141,7 @@ export default function BookAppointmentPage() {
           </h1>
           
           <p className="text-xl leading-relaxed">
-            Experience Lowther in person at our Norfolk atelier or London listening room.
+            Experience Lowther in person or chat to a Lowther expert about finding your perfect speaker.
           </p>
         </div>
       </section>
@@ -106,18 +150,13 @@ export default function BookAppointmentPage() {
       <section data-surface="light" className="py-16 md:py-24 bg-white">
         <div className="max-w-4xl mx-auto px-6 sm:px-8 lg:px-12">
           <ScrollReveal animation="fade-up">
-            <div className="space-y-6 text-center">
+            <div className="space-y-4 text-center">
               <h2 className="font-display text-3xl md:text-4xl leading-tight" style={{ color: '#c59862' }}>
-                Visit Our Listening Rooms
+                Book some Lowther Time
               </h2>
-              <div className="space-y-4 text-lg text-gray-700 leading-relaxed">
-                <p>
-                  We invite you to experience the legendary Lowther sound firsthand. Whether you're considering a purchase, seeking advice on a custom build, or simply wish to hear our instruments in person, we'd be delighted to welcome you.
-                </p>
-                <p>
-                  Our Norfolk workshop offers an intimate setting to explore our complete range, while our London listening room provides a convenient city location for demonstrations.
-                </p>
-              </div>
+              <p className="text-lg text-gray-700 leading-relaxed">
+                Visit one of our listening rooms or arrange a time to chat about your perfect Lowther speaker.
+              </p>
             </div>
           </ScrollReveal>
         </div>
@@ -128,163 +167,162 @@ export default function BookAppointmentPage() {
         <div className="max-w-3xl mx-auto px-6 sm:px-8 lg:px-12">
           <ScrollReveal animation="fade-up">
             {!submitted ? (
-              <form onSubmit={handleSubmit} className="space-y-8">
+              <form onSubmit={handleSubmit} className="space-y-8 bg-white p-8 md:p-10 shadow-sm rounded-sm">
+                {/* Appointment Type */}
+                <div>
+                  <span className="block text-sm font-medium text-gray-700 mb-3">
+                    I would like to:
+                  </span>
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
+                    <label className="flex items-center text-sm text-gray-700">
+                      <input
+                        type="radio"
+                        name="appointmentType"
+                        value="phone"
+                        checked={formData.appointmentType === 'phone'}
+                        onChange={(e) => updateForm('appointmentType', e.target.value)}
+                        className="mr-2 h-4 w-4"
+                      />
+                      Schedule a phone call
+                    </label>
+                    <label className="flex items-center text-sm text-gray-700">
+                      <input
+                        type="radio"
+                        name="appointmentType"
+                        value="visit"
+                        checked={formData.appointmentType === 'visit'}
+                        onChange={(e) => updateForm('appointmentType', e.target.value)}
+                        className="mr-2 h-4 w-4"
+                      />
+                      Arrange a listening room visit
+                    </label>
+                  </div>
+                </div>
+
+                {/* Personal Details */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Name */}
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                      Full Name <span className="text-red-500">*</span>
+                      Full Name *
                     </label>
-                    <input
-                      type="text"
+                    <Input
                       id="name"
-                      name="name"
+                      type="text"
                       required
                       value={formData.name}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black"
+                      onChange={(e) => updateForm('name', e.target.value)}
+                      className="w-full"
                     />
                   </div>
-
-                  {/* Email */}
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                      Email Address <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      required
-                      value={formData.email}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black"
-                    />
-                  </div>
-
-                  {/* Phone */}
                   <div>
                     <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                      Phone Number
+                      Phone Number *
                     </label>
-                    <input
-                      type="tel"
+                    <Input
                       id="phone"
-                      name="phone"
+                      type="tel"
+                      required
                       value={formData.phone}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black"
+                      onChange={(e) => updateForm('phone', e.target.value)}
+                      className="w-full"
                     />
                   </div>
-
-                  {/* Location */}
                   <div>
-                    <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-2">
-                      Preferred Location <span className="text-red-500">*</span>
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                      Email Address *
                     </label>
-                    <select
-                      id="location"
-                      name="location"
+                    <Input
+                      id="email"
+                      type="email"
                       required
-                      value={formData.location}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black"
-                    >
-                      <option value="norfolk">Norfolk Workshop</option>
-                      <option value="london">London Listening Room</option>
-                    </select>
+                      value={formData.email}
+                      onChange={(e) => updateForm('email', e.target.value)}
+                      className="w-full"
+                    />
                   </div>
-
-                  {/* Preferred Date */}
                   <div>
-                    <label htmlFor="preferredDate" className="block text-sm font-medium text-gray-700 mb-2">
-                      Preferred Date <span className="text-red-500">*</span>
+                    <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-2">
+                      Country *
                     </label>
-                    <input
+                    <Input
+                      id="country"
+                      type="text"
+                      required
+                      value={formData.country}
+                      onChange={(e) => updateForm('country', e.target.value)}
+                      className="w-full"
+                    />
+                  </div>
+                </div>
+
+                {/* Date & Time */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-2">
+                      Preferred Date *
+                    </label>
+                    <Input
+                      id="date"
                       type="date"
-                      id="preferredDate"
-                      name="preferredDate"
                       required
-                      value={formData.preferredDate}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black"
+                      value={formData.date}
+                      onChange={(e) => updateForm('date', e.target.value)}
+                      className="w-full [color-scheme:light]"
                     />
                   </div>
-
-                  {/* Preferred Time */}
                   <div>
-                    <label htmlFor="preferredTime" className="block text-sm font-medium text-gray-700 mb-2">
-                      Preferred Time
+                    <label htmlFor="time" className="block text-sm font-medium text-gray-700 mb-2">
+                      Preferred Time *
                     </label>
-                    <select
-                      id="preferredTime"
-                      name="preferredTime"
-                      value={formData.preferredTime}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black"
-                    >
-                      <option value="">Select a time</option>
-                      <option value="morning">Morning (9:00 - 12:00)</option>
-                      <option value="afternoon">Afternoon (12:00 - 17:00)</option>
-                      <option value="evening">Evening (17:00 - 19:00)</option>
-                    </select>
+                    <Input
+                      id="time"
+                      type="time"
+                      required
+                      value={formData.time}
+                      onChange={(e) => updateForm('time', e.target.value)}
+                      className="w-full [color-scheme:light]"
+                    />
                   </div>
                 </div>
 
-                {/* Interest */}
-                <div>
-                  <label htmlFor="interest" className="block text-sm font-medium text-gray-700 mb-2">
-                    What are you interested in?
-                  </label>
-                  <select
-                    id="interest"
-                    name="interest"
-                    value={formData.interest}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black"
-                  >
-                    <option value="">Please select</option>
-                    <option value="loudspeakers">Loudspeakers</option>
-                    <option value="drive-units">Drive Units</option>
-                    <option value="custom-build">Custom Build Consultation</option>
-                    <option value="repairs">Vintage Repairs</option>
-                    <option value="general">General Inquiry</option>
-                  </select>
-                </div>
-
-                {/* Message */}
+                {/* Additional Message */}
                 <div>
                   <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
                     Additional Information
                   </label>
                   <textarea
                     id="message"
-                    name="message"
-                    rows={5}
+                    rows={4}
                     value={formData.message}
-                    onChange={handleChange}
-                    placeholder="Please tell us a bit more about your visit..."
+                    onChange={(e) => updateForm('message', e.target.value)}
+                    placeholder="Tell us about the system you're building, the music you love, or anything you'd like us to prepare for."
                     className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black"
                   />
                 </div>
 
-                {/* Submit Status Message */}
+                {/* Status */}
                 {submitStatus.type && (
-                  <div className={`p-4 rounded ${
-                    submitStatus.type === 'success' ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'
-                  }`}>
+                  <div
+                    className={`p-4 rounded ${
+                      submitStatus.type === 'success'
+                        ? 'bg-green-50 text-green-800 border border-green-200'
+                        : 'bg-red-50 text-red-800 border border-red-200'
+                    }`}
+                  >
                     {submitStatus.message}
                   </div>
                 )}
 
                 {/* Submit Button */}
-                <div className="flex justify-center pt-4">
+                <div className="pt-2">
                   <Button
                     type="submit"
+                    variant="black"
+                    size="lowther"
+                    className="w-full disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={isSubmitting}
-                    className="bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 px-12 py-6 uppercase disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {isSubmitting ? 'Sending...' : 'Submit Request'}
+                    {isSubmitting ? 'Sending...' : 'Submit Appointment Request'}
                   </Button>
                 </div>
               </form>
@@ -309,10 +347,13 @@ export default function BookAppointmentPage() {
                   Thank You
                 </h3>
                 <p className="text-lg text-gray-700 mb-8">
-                  We've received your appointment request. A member of our team will be in touch shortly to confirm your visit.
+                  We've received your appointment request. A member of the team will be in touch shortly to confirm the details.
                 </p>
                 <Button
-                  onClick={() => setSubmitted(false)}
+                  onClick={() => {
+                    setSubmitted(false);
+                    setSubmitStatus({ type: null, message: '' });
+                  }}
                   className="bg-white text-black hover:bg-[#c59862] hover:text-white border border-black font-sarabun text-xs tracking-[3px] transition-all duration-300 px-8 py-4 uppercase"
                 >
                   Submit Another Request
