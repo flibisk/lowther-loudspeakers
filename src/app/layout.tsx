@@ -9,6 +9,8 @@ import { CartProvider } from "@/contexts/cart-context";
 import { WishlistProvider } from "@/contexts/wishlist-context";
 import "./globals.css";
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.lowtherloudspeakers.com";
+
 export const metadata: Metadata = {
   title: "Lowther Loudspeakers - Handcrafted Excellence",
   description: "Discover the finest handcrafted loudspeakers from Lowther Loudspeakers. Masterpieces of acoustic engineering built to last a lifetime.",
@@ -21,17 +23,17 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://lowtherloudspeakers.com"),
+  metadataBase: new URL(siteUrl),
   openGraph: {
     type: "website",
     locale: "en_GB",
-    url: "/",
+    url: siteUrl,
     title: "Lowther Loudspeakers - Handcrafted Excellence",
     description: "Discover the finest handcrafted loudspeakers from Lowther Loudspeakers. Masterpieces of acoustic engineering built to last a lifetime.",
     siteName: "Lowther Loudspeakers",
     images: [
       {
-        url: "/images/og/default.jpg",
+        url: `${siteUrl}/images/og/default.jpg`,
         width: 1200,
         height: 630,
         alt: "Lowther Loudspeakers - Handcrafted Excellence",
@@ -42,7 +44,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Lowther Loudspeakers - Handcrafted Excellence",
     description: "Discover the finest handcrafted loudspeakers from Lowther Loudspeakers.",
-    images: ["/images/og/default.jpg"],
+    images: [`${siteUrl}/images/og/default.jpg`],
   },
   icons: {
     icon: [

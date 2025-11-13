@@ -189,7 +189,7 @@ export function Footer() {
               <Link href="/shipping" className="text-white hover:text-[#c59862] transition-colors text-sm">
                 Shipping and Returns
               </Link>
-              <Link href="/support" className="text-white hover:text-[#c59862] transition-colors text-sm">
+              <Link href="/contact" className="text-white hover:text-[#c59862] transition-colors text-sm">
                 Support
               </Link>
             </div>
