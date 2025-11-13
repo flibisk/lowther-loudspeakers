@@ -29,6 +29,7 @@ export async function POST(request: NextRequest) {
     // Use configured email or fallback to sandbox
     const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
     const contactEmail = process.env.CONTACT_EMAIL || 'social@lowtherloudspeakers.com';
+    const secondaryEmail = process.env.RESEND_SECONDARY_EMAIL || 'hello@lowtherloudspeakers.com';
 
     // Format location for display
     const locationName = 
@@ -43,7 +44,7 @@ export async function POST(request: NextRequest) {
     // Send email via Resend
     const { data, error } = await resend.emails.send({
       from: `Lowther Website <${fromEmail}>`,
-      to: contactEmail,
+      to: [contactEmail, secondaryEmail],
       replyTo: email,
       subject: `Appointment Request: ${locationName} - ${name}`,
       html: `

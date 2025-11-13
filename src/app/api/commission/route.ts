@@ -30,11 +30,12 @@ export async function POST(request: NextRequest) {
     // Change this to your verified domain once ready
     const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
     const contactEmail = process.env.CONTACT_EMAIL || 'social@lowtherloudspeakers.com';
+    const secondaryEmail = process.env.RESEND_SECONDARY_EMAIL || 'hello@lowtherloudspeakers.com';
 
     // Send email via Resend
     const { data, error } = await resend.emails.send({
       from: `Lowther Website <${fromEmail}>`,
-      to: contactEmail,
+      to: [contactEmail, secondaryEmail],
       replyTo: email,
       subject: `Commission Request: ${speakerName} from ${fullName}`,
       html: `
