@@ -10,6 +10,7 @@ import { X } from 'lucide-react';
 import { ProductActionButtons } from '@/components/product-action-buttons';
 import { useShopifyCollection } from '@/hooks/use-shopify-collection';
 import { formatPrice, type ShopifyProduct } from '@/lib/shopify-storefront';
+import { CommissionForm } from '@/components/commission-form';
 
 // Product data for Grand Opera Collection drive units
 const grandOperaProducts = [
@@ -105,7 +106,7 @@ const grandOperaCraftsmanshipContent = [
   {
     title: 'Custom Metalwork',
     description: 'The Grand Opera Collection features bespoke metalwork crafted from the finest permalloys and soft magnetic irons available. These ultra-high-grade materials, where absolute performance is essential, are precision-machined to tolerances that exceed industry standards, creating the ultimate magnetic circuit for uncompromising sonic purity.',
-    image: '/images/drive-units/grand-opera-collection/gallery/grand-opera-PM4A-display1.avif',
+    image: '/images/drive-units/grand-opera-collection/gallery/Grand-Opera-Collection-Field-Coil-2.avif',
   },
   {
     title: 'Hand-Machined Matched Frames',
@@ -115,7 +116,7 @@ const grandOperaCraftsmanshipContent = [
   {
     title: 'Custom Cone Improvements',
     description: 'The Grand Opera Collection employs our most advanced cone treatment processes, developed exclusively for these flagship instruments. Enhanced structural refinements and proprietary formulations deliver unprecedented clarity, resolution, and tonal accuracy across the entire frequency spectrum.',
-    image: '/images/drive-units/grand-opera-collection/gallery/grand-opera-Field-Coil-display1.avif',
+    image: '/images/drive-units/grand-opera-collection/gallery/Grand-Opera-Collection-Paper-Cones.avif',
   },
 ];
 
@@ -134,6 +135,7 @@ export default function GrandOperaCollectionPage() {
   const [voiceCoil, setVoiceCoil] = useState<{ [key: string]: string }>({});
   const [impedance, setImpedance] = useState<{ [key: string]: string }>({});
   const [selectedShopifyProduct, setSelectedShopifyProduct] = useState<ShopifyProduct | null>(null);
+  const [isCommissionFormOpen, setIsCommissionFormOpen] = useState(false);
 
   const { productMap } = useShopifyCollection('the-grand-opera-collection');
 
@@ -200,6 +202,12 @@ export default function GrandOperaCollectionPage() {
       setSelectedShopifyProduct(match);
     }
   }, [productMap, selectedProduct]);
+
+  useEffect(() => {
+    if (!isProductOpen) {
+      setIsCommissionFormOpen(false);
+    }
+  }, [isProductOpen]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -645,6 +653,7 @@ export default function GrandOperaCollectionPage() {
                   <Button
                     size="lg"
                     className="w-full bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
+                    onClick={() => setIsCommissionFormOpen(true)}
                   >
                     Submit Commission Request
                   </Button>
@@ -660,6 +669,12 @@ export default function GrandOperaCollectionPage() {
           </div>
         </div>
       )}
+
+      <CommissionForm
+        isOpen={isCommissionFormOpen}
+        onClose={() => setIsCommissionFormOpen(false)}
+        speakerName={selectedProduct?.title ?? 'Grand Opera Commission'}
+      />
     </div>
   );
 }

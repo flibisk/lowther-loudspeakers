@@ -1100,16 +1100,37 @@ export function formatPrice(amount: string, currencyCode: string): string {
 /**
  * Find variant by selected options
  */
+function normalizeOptionName(name: string): string {
+  const trimmed = name.trim().toLowerCase();
+  const standardized = trimmed.replace(/impedence/g, 'impedance');
+  return standardized.replace(/[^a-z0-9]/g, '');
+}
+
+function normalizeOptionValue(value: string): string {
+  return value.trim().toLowerCase();
+}
+
 export function findVariantByOptions(
   variants: ShopifyVariant[],
   options: Record<string, string>
 ): ShopifyVariant | undefined {
-  return variants.find(variant => {
-    return Object.entries(options).every(([optionName, optionValue]) => {
-      return variant.selectedOptions.some(
-        opt => opt.name === optionName && opt.value === optionValue
-      );
-    });
+  const normalizedDesired = Object.entries(options).map(([name, value]) => ({
+    name: normalizeOptionName(name),
+    value: normalizeOptionValue(value),
+  }));
+
+  return variants.find((variant) => {
+    const normalizedVariantOptions = variant.selectedOptions.map((opt) => ({
+      name: normalizeOptionName(opt.name),
+      value: normalizeOptionValue(opt.value),
+    }));
+
+    return normalizedDesired.every((desired) =>
+      normalizedVariantOptions.some(
+        (actual) =>
+          actual.name === desired.name && actual.value === desired.value,
+      ),
+    );
   });
 }
 

@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { LowtherForLifeSection } from '@/components/lowther-for-life-section';
@@ -177,6 +177,7 @@ export default function PhilharmonicCollectionPage() {
   const [voiceCoil, setVoiceCoil] = useState<{ [key: string]: string }>({});
   const [impedance, setImpedance] = useState<{ [key: string]: string }>({});
   const [selectedShopifyProduct, setSelectedShopifyProduct] = useState<ShopifyProduct | null>(null);
+  const [accessories, setAccessories] = useState<{ [key: string]: string }>({});
 
   const { productMap } = useShopifyCollection('the-philharmonic-collection');
 
@@ -234,12 +235,35 @@ export default function PhilharmonicCollectionPage() {
   const getProductQuantity = (productId: string) => quantity[productId] || 1;
   const getVoiceCoil = (productId: string) => voiceCoil[productId] || 'Aluminium';
   const getImpedance = (productId: string) => impedance[productId] || '8 Ohms';
+  const getAccessoryOption = (productId: string) => accessories[productId] || 'No Power Supply';
+  const isFieldCoilProduct = selectedProduct?.shopifyHandle === 'lowther-field-coil-philharmonic';
+  const fieldCoilOptions = useMemo(() => {
+    if (!selectedShopifyProduct || !isFieldCoilProduct) return [];
+    const values = new Set<string>();
+    selectedShopifyProduct.variants.forEach((variant) => {
+      variant.selectedOptions.forEach((opt) => {
+        if (opt.name.trim().toLowerCase().includes('accessories')) {
+          values.add(opt.value);
+        }
+      });
+    });
+    return Array.from(values);
+  }, [selectedShopifyProduct, isFieldCoilProduct]);
+  const availableFieldCoilOptions =
+    fieldCoilOptions.length > 0 ? fieldCoilOptions : ['No Power Supply', 'With Power Supply'];
   const getOverlayPrice = () => {
     if (selectedShopifyProduct) {
-      const variant = findVariantByOptions(selectedShopifyProduct.variants, {
-        'Voice Coil': selectedProduct ? getVoiceCoil(selectedProduct.id) : 'Aluminium',
-        'Impedance': selectedProduct ? getImpedance(selectedProduct.id) : '8 Ohms',
-      });
+      const variant = findVariantByOptions(
+        selectedShopifyProduct.variants,
+        selectedProduct?.shopifyHandle === 'lowther-field-coil-philharmonic'
+          ? {
+              Accessories: selectedProduct ? getAccessoryOption(selectedProduct.id) : 'No Power Supply',
+            }
+          : {
+              'Voice Coil': selectedProduct ? getVoiceCoil(selectedProduct.id) : 'Aluminium',
+              Impedance: selectedProduct ? getImpedance(selectedProduct.id) : '8 Ohms',
+            },
+      );
 
       if (variant) {
         return formatPrice(variant.price.amount, variant.price.currencyCode);
@@ -257,10 +281,17 @@ export default function PhilharmonicCollectionPage() {
     if (!selectedProduct) return;
 
     if (selectedShopifyProduct) {
-      const variant = findVariantByOptions(selectedShopifyProduct.variants, {
-        'Voice Coil': getVoiceCoil(selectedProduct.id),
-        'Impedance': getImpedance(selectedProduct.id),
-      });
+      const variant = findVariantByOptions(
+        selectedShopifyProduct.variants,
+        selectedProduct.shopifyHandle === 'lowther-field-coil-philharmonic'
+          ? {
+              Accessories: getAccessoryOption(selectedProduct.id),
+            }
+          : {
+              'Voice Coil': getVoiceCoil(selectedProduct.id),
+              Impedance: getImpedance(selectedProduct.id),
+            },
+      );
 
       if (!variant) {
         alert('Please select product options');
@@ -287,6 +318,19 @@ export default function PhilharmonicCollectionPage() {
       setSelectedShopifyProduct(match);
     }
   }, [productMap, selectedProduct]);
+
+  useEffect(() => {
+    if (
+      selectedProduct &&
+      selectedProduct.shopifyHandle === 'lowther-field-coil-philharmonic' &&
+      fieldCoilOptions.length > 0
+    ) {
+      setAccessories((prev) => ({
+        ...prev,
+        [selectedProduct.id]: prev[selectedProduct.id] ?? fieldCoilOptions[0],
+      }));
+    }
+  }, [selectedProduct, fieldCoilOptions]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -547,63 +591,90 @@ export default function PhilharmonicCollectionPage() {
 
                 {/* Configuration Options */}
                 <div className="space-y-6 mb-8">
-                  {/* Voice Coil */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-3">
-                      Voice Coil
-                    </label>
-                    <div className="flex gap-3">
-                      <button
-                        onClick={() => setVoiceCoil({ ...voiceCoil, [selectedProduct.id]: 'Aluminium' })}
-                        className={`flex-1 py-3 px-4 text-sm border rounded transition-all ${
-                          getVoiceCoil(selectedProduct.id) === 'Aluminium'
-                            ? 'bg-black text-white border-black'
-                            : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
-                        }`}
-                      >
-                        Aluminium
-                      </button>
-                      <button
-                        onClick={() => setVoiceCoil({ ...voiceCoil, [selectedProduct.id]: 'Silver' })}
-                        className={`flex-1 py-3 px-4 text-sm border rounded transition-all ${
-                          getVoiceCoil(selectedProduct.id) === 'Silver'
-                            ? 'bg-black text-white border-black'
-                            : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
-                        }`}
-                      >
-                        Silver
-                      </button>
+                  {isFieldCoilProduct ? (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-3">
+                        Power Supply
+                      </label>
+                      <div className="flex gap-3">
+                        {availableFieldCoilOptions.map((option) => (
+                          <button
+                            key={option}
+                            onClick={() =>
+                              setAccessories({ ...accessories, [selectedProduct.id]: option })
+                            }
+                            className={`flex-1 py-3 px-4 text-sm border rounded transition-all ${
+                              getAccessoryOption(selectedProduct.id) === option
+                                ? 'bg-black text-white border-black'
+                                : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
+                            }`}
+                          >
+                            {option}
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  ) : (
+                    <>
+                      {/* Voice Coil */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-3">
+                          Voice Coil
+                        </label>
+                        <div className="flex gap-3">
+                          <button
+                            onClick={() => setVoiceCoil({ ...voiceCoil, [selectedProduct.id]: 'Aluminium' })}
+                            className={`flex-1 py-3 px-4 text-sm border rounded transition-all ${
+                              getVoiceCoil(selectedProduct.id) === 'Aluminium'
+                                ? 'bg-black text-white border-black'
+                                : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
+                            }`}
+                          >
+                            Aluminium
+                          </button>
+                          <button
+                            onClick={() => setVoiceCoil({ ...voiceCoil, [selectedProduct.id]: 'Silver' })}
+                            className={`flex-1 py-3 px-4 text-sm border rounded transition-all ${
+                              getVoiceCoil(selectedProduct.id) === 'Silver'
+                                ? 'bg-black text-white border-black'
+                                : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
+                            }`}
+                          >
+                            Silver
+                          </button>
+                        </div>
+                      </div>
 
-                  {/* Impedance */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-3">
-                      Impedance
-                    </label>
-                    <div className="flex gap-3">
-                      <button
-                        onClick={() => setImpedance({ ...impedance, [selectedProduct.id]: '8 Ohms' })}
-                        className={`flex-1 py-3 px-4 text-sm border rounded transition-all ${
-                          getImpedance(selectedProduct.id) === '8 Ohms'
-                            ? 'bg-black text-white border-black'
-                            : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
-                        }`}
-                      >
-                        8 Ohms
-                      </button>
-                      <button
-                        onClick={() => setImpedance({ ...impedance, [selectedProduct.id]: '15 Ohms' })}
-                        className={`flex-1 py-3 px-4 text-sm border rounded transition-all ${
-                          getImpedance(selectedProduct.id) === '15 Ohms'
-                            ? 'bg-black text-white border-black'
-                            : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
-                        }`}
-                      >
-                        15 Ohms
-                      </button>
-                    </div>
-                  </div>
+                      {/* Impedance */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-3">
+                          Impedance
+                        </label>
+                        <div className="flex gap-3">
+                          <button
+                            onClick={() => setImpedance({ ...impedance, [selectedProduct.id]: '8 Ohms' })}
+                            className={`flex-1 py-3 px-4 text-sm border rounded transition-all ${
+                              getImpedance(selectedProduct.id) === '8 Ohms'
+                                ? 'bg-black text-white border-black'
+                                : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
+                            }`}
+                          >
+                            8 Ohms
+                          </button>
+                          <button
+                            onClick={() => setImpedance({ ...impedance, [selectedProduct.id]: '15 Ohms' })}
+                            className={`flex-1 py-3 px-4 text-sm border rounded transition-all ${
+                              getImpedance(selectedProduct.id) === '15 Ohms'
+                                ? 'bg-black text-white border-black'
+                                : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
+                            }`}
+                          >
+                            15 Ohms
+                          </button>
+                        </div>
+                      </div>
+                    </>
+                  )}
 
                   {/* Quantity */}
                   <div>

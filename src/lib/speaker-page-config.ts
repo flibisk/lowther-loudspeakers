@@ -530,14 +530,14 @@ export const speakerPageConfigs: { [key: string]: SpeakerPageConfig } = {
     ],
     pressReviews: [
       {
-        logo: '/images/speakers/hegeman/details/Hi-fi+ Logo.webp',
+        logo: '/images/speakers/almira/details/Hi-fi+ Logo.webp',
         quote: 'The Hegeman always shows you more of what\'s right with your recordings, rather than what\'s wrong with them.',
         author: 'Jimmy Hughes',
         publication: 'HiFi+',
         link: 'https://hifiplus.com/articles/lowther-hegeman-sound-reproducer-floorstanding-loudspeaker/'
       },
       {
-        logo: '/images/speakers/hegeman/details/PS Audio Logo.avif',
+        logo: '/images/speakers/hegeman/gallery/PS Audio Logo.avif',
         quote: 'the Lowther Hegeman speakers delivered scale and soundstage so lifelike and truly grand … so free of artifice that I could have been listening to Quad \'57s on steroids.',
         author: 'Ken Kessler',
         publication: 'PS Audio',
