@@ -2,7 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
 // Commission form handler - sends email via Resend and adds to Beehiiv
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resendApiKey = process.env.RESEND_API_KEY;
+const resend = resendApiKey ? new Resend(resendApiKey) : null;
+
+function logCommissionEvent(event: string, payload: Record<string, unknown>) {
+  console.log(`[commission] ${event}`, JSON.stringify(payload, null, 2));
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,21 +23,33 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if Resend API key is configured
-    if (!process.env.RESEND_API_KEY) {
-      console.error('RESEND_API_KEY is not configured');
+    const missingEnv: string[] = [];
+    if (!resendApiKey) missingEnv.push('RESEND_API_KEY');
+    if (!process.env.RESEND_FROM_EMAIL) missingEnv.push('RESEND_FROM_EMAIL');
+    if (!process.env.CONTACT_EMAIL) missingEnv.push('CONTACT_EMAIL');
+    if (!process.env.BEEHIIV_API_KEY) missingEnv.push('BEEHIIV_API_KEY');
+    if (!process.env.BEEHIIV_PUBLICATION_ID) missingEnv.push('BEEHIIV_PUBLICATION_ID');
+
+    if (missingEnv.length > 0 || !resend) {
+      console.error('Commission form misconfiguration', missingEnv);
       return NextResponse.json(
-        { success: false, message: 'Email service not configured. Please contact support.' },
+        { success: false, message: `Commission form configuration missing: ${missingEnv.join(', ')}` },
         { status: 500 }
       );
     }
 
-    // Use onboarding@resend.dev for testing until domain is verified
-    // Change this to your verified domain once ready
-    const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
-    const contactEmail = process.env.CONTACT_EMAIL || 'social@lowtherloudspeakers.com';
+    const fromEmail = process.env.RESEND_FROM_EMAIL!;
+    const contactEmail = process.env.CONTACT_EMAIL!;
+
+    logCommissionEvent('submission_received', {
+      fullName,
+      email,
+      phone,
+      speakerName,
+    });
 
     // Send email via Resend
-    const { data, error } = await resend.emails.send({
+    const resendResponse = await resend.emails.send({
       from: `Lowther Website <${fromEmail}>`,
       to: contactEmail,
       replyTo: email,
@@ -154,76 +171,68 @@ export async function POST(request: NextRequest) {
       `,
     });
 
-    if (error) {
-      console.error('Resend error:', error);
-      // Return more detailed error for debugging
-      const errorMessage = error.message || 'Failed to send commission request';
-      console.error('Full error details:', JSON.stringify(error, null, 2));
-      return NextResponse.json(
-        { 
-          success: false, 
-          message: process.env.NODE_ENV === 'development' 
-            ? `Error: ${errorMessage}` 
-            : 'Failed to send commission request. Please try again or contact us directly.' 
+    if (!resendResponse?.id) {
+      console.error('Resend error: missing message id', resendResponse);
+      throw new Error('Failed to send confirmation email via Resend');
+    }
+
+    logCommissionEvent('resend_success', { id: resendResponse.id });
+
+    const beehiivPayload = {
+      email,
+      reactivate_existing: false,
+      send_welcome_email: false,
+      utm_source: 'website',
+      utm_medium: 'commission_form',
+      utm_campaign: speakerName,
+      referring_site: 'lowtherloudspeakers.com',
+      custom_fields: [
+        { name: 'full_name', value: fullName },
+        { name: 'phone', value: phone || '' },
+        { name: 'speaker_interest', value: speakerName },
+        { name: 'lead_type', value: 'Commission Request' },
+      ],
+    };
+
+    const beehiivResponse = await fetch(
+      `https://api.beehiiv.com/v2/publications/${process.env.BEEHIIV_PUBLICATION_ID}/subscriptions`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${process.env.BEEHIIV_API_KEY}`,
         },
-        { status: 500 }
+        body: JSON.stringify(beehiivPayload),
+      },
+    );
+
+    const beehiivData = await beehiivResponse.json().catch(() => ({}));
+
+    if (!beehiivResponse.ok) {
+      console.error('Beehiiv API error', beehiivData);
+      throw new Error(
+        `Beehiiv subscription failed (${beehiivResponse.status}): ${JSON.stringify(beehiivData)}`,
       );
     }
 
-    // Add to Beehiiv subscriber list (optional, don't fail if it errors)
-    if (process.env.BEEHIIV_API_KEY && process.env.BEEHIIV_PUBLICATION_ID) {
-      try {
-        const beehiivPayload = {
-          email,
-          reactivate_existing: false,
-          send_welcome_email: false,
-          utm_source: 'website',
-          utm_medium: 'commission_form',
-          utm_campaign: speakerName,
-          referring_site: 'lowtherloudspeakers.com',
-          custom_fields: [
-            { name: 'full_name', value: fullName },
-            { name: 'phone', value: phone || '' },
-            { name: 'speaker_interest', value: speakerName },
-            { name: 'lead_type', value: 'Commission Request' },
-          ],
-        };
-
-        console.log('Sending to Beehiiv:', JSON.stringify(beehiivPayload, null, 2));
-
-        const beehiivResponse = await fetch(
-          `https://api.beehiiv.com/v2/publications/${process.env.BEEHIIV_PUBLICATION_ID}/subscriptions`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${process.env.BEEHIIV_API_KEY}`,
-            },
-            body: JSON.stringify(beehiivPayload),
-          }
-        );
-
-        const beehiivData = await beehiivResponse.json();
-
-        if (!beehiivResponse.ok) {
-          console.error('Beehiiv API error (non-fatal):', beehiivData);
-        } else {
-          console.log('Successfully added to Beehiiv:', beehiivData);
-        }
-      } catch (beehiivError) {
-        console.error('Beehiiv integration error (non-fatal):', beehiivError);
-      }
-    }
+    logCommissionEvent('beehiiv_success', beehiivData);
 
     return NextResponse.json({
       success: true,
       message: 'Thank you! Your commission request has been sent. We\'ll be in touch soon.',
-      data,
+      resendId: resendResponse.id,
+      beehiiv: beehiivData,
     });
   } catch (error) {
     console.error('Commission form error:', error);
     return NextResponse.json(
-      { success: false, message: 'An error occurred while processing your request' },
+      {
+        success: false,
+        message:
+          error instanceof Error
+            ? error.message
+            : 'An error occurred while processing your request',
+      },
       { status: 500 }
     );
   }
