@@ -19,7 +19,7 @@ export const METADATA_CONFIG: Record<string, PageMetadata> = {
   home: {
     title: "Handcrafted Excellence",
     description: "Discover the finest handcrafted loudspeakers from Lowther. Masterpieces of acoustic engineering built to last a lifetime.",
-    ogImage: "/images/og/home.jpg",
+    ogImage: "/images/og/default.jpg",
     keywords: ["handcrafted loudspeakers", "high-end audio", "audiophile", "British made"],
   },
   

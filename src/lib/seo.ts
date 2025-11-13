@@ -24,10 +24,16 @@ export function generateSEOMetadata({
   author,
 }: SEOProps): Metadata {
   const siteName = "Lowther Loudspeakers";
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://lowtherloudspeakers.com";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.lowtherloudspeakers.com";
   const fullTitle = title ? `${title} | ${siteName}` : siteName;
   const fullDescription = description || "Discover the finest handcrafted loudspeakers from Lowther Loudspeakers. Masterpieces of acoustic engineering built to last a lifetime.";
-  const fullImage = image ? `${siteUrl}${image}` : `${siteUrl}/images/og-default.jpg`;
+  const resolvedImage =
+    image?.startsWith('http://') || image?.startsWith('https://')
+      ? image
+      : image
+        ? `${siteUrl}${image}`
+        : `${siteUrl}/images/og/default.jpg`;
+  const fullImage = resolvedImage;
 
   const metadata: Metadata = {
     title: fullTitle,
