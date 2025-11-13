@@ -34,11 +34,21 @@ export function generateSEOMetadata({
         ? `${siteUrl}${image}`
         : `${siteUrl}/images/og/default.jpg`;
   const fullImage = resolvedImage;
+  const keywordList = [
+    "Lowther",
+    "loudspeakers",
+    "handcrafted",
+    "high-end audio",
+    "speakers",
+    "audiophile",
+    ...(keywords || []),
+  ];
+  const uniqueKeywords = Array.from(new Set(keywordList));
 
   const metadata: Metadata = {
     title: fullTitle,
     description: fullDescription,
-    keywords: ["Lowther", "loudspeakers", "handcrafted", "high-end audio", "speakers", "audiophile", ...keywords],
+    keywords: uniqueKeywords,
     authors: author ? [{ name: author }] : [{ name: siteName }],
     creator: siteName,
     publisher: siteName,

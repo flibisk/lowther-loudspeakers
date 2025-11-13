@@ -17,10 +17,16 @@ export interface PageMetadata {
 export const METADATA_CONFIG: Record<string, PageMetadata> = {
   // Core Pages
   home: {
-    title: "Handcrafted Excellence",
-    description: "Discover the finest handcrafted loudspeakers from Lowther. Masterpieces of acoustic engineering built to last a lifetime.",
+    title: "Lowther Loudspeakers | Handmade British High Fidelity Loudspeakers",
+    description: "Experience clear and natural sound from handmade British loudspeakers. Explore full range drive units, bespoke builds and legacy designs crafted for accuracy and long term performance.",
     ogImage: "/images/og/default.jpg",
-    keywords: ["handcrafted loudspeakers", "high-end audio", "audiophile", "British made"],
+    keywords: [
+      "handmade loudspeakers",
+      "british hi-fi",
+      "full range drive units",
+      "bespoke speaker builds",
+      "high fidelity audio"
+    ],
   },
   
   contact: {

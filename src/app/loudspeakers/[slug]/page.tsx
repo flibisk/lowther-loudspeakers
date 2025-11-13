@@ -47,11 +47,11 @@ export async function generateMetadata({ params }: SpeakerPageProps) {
     'acousta-quarter-wave': '/images/og/acousta-quarter-wave.png',
     'acousta-117': '/images/og/acousta-117.jpg',
     'edilia': '/images/og/edilia.jpg',
-    'almira': '/images/og/almira.webp',
-    'tp2': '/images/og/tp2.webp',
-    'audiovector': '/images/og/audiovector.webp',
-    'hegeman': '/images/og/hegeman.webp',
-    'voigt-horn': '/images/og/voigt-horn.avif'
+    'almira': '/images/og/almira.jpg',
+    'tp2': '/images/og/tp2.jpg',
+    'audiovector': '/images/og/audiovector.jpg',
+    'hegeman': '/images/og/hegeman.jpg',
+    'voigt-horn': '/images/og/voigt-horn.jpg'
   };
 
   const speakerKey = reverseSlugMapping[slug] || slug;
@@ -63,13 +63,13 @@ export async function generateMetadata({ params }: SpeakerPageProps) {
     };
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://lowtherloudspeakers.com';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.lowtherloudspeakers.com';
   const ogImage = ogImageMapping[slug] || '/images/og/default.jpg';
 
   return {
     title: speaker.seo.meta_title,
     description: speaker.seo.meta_description,
-    keywords: speaker.seo.keywords.join(', '),
+    keywords: speaker.seo.keywords,
     openGraph: {
       title: speaker.seo.meta_title,
       description: speaker.seo.meta_description,
@@ -88,7 +88,7 @@ export async function generateMetadata({ params }: SpeakerPageProps) {
       card: 'summary_large_image',
       title: speaker.seo.meta_title,
       description: speaker.seo.meta_description,
-      images: [ogImage],
+      images: [`${siteUrl}${ogImage}`],
     },
   };
 }
