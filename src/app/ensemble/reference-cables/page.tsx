@@ -7,11 +7,13 @@ import { ScrollReveal } from '@/components/scroll-reveal';
 import { LowtherForLifeSection } from '@/components/lowther-for-life-section';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { X } from 'lucide-react';
+import { ProductActionButtons } from '@/components/product-action-buttons';
 
 // Product data for Reference Cables
 const cableProducts = [
   {
     id: 'speaker-cables',
+    handle: 'speaker-cables',
     title: 'Lowther Speaker Cables',
     price: '£3,300.00',
     image: '/images/ensemble/reference-cables/gallery/Speaker-cables-transparent.avif',
@@ -25,6 +27,7 @@ const cableProducts = [
   },
   {
     id: 'rca-interconnects',
+    handle: 'rca-interconnects',
     title: 'Lowther RCA Interconnects',
     price: '£1,395.60',
     image: '/images/ensemble/reference-cables/gallery/RCA-Interconnects-transparent.avif',
@@ -38,6 +41,7 @@ const cableProducts = [
   },
   {
     id: 'spdif-cable',
+    handle: 'spdif-cable',
     title: 'Lowther SPDIF Cable',
     price: '£1,500.00',
     image: '/images/ensemble/reference-cables/gallery/SPDIF-holder-transparent.avif.jpg',
@@ -51,6 +55,7 @@ const cableProducts = [
   },
   {
     id: 'usb-cable',
+    handle: 'usb-cable',
     title: 'Lowther USB',
     price: '£1,500.00',
     image: '/images/ensemble/reference-cables/gallery/USB-cable-transparent.webp',
@@ -64,6 +69,7 @@ const cableProducts = [
   },
   {
     id: 'mains-cable',
+    handle: 'mains-cable',
     title: 'Lowther Mains Cable',
     price: '£1,995.60',
     image: '/images/ensemble/reference-cables/gallery/Mains-cable-transparent.avif',
@@ -77,6 +83,7 @@ const cableProducts = [
   },
   {
     id: 'mains-filter',
+    handle: 'mains-filter',
     title: 'Lowther Mains Filter',
     price: '£6,000.00',
     image: '/images/ensemble/reference-cables/gallery/Mains-filter-holder-transparent.jpg',
@@ -224,21 +231,18 @@ export default function ReferenceCablesPage() {
                     <p className="text-lg text-gray-600 mb-6">
                       {product.price}
                     </p>
-                    <div className="flex flex-col gap-3 w-full mt-auto">
-                      <Button 
-                        size="lg" 
-                        className="w-full bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
-                        onClick={() => openProductDetail(product)}
-                      >
-                        BUY NOW
-                      </Button>
-                      <Button 
-                        size="lg" 
-                        className="w-full bg-white hover:bg-black text-black hover:text-white border border-black font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
-                        onClick={() => openProductDetail(product)}
-                      >
-                        LEARN MORE
-                      </Button>
+                    <div className="mt-auto w-full">
+                      <ProductActionButtons
+                        product={{
+                          id: product.id,
+                          handle: product.handle,
+                          title: product.title,
+                          price: product.price,
+                          image: product.image,
+                        }}
+                        onPrimary={() => openProductDetail(product)}
+                        onSecondary={() => openProductDetail(product)}
+                      />
                     </div>
                   </div>
                 </div>

@@ -7,11 +7,13 @@ import { ScrollReveal } from '@/components/scroll-reveal';
 import { LowtherForLifeSection } from '@/components/lowther-for-life-section';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { X } from 'lucide-react';
+import { ProductActionButtons } from '@/components/product-action-buttons';
 
 // Product data for PX4 Amplifier
 const px4Products = [
   {
     id: 'px4-green-push-pull',
+    handle: 'px4-green-push-pull',
     title: 'PX4 Green/Black',
     price: 'From £12,000*',
     image: '/images/ensemble/px4-amplifier/gallery/Green-Lowther-PX4-Tube-Amplifier-transparent.avif',
@@ -270,22 +272,17 @@ export default function PX4AmplifierPage() {
                   <p className="text-lg text-gray-600 mb-6">
                     {product.price}
                   </p>
-                  <div className="flex flex-col gap-3">
-                    <Button 
-                      size="lg" 
-                      className="w-full bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
-                      onClick={() => openProductDetail(product)}
-                    >
-                      BUY NOW
-                    </Button>
-                    <Button 
-                      size="lg" 
-                      className="w-full bg-white hover:bg-black text-black hover:text-white border border-black font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
-                      onClick={() => openProductDetail(product)}
-                    >
-                      LEARN MORE
-                    </Button>
-                  </div>
+                  <ProductActionButtons
+                    product={{
+                      id: product.id,
+                      handle: product.handle ?? product.id,
+                      title: product.title,
+                      price: product.price,
+                      image: product.image,
+                    }}
+                    onPrimary={() => openProductDetail(product)}
+                    onSecondary={() => openProductDetail(product)}
+                  />
                 </div>
               </ScrollReveal>
             ))}

@@ -7,6 +7,7 @@ import { ScrollReveal } from '@/components/scroll-reveal';
 import { LowtherForLifeSection } from '@/components/lowther-for-life-section';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { X } from 'lucide-react';
+import { ProductActionButtons } from '@/components/product-action-buttons';
 
 export default function LowtherBadgesPage() {
   const [selectedProduct, setSelectedProduct] = useState<boolean>(false);
@@ -121,13 +122,17 @@ export default function LowtherBadgesPage() {
                   Price per pair
                 </p>
                 <div className="flex flex-col gap-3 w-full">
-                  <Button 
-                    size="lg" 
-                    className="w-full bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
-                    onClick={openProductDetail}
-                  >
-                    BUY NOW
-                  </Button>
+                  <ProductActionButtons
+                    product={{
+                      id: 'official-lowther-badges',
+                      handle: 'official-lowther-badges',
+                      title: 'Official Lowther Badges',
+                      price: '£60.00',
+                      image: '/images/ensemble/lowther-badges/hero/Official-Lowther-Badges-Hero.webp',
+                    }}
+                    onPrimary={openProductDetail}
+                    onSecondary={openProductDetail}
+                  />
                 </div>
               </div>
             </div>

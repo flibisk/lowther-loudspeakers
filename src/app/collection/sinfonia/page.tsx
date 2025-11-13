@@ -6,10 +6,10 @@ import { Button } from '@/components/ui/button';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { LowtherForLifeSection } from '@/components/lowther-for-life-section';
 import { Breadcrumbs } from '@/components/breadcrumbs';
-import { Heart, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { useCart } from '@/contexts/cart-context';
 import { useCurrency } from '@/contexts/currency-context';
-import { useWishlist } from '@/contexts/wishlist-context';
+import { ProductActionButtons } from '@/components/product-action-buttons';
 import {
   getCollectionProducts,
   formatPrice,
@@ -227,7 +227,6 @@ const sinfoniaCraftsmanshipContent = [
 export default function SinfoniaPage() {
   const { addItem, isLoading: cartLoading } = useCart();
   const { currency, region } = useCurrency();
-  const { addItem: addToWishlist, isInWishlist, removeItem: removeFromWishlist } = useWishlist();
   
   // Shopify products (optional enhancement)
   const [shopifyProducts, setShopifyProducts] = useState<ShopifyProduct[]>([]);
@@ -615,61 +614,17 @@ export default function SinfoniaPage() {
                     <p className="text-lg text-gray-600 mb-6">
                       From {displayPrice}*
                     </p>
-                    <div className="flex flex-col gap-3 w-full">
-                      <Button
-                        size="lg"
-                        className="w-full bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
-                        onClick={() => openProductDetail(product)}
-                      >
-                        BUY NOW
-                      </Button>
-                      <div className="flex items-center gap-3 w-full">
-                        <Button
-                          size="lg"
-                          className="flex-1 h-12 bg-white hover:bg-black text-black hover:text-white border border-black font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
-                          onClick={() => openProductDetail(product)}
-                        >
-                          LEARN MORE
-                        </Button>
-                        <button
-                          type="button"
-                          title={isInWishlist(product.id) ? 'Remove from wish list' : 'Save to wish list'}
-                          aria-label={isInWishlist(product.id) ? 'Remove from wish list' : 'Save to wish list'}
-                          className={`group relative flex h-12 w-12 items-center justify-center rounded border transition-all duration-200 ${
-                            isInWishlist(product.id)
-                              ? 'bg-[#c59862] border-[#c59862] text-white hover:bg-[#b78955]'
-                              : 'bg-white border-[#c59862] text-[#c59862] hover:bg-[#c59862] hover:text-white'
-                          }`}
-                          onClick={() => {
-                            if (isInWishlist(product.id)) {
-                              removeFromWishlist(product.id);
-                            } else {
-                              addToWishlist({
-                                id: product.id,
-                                handle: product.handle,
-                                title: product.title,
-                                price: displayPrice,
-                                image: product.image,
-                              });
-                            }
-                          }}
-                        >
-                          <Heart
-                            className="w-5 h-5 transition-transform duration-200 group-hover:scale-110"
-                            strokeWidth={isInWishlist(product.id) ? 0 : 1.6}
-                            fill={isInWishlist(product.id) ? 'currentColor' : 'none'}
-                          />
-                          <span className="sr-only">
-                            {isInWishlist(product.id) ? 'Remove from wish list' : 'Save to wish list'}
-                          </span>
-                          <span
-                            className="wishlist-tooltip pointer-events-none absolute top-[calc(100%+0.5rem)] left-1/2 -translate-x-1/2 rounded bg-black px-2 py-1 text-[10px] font-medium uppercase tracking-[2px] text-white opacity-0 transition-opacity duration-75 group-hover:opacity-100"
-                          >
-                            {isInWishlist(product.id) ? 'Saved' : 'Save to wish list'}
-                          </span>
-                        </button>
-                      </div>
-                    </div>
+                    <ProductActionButtons
+                      product={{
+                        id: product.id,
+                        handle: product.handle,
+                        title: product.title,
+                        price: displayPrice,
+                        image: product.image,
+                      }}
+                      onPrimary={() => openProductDetail(product)}
+                      onSecondary={() => openProductDetail(product)}
+                    />
                   </div>
                 </ScrollReveal>
               );

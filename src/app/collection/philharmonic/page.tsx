@@ -8,6 +8,7 @@ import { ScrollReveal } from '@/components/scroll-reveal';
 import { LowtherForLifeSection } from '@/components/lowther-for-life-section';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { X } from 'lucide-react';
+import { ProductActionButtons } from '@/components/product-action-buttons';
 
 /**
  * SHOPIFY INTEGRATION GUIDE:
@@ -378,22 +379,17 @@ export default function PhilharmonicCollectionPage() {
                   <p className="text-lg text-gray-600 mb-6">
                     From {product.price}*
                   </p>
-                  <div className="flex flex-col gap-3">
-                    <Button 
-                      size="lg" 
-                      className="w-full bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
-                      onClick={() => openProductDetail(product)}
-                    >
-                      BUY NOW
-                    </Button>
-                    <Button 
-                      size="lg" 
-                      className="w-full bg-white hover:bg-black text-black hover:text-white border border-black font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
-                      onClick={() => openProductDetail(product)}
-                    >
-                      LEARN MORE
-                    </Button>
-                  </div>
+                  <ProductActionButtons
+                    product={{
+                      id: product.id,
+                      handle: product.shopifyHandle ?? product.id,
+                      title: product.title,
+                      price: `${product.price}${product.priceNote ?? ''}`,
+                      image: product.image,
+                    }}
+                    onPrimary={() => openProductDetail(product)}
+                    onSecondary={() => openProductDetail(product)}
+                  />
                 </div>
               </ScrollReveal>
             ))}

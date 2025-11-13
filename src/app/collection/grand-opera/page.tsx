@@ -7,11 +7,13 @@ import { ScrollReveal } from '@/components/scroll-reveal';
 import { LowtherForLifeSection } from '@/components/lowther-for-life-section';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { X } from 'lucide-react';
+import { ProductActionButtons } from '@/components/product-action-buttons';
 
 // Product data for Grand Opera Collection drive units
 const grandOperaProducts = [
   {
     id: 'field-coil-grand-opera',
+    handle: 'field-coil-grand-opera',
     title: 'Field Coil Motor',
     price: 'Price on commission',
     image: '/images/drive-units/grand-opera-collection/gallery/grand-opera-transparentBG-Field-Coil.avif',
@@ -25,6 +27,7 @@ const grandOperaProducts = [
   },
   {
     id: 'pm4a-grand-opera',
+    handle: 'pm4a-grand-opera',
     title: 'PM4A',
     price: 'Price on commission',
     image: '/images/drive-units/grand-opera-collection/gallery/grand-opera-transparentBG-PM4A.avif',
@@ -38,6 +41,7 @@ const grandOperaProducts = [
   },
   {
     id: 'pm7a-grand-opera',
+    handle: 'pm7a-grand-opera',
     title: 'PM7A',
     price: 'Price on commission',
     image: '/images/drive-units/grand-opera-collection/gallery/grand-opera-transparentBG-PM7A.avif',
@@ -333,22 +337,18 @@ export default function GrandOperaCollectionPage() {
                   <p className="text-lg text-gray-600 mb-6">
                     {product.price}
                   </p>
-                  <div className="flex flex-col gap-3">
-                    <Button 
-                      size="lg" 
-                      className="w-full bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
-                      onClick={() => openProductDetail(product)}
-                    >
-                      COMMISSION
-                    </Button>
-                    <Button 
-                      size="lg" 
-                      className="w-full bg-white hover:bg-black text-black hover:text-white border border-black font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
-                      onClick={() => openProductDetail(product)}
-                    >
-                      LEARN MORE
-                    </Button>
-                  </div>
+                  <ProductActionButtons
+                    product={{
+                      id: product.id,
+                      handle: product.handle ?? product.id,
+                      title: product.title,
+                      price: product.price,
+                      image: product.image,
+                    }}
+                    onPrimary={() => openProductDetail(product)}
+                    onSecondary={() => openProductDetail(product)}
+                    primaryLabel="COMMISSION"
+                  />
                 </div>
               </ScrollReveal>
             ))}
