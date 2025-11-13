@@ -16,12 +16,7 @@ interface Language {
 }
 
 const languagesWithCurrency: Language[] = [
-  { code: "en-GB", name: "United Kingdom", flag: "🇬🇧", currency: "GBP" },
-  { code: "en-US", name: "United States", flag: "🇺🇸", currency: "USD" },
-  { code: "en-FR", name: "Europe", flag: "🇪🇺", currency: "EUR" },
-  { code: "ja-JP", name: "日本 (Japan)", flag: "🇯🇵", currency: "JPY" },
-  { code: "en-AU", name: "Australia", flag: "🇦🇺", currency: "AUD" },
-  { code: "en-CA", name: "Canada", flag: "🇨🇦", currency: "CAD" },
+  { code: "en-GB", name: "United Kingdom", flag: "🇬🇧", currency: "GBP" }
 ];
 
 interface LanguageCurrencySelectorProps {

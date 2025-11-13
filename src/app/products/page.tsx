@@ -183,8 +183,7 @@ export default function ProductsPage() {
           </div>
           
           <h1 className="font-display text-5xl md:text-6xl lg:text-7xl mb-6 leading-tight" style={{ color: '#c59862' }}>
-            Craftsmanship that Transcends Time.<br />
-            Sound that Transforms your Space.
+            The most natural sound a loudspeaker can produce
           </h1>
           
           <p className="text-lg md:text-xl leading-relaxed text-white/90 max-w-2xl">
