@@ -342,17 +342,19 @@ export default function PX4AmplifierPage() {
                   <p className="text-lg text-gray-600 mb-6">
                     {displayPrice}
                   </p>
-                  <ProductActionButtons
-                    product={{
-                      id: product.id,
-                      handle: product.handle ?? product.id,
-                      title: product.title,
-                      price: displayPrice,
-                      image: product.image,
-                    }}
-                    onPrimary={() => openProductDetail(product)}
-                    onSecondary={() => openProductDetail(product)}
-                  />
+                  <div className="w-full max-w-2xl">
+                    <ProductActionButtons
+                      product={{
+                        id: product.id,
+                        handle: product.handle ?? product.id,
+                        title: product.title,
+                        price: displayPrice,
+                        image: product.image,
+                      }}
+                      onPrimary={() => openProductDetail(product)}
+                      onSecondary={() => openProductDetail(product)}
+                    />
+                  </div>
                 </div>
               </ScrollReveal>
             );
