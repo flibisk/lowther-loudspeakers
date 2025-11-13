@@ -10,7 +10,8 @@ import { Breadcrumbs } from '@/components/breadcrumbs';
 import { X } from 'lucide-react';
 import { ProductActionButtons } from '@/components/product-action-buttons';
 import { useShopifyCollection } from '@/hooks/use-shopify-collection';
-import { formatPrice, type ShopifyProduct } from '@/lib/shopify-storefront';
+import { findVariantByOptions, formatPrice, type ShopifyProduct } from '@/lib/shopify-storefront';
+import { useCart } from '@/contexts/cart-context';
 
 /**
  * SHOPIFY INTEGRATION GUIDE:
@@ -167,6 +168,7 @@ const customerQuotes = [
 ];
 
 export default function PhilharmonicCollectionPage() {
+  const { addItem, isLoading: cartLoading } = useCart();
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<typeof philharmonicProducts[0] | null>(null);
@@ -241,6 +243,33 @@ export default function PhilharmonicCollectionPage() {
     }
     if (!selectedProduct) return '';
     return `${selectedProduct.price}${selectedProduct.priceNote ?? ''}`;
+  };
+  const handleAddToBag = async () => {
+    if (!selectedProduct) return;
+
+    if (selectedShopifyProduct) {
+      const variant = findVariantByOptions(selectedShopifyProduct.variants, {
+        'Voice Coil': getVoiceCoil(selectedProduct.id),
+        'Impedance Options': getImpedance(selectedProduct.id),
+      });
+
+      if (!variant) {
+        alert('Please select product options');
+        return;
+      }
+
+      if (!variant.availableForSale) {
+        alert('This product is currently unavailable');
+        return;
+      }
+
+      await addItem(variant.id, getProductQuantity(selectedProduct.id));
+      alert(`Added ${getProductQuantity(selectedProduct.id)}x ${selectedProduct.title} to your bag!`);
+      closeProductDetail();
+      return;
+    }
+
+    window.open(process.env.NEXT_PUBLIC_SHOP_URL ?? 'https://shop.lowtherloudspeakers.com', '_blank');
   };
 
   useEffect(() => {
@@ -593,8 +622,10 @@ export default function PhilharmonicCollectionPage() {
                   </Link>
                   <Button 
                     className="w-full bg-black hover:bg-gray-800 text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 py-6 uppercase"
+                    onClick={handleAddToBag}
+                    disabled={cartLoading}
                   >
-                    ADD TO BAG
+                    {cartLoading ? 'ADDING...' : 'ADD TO BAG'}
                   </Button>
                 </div>
               </div>

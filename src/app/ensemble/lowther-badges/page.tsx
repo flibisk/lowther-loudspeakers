@@ -10,8 +10,10 @@ import { X } from 'lucide-react';
 import { ProductActionButtons } from '@/components/product-action-buttons';
 import { useShopifyCollection } from '@/hooks/use-shopify-collection';
 import { formatPrice, type ShopifyProduct } from '@/lib/shopify-storefront';
+import { useCart } from '@/contexts/cart-context';
 
 export default function LowtherBadgesPage() {
+  const { addItem, isLoading: cartLoading } = useCart();
   const [selectedProduct, setSelectedProduct] = useState<boolean>(false);
   const [isProductOpen, setIsProductOpen] = useState(false);
   const [quantity, setQuantity] = useState<number>(1);
@@ -59,6 +61,26 @@ export default function LowtherBadgesPage() {
       );
     }
     return '£60.00';
+  };
+
+  const handleAddToBag = async () => {
+    if (selectedShopifyProduct) {
+      const variant = selectedShopifyProduct.variants?.[0];
+      if (!variant) {
+        alert('This product is currently unavailable');
+        return;
+      }
+      if (!variant.availableForSale) {
+        alert('This product is currently unavailable');
+        return;
+      }
+      await addItem(variant.id, quantity);
+      alert(`Added ${quantity}x Official Lowther Badges to your bag!`);
+      closeProductDetail();
+      return;
+    }
+
+    window.open(process.env.NEXT_PUBLIC_SHOP_URL ?? 'https://shop.lowtherloudspeakers.com', '_blank');
   };
 
   useEffect(() => {
@@ -278,8 +300,10 @@ export default function LowtherBadgesPage() {
                   <Button
                     size="lg"
                     className="w-full bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
+                    onClick={handleAddToBag}
+                    disabled={cartLoading}
                   >
-                    ADD TO BAG
+                    {cartLoading ? 'ADDING...' : 'ADD TO BAG'}
                   </Button>
                   <Button
                     size="lg"

@@ -10,6 +10,7 @@ import { X } from 'lucide-react';
 import { ProductActionButtons } from '@/components/product-action-buttons';
 import { useShopifyCollection } from '@/hooks/use-shopify-collection';
 import { findVariantByOptions, formatPrice, type ShopifyProduct, type ShopifyVariant } from '@/lib/shopify-storefront';
+import { useCart } from '@/contexts/cart-context';
 
 // Product data for Reference Cables
 const cableProducts = [
@@ -100,6 +101,7 @@ const cableProducts = [
 ];
 
 export default function ReferenceCablesPage() {
+  const { addItem, isLoading: cartLoading } = useCart();
   const [selectedProduct, setSelectedProduct] = useState<typeof cableProducts[0] | null>(null);
   const [isProductOpen, setIsProductOpen] = useState(false);
   const [selectedLength, setSelectedLength] = useState<{ [key: string]: string }>({});
@@ -125,6 +127,7 @@ export default function ReferenceCablesPage() {
     if (product.hasLengthOptions && product.lengthOptions.length > 0) {
       setSelectedLength({ ...selectedLength, [product.id]: product.lengthOptions[0] });
     }
+    setQuantity(1);
     const match = productMap.get(product.handle ?? product.id) ?? null;
     setSelectedShopifyProduct(match);
     setTimeout(() => setIsProductOpen(true), 50);
@@ -142,6 +145,28 @@ export default function ReferenceCablesPage() {
     if (value >= 1) {
       setQuantity(value);
     }
+  };
+  const handleAddToBag = async () => {
+    if (!selectedProduct) return;
+
+    if (selectedShopifyProduct) {
+      const variant = getCurrentVariant();
+      if (!variant) {
+        alert('Please select length');
+        return;
+      }
+      if (!variant.availableForSale) {
+        alert('This product is currently unavailable');
+        return;
+      }
+
+      await addItem(variant.id, quantity);
+      alert(`Added ${quantity}x ${selectedProduct.title} to your bag!`);
+      closeProductDetail();
+      return;
+    }
+
+    window.open(process.env.NEXT_PUBLIC_SHOP_URL ?? 'https://shop.lowtherloudspeakers.com', '_blank');
   };
 
   const getSelectedLength = (productId: string, defaultLength: string) => {
@@ -426,8 +451,10 @@ export default function ReferenceCablesPage() {
                   <Button
                     size="lg"
                     className="w-full bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
+                    onClick={handleAddToBag}
+                    disabled={cartLoading}
                   >
-                    ADD TO BAG
+                    {cartLoading ? 'ADDING...' : 'ADD TO BAG'}
                   </Button>
                   <Button
                     size="lg"

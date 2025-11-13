@@ -10,6 +10,7 @@ import { X } from 'lucide-react';
 import { ProductActionButtons } from '@/components/product-action-buttons';
 import { useShopifyCollection } from '@/hooks/use-shopify-collection';
 import { formatPrice, type ShopifyProduct } from '@/lib/shopify-storefront';
+import { useCart } from '@/contexts/cart-context';
 
 // Product data for PX4 Amplifier
 const px4Products = [
@@ -56,6 +57,7 @@ const specifications = [
 ];
 
 export default function PX4AmplifierPage() {
+  const { addItem, isLoading: cartLoading } = useCart();
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<typeof px4Products[0] | null>(null);
@@ -99,6 +101,7 @@ export default function PX4AmplifierPage() {
 
   const openProductDetail = (product: typeof px4Products[0]) => {
     setSelectedProduct(product);
+    setQuantity(1);
     const match = productMap.get(product.handle ?? product.id) ?? null;
     setSelectedShopifyProduct(match);
     setTimeout(() => setIsProductOpen(true), 50);
@@ -116,6 +119,28 @@ export default function PX4AmplifierPage() {
     if (value >= 1) {
       setQuantity(value);
     }
+  };
+  const handleAddToBag = async () => {
+    if (!selectedProduct) return;
+
+    if (selectedShopifyProduct) {
+      const variant = selectedShopifyProduct.variants?.[0];
+      if (!variant) {
+        alert('This product is currently unavailable');
+        return;
+      }
+      if (!variant.availableForSale) {
+        alert('This product is currently unavailable');
+        return;
+      }
+
+      await addItem(variant.id, quantity);
+      alert(`Added ${quantity}x ${selectedProduct.title} to your bag!`);
+      closeProductDetail();
+      return;
+    }
+
+    window.open(process.env.NEXT_PUBLIC_SHOP_URL ?? 'https://shop.lowtherloudspeakers.com', '_blank');
   };
 
   const getOverlayPrice = () => {
@@ -525,8 +550,10 @@ export default function PX4AmplifierPage() {
                   <Button
                     size="lg"
                     className="w-full bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
+                    onClick={handleAddToBag}
+                    disabled={cartLoading}
                   >
-                    ADD TO BAG
+                    {cartLoading ? 'ADDING...' : 'ADD TO BAG'}
                   </Button>
                   <Button
                     size="lg"
