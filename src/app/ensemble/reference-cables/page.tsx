@@ -58,7 +58,7 @@ const cableProducts = [
   },
   {
     id: 'usb-cable',
-    handle: 'lowther-usb-cable',
+    handle: 'lowther-usb',
     title: 'Lowther USB',
     price: '£1,500.00',
     image: '/images/ensemble/reference-cables/gallery/USB-cable-transparent.webp',
@@ -178,7 +178,7 @@ export default function ReferenceCablesPage() {
 
     if (selectedProduct.hasLengthOptions && selectedProduct.lengthOptions.length > 0) {
       const lengthValue = getSelectedLength(selectedProduct.id, selectedProduct.lengthOptions[0]);
-      return findVariantByOptions(selectedShopifyProduct.variants, { Length: lengthValue });
+      return findVariantByOptions(selectedShopifyProduct.variants, { length: lengthValue });
     }
 
     return selectedShopifyProduct.variants?.[0];

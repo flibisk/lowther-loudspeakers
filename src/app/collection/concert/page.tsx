@@ -16,7 +16,7 @@ import { useCart } from '@/contexts/cart-context';
 const concertProducts = [
   {
     id: 'pm2a-concert',
-    handle: 'pm2a-concert',
+    handle: 'lowther-pm2a-concert',
     title: 'PM2A Concert',
     price: '£730',
     image: '/images/drive-units/concert-collection/gallery/PM2A-transparentBG.avif',
@@ -31,7 +31,7 @@ const concertProducts = [
   },
   {
     id: 'pm3a-concert',
-    handle: 'pm3a-concert',
+    handle: 'lowther-pm3a-concert',
     title: 'PM3A Concert',
     price: '£1,085',
     image: '/images/drive-units/concert-collection/gallery/PM3A-transparentBG.avif',
@@ -46,7 +46,7 @@ const concertProducts = [
   },
   {
     id: 'pm4a-concert',
-    handle: 'pm4a-concert',
+    handle: 'lowther-pm4a-concert',
     title: 'PM4A Concert',
     price: '£1,030',
     image: '/images/drive-units/concert-collection/gallery/PM4A-transparentBG.avif',
@@ -61,7 +61,7 @@ const concertProducts = [
   },
   {
     id: 'pm5a-concert',
-    handle: 'pm5a-concert',
+    handle: 'lowther-pm5a-concert',
     title: 'PM5A Concert',
     price: '£710',
     image: '/images/drive-units/concert-collection/gallery/PM5A-transparentBG.avif',
@@ -76,7 +76,7 @@ const concertProducts = [
   },
   {
     id: 'pm6a-concert',
-    handle: 'pm6a-concert',
+    handle: 'lowther-pm6a-concert',
     title: 'PM6A Concert',
     price: '£565',
     image: '/images/drive-units/concert-collection/gallery/PM6A-transparentBG.avif',
@@ -91,7 +91,7 @@ const concertProducts = [
   },
   {
     id: 'pm7a-concert',
-    handle: 'pm7a-concert',
+    handle: 'lowther-pm7a-concert',
     title: 'PM7A Concert',
     price: '£685',
     image: '/images/drive-units/concert-collection/gallery/PM7A-transparentBG.webp',
@@ -106,7 +106,7 @@ const concertProducts = [
   },
   {
     id: 'dx2-concert',
-    handle: 'dx2-concert',
+    handle: 'lowther-dx2-concert',
     title: 'DX2 Concert',
     price: '£465',
     image: '/images/drive-units/concert-collection/gallery/DX2-transparentBG.avif',
@@ -121,7 +121,7 @@ const concertProducts = [
   },
   {
     id: 'dx3-concert',
-    handle: 'dx3-concert',
+    handle: 'lowther-dx3-concert',
     title: 'DX3 Concert',
     price: '£510',
     image: '/images/drive-units/concert-collection/gallery/DX3-transparentBG.avif',
@@ -136,7 +136,7 @@ const concertProducts = [
   },
   {
     id: 'dx4-concert',
-    handle: 'dx4-concert',
+    handle: 'lowther-dx4-concert',
     title: 'DX4 Concert',
     price: '£590',
     image: '/images/drive-units/concert-collection/gallery/DX4-transparentBG.avif',
@@ -151,7 +151,7 @@ const concertProducts = [
   },
   {
     id: 'pm6c-concert',
-    handle: 'pm6c-concert',
+    handle: 'lowther-pm6c-concert',
     title: 'PM6C Concert',
     price: '£420',
     image: '/images/drive-units/concert-collection/gallery/PM6C-transparentBG.webp',
@@ -166,7 +166,7 @@ const concertProducts = [
   },
   {
     id: 'ex2-concert',
-    handle: 'ex2-concert',
+    handle: 'lowther-ex2-concert',
     title: 'EX2 Concert',
     price: '£495',
     image: '/images/drive-units/concert-collection/gallery/EX2-transparentBG.webp',
@@ -181,7 +181,7 @@ const concertProducts = [
   },
   {
     id: 'ex3-concert',
-    handle: 'ex3-concert',
+    handle: 'lowther-ex3-concert',
     title: 'EX3 Concert',
     price: '£540',
     image: '/images/drive-units/concert-collection/gallery/EX3-transparentBG.webp',
@@ -196,7 +196,7 @@ const concertProducts = [
   },
   {
     id: 'ex4-concert',
-    handle: 'ex4-concert',
+    handle: 'lowther-ex4-concert',
     title: 'EX4 Concert',
     price: '£610',
     image: '/images/drive-units/concert-collection/gallery/EX4-transparentBG.webp',
@@ -390,6 +390,10 @@ export default function ConcertCollectionPage() {
   };
   const getOverlayPrice = () => {
     if (selectedShopifyProduct) {
+      const variant = getCurrentVariant();
+      if (variant) {
+        return formatPrice(variant.price.amount, variant.price.currencyCode);
+      }
       return formatPrice(
         selectedShopifyProduct.priceRange.minVariantPrice.amount,
         selectedShopifyProduct.priceRange.minVariantPrice.currencyCode,

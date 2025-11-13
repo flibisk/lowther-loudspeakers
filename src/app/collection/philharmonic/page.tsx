@@ -58,7 +58,7 @@ const philharmonicProducts = [
       { label: 'Overall diameter', value: '22.5 cm' },
     ],
     image: '/images/drive-units/philharmonic-collection/gallery/Field Coil - Store Section.png',
-    shopifyHandle: 'field-coil-philharmonic',
+    shopifyHandle: 'lowther-field-coil-philharmonic',
   },
   {
     id: 'pm4a',
@@ -75,7 +75,7 @@ const philharmonicProducts = [
       { label: 'Overall diameter', value: '22.5 cm' },
     ],
     image: '/images/drive-units/philharmonic-collection/gallery/PM4A - Store Section.png',
-    shopifyHandle: 'pm4a-philharmonic',
+    shopifyHandle: 'lowther-pm4a-philharmonic',
   },
   {
     id: 'pm7a',
@@ -92,7 +92,7 @@ const philharmonicProducts = [
       { label: 'Overall diameter', value: '22.5 cm' },
     ],
     image: '/images/drive-units/philharmonic-collection/gallery/PM7A Store Section.png',
-    shopifyHandle: 'pm7a-philharmonic',
+    shopifyHandle: 'lowther-pm7a-philharmonic',
   },
 ];
 
@@ -236,6 +236,15 @@ export default function PhilharmonicCollectionPage() {
   const getImpedance = (productId: string) => impedance[productId] || '8 Ohms';
   const getOverlayPrice = () => {
     if (selectedShopifyProduct) {
+      const variant = findVariantByOptions(selectedShopifyProduct.variants, {
+        'Voice Coil': selectedProduct ? getVoiceCoil(selectedProduct.id) : 'Aluminium',
+        'Impedance': selectedProduct ? getImpedance(selectedProduct.id) : '8 Ohms',
+      });
+
+      if (variant) {
+        return formatPrice(variant.price.amount, variant.price.currencyCode);
+      }
+
       return formatPrice(
         selectedShopifyProduct.priceRange.minVariantPrice.amount,
         selectedShopifyProduct.priceRange.minVariantPrice.currencyCode,
@@ -250,7 +259,7 @@ export default function PhilharmonicCollectionPage() {
     if (selectedShopifyProduct) {
       const variant = findVariantByOptions(selectedShopifyProduct.variants, {
         'Voice Coil': getVoiceCoil(selectedProduct.id),
-        'Impedance Options': getImpedance(selectedProduct.id),
+        'Impedance': getImpedance(selectedProduct.id),
       });
 
       if (!variant) {

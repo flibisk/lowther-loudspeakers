@@ -145,6 +145,11 @@ export default function PX4AmplifierPage() {
 
   const getOverlayPrice = () => {
     if (selectedShopifyProduct) {
+      const variant = selectedShopifyProduct.variants?.[0];
+      if (variant) {
+        return formatPrice(variant.price.amount, variant.price.currencyCode);
+      }
+
       return formatPrice(
         selectedShopifyProduct.priceRange.minVariantPrice.amount,
         selectedShopifyProduct.priceRange.minVariantPrice.currencyCode,
