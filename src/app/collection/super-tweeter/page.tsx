@@ -278,114 +278,6 @@ export default function SuperTweeterPage() {
         </div>
       </section>
 
-      {/* Craftsmanship */}
-      <section data-surface="light" className="py-24 bg-[#fafaf8]">
-        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
-          <ScrollReveal animation="fade-up">
-            <div className="text-center mb-16">
-              <h2 className="font-display text-4xl md:text-5xl mb-4" style={{ color: "#c59862" }}>
-                Handmade to live with our full range drivers
-              </h2>
-              <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-                From the diaphragm geometry to the magnet structures, every element of the Supertweeter is crafted to behave like an organic extension of a Lowther driver—never an afterthought.
-              </p>
-            </div>
-          </ScrollReveal>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            {craftsmanshipHighlights.map((item, index) => (
-              <ScrollReveal key={item.title} animation="fade-up" delay={index * 100}>
-                <div className="bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden h-full flex flex-col">
-                  <div className="relative w-full aspect-[4/3]">
-                    <Image
-                      src={item.image}
-                      alt={item.title}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="p-8 space-y-3 flex-1 flex flex-col">
-                    <h3 className="font-display text-2xl" style={{ color: "#c59862" }}>
-                      {item.title}
-                    </h3>
-                    <p className="text-gray-700 leading-relaxed flex-1">{item.description}</p>
-                  </div>
-                </div>
-              </ScrollReveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Details */}
-      <section data-surface="light" className="py-24 bg-white">
-        <div className="max-w-4xl mx-auto px-6 sm:px-8 lg:px-12">
-          <ScrollReveal animation="fade-up">
-            <div className="space-y-12">
-              {detailHighlights.map((detail) => (
-                <div key={detail.title} className="space-y-4 text-center">
-                  <h3 className="font-display text-3xl md:text-4xl" style={{ color: "#c59862" }}>
-                    {detail.title}
-                  </h3>
-                  <p className="text-lg text-gray-700 leading-relaxed">
-                    {detail.description}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      {/* Product */}
-      <section data-surface="light" className="py-24 bg-[#fafaf8]">
-        <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-12">
-          <ScrollReveal animation="fade-up">
-            <div className="text-center mb-16">
-              <h2 className="font-display text-4xl md:text-5xl mb-4" style={{ color: "#c59862" }}>
-                Bring the final octave to your Lowther
-              </h2>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                Configure the Supertweeter with DX or PM magnet assemblies to suit your instrument.
-              </p>
-            </div>
-          </ScrollReveal>
-
-        <ScrollReveal animation="fade-up">
-          <div className="flex flex-col items-center text-center bg-white border border-gray-200 rounded-lg shadow-sm p-8">
-            <div className="relative w-full mb-6 max-w-xl mx-auto">
-              <Image
-                src={superTweeterProduct.image}
-                alt={superTweeterProduct.title}
-                width={800}
-                height={600}
-                className="w-full h-auto object-contain"
-              />
-            </div>
-            <div className="w-full max-w-xl">
-              <h3 className="font-display text-3xl mb-2" style={{ color: "#c59862" }}>
-                {superTweeterProduct.title}
-              </h3>
-              <p className="text-lg text-gray-600 mb-6">
-                {getDisplayPrice()}
-              </p>
-              <ProductActionButtons
-                product={{
-                  id: superTweeterProduct.id,
-                  handle: superTweeterProduct.handle,
-                  title: superTweeterProduct.title,
-                  price: getDisplayPrice(),
-                  image: superTweeterProduct.image,
-                }}
-                onPrimary={openProductDetail}
-                onSecondary={openProductDetail}
-              />
-            </div>
-          </div>
-        </ScrollReveal>
-        </div>
-      </section>
-
       {/* Gallery */}
       <section data-surface="light" className="py-24 bg-white">
         <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
@@ -410,6 +302,107 @@ export default function SuperTweeterPage() {
                     fill
                     className="object-cover"
                   />
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Product */}
+      <section data-surface="light" className="py-24 bg-[#fafaf8]">
+        <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-12">
+          <ScrollReveal animation="fade-up">
+            <div className="text-center mb-16">
+              <h2 className="font-display text-4xl md:text-5xl mb-4" style={{ color: "#c59862" }}>
+                Bring the final octave to your Lowther
+              </h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                Configure the Supertweeter with DX or PM magnet assemblies to suit your instrument.
+              </p>
+            </div>
+          </ScrollReveal>
+
+          <ScrollReveal animation="fade-up">
+            <div className="flex flex-col items-center text-center bg-white border border-gray-200 rounded-lg shadow-sm p-8">
+              <div className="relative w-full mb-6 max-w-xl mx-auto">
+                <Image
+                  src={superTweeterProduct.image}
+                  alt={superTweeterProduct.title}
+                  width={800}
+                  height={600}
+                  className="w-full h-auto object-contain"
+                />
+              </div>
+              <div className="w-full max-w-xl">
+                <h3 className="font-display text-3xl mb-2" style={{ color: "#c59862" }}>
+                  {superTweeterProduct.title}
+                </h3>
+                <p className="text-lg text-gray-600 mb-6">
+                  {getDisplayPrice()}
+                </p>
+                <ProductActionButtons
+                  product={{
+                    id: superTweeterProduct.id,
+                    handle: superTweeterProduct.handle,
+                    title: superTweeterProduct.title,
+                    price: getDisplayPrice(),
+                    image: superTweeterProduct.image,
+                  }}
+                  onPrimary={openProductDetail}
+                  onSecondary={openProductDetail}
+                />
+              </div>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* Handcrafted */}
+      <section data-surface="light" className="py-24 bg-white">
+        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
+          <ScrollReveal animation="fade-up">
+            <div className="text-center mb-16">
+              <h2 className="font-display text-4xl md:text-5xl mb-4" style={{ color: "#c59862" }}>
+                Handmade to live with our full range drivers
+              </h2>
+              <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+                From the diaphragm geometry to the magnet structures, every element of the Supertweeter is crafted to behave like an organic extension of a Lowther driver—never an afterthought.
+              </p>
+            </div>
+          </ScrollReveal>
+
+          <ScrollReveal animation="fade-up">
+            <div className="space-y-12 text-center text-lg text-gray-700 leading-relaxed mb-16">
+              {detailHighlights.map((detail) => (
+                <div key={detail.title} className="space-y-3">
+                  <h3 className="font-display text-3xl md:text-4xl" style={{ color: "#c59862" }}>
+                    {detail.title}
+                  </h3>
+                  <p>{detail.description}</p>
+                </div>
+              ))}
+            </div>
+          </ScrollReveal>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            {craftsmanshipHighlights.map((item, index) => (
+              <ScrollReveal key={item.title} animation="fade-up" delay={index * 100}>
+                <div className="bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden h-full flex flex-col">
+                  <div className="relative w-full aspect-[4/3]">
+                    <Image
+                      src={item.image}
+                      alt={item.title}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="p-8 space-y-3 flex-1 flex flex-col">
+                    <h3 className="font-display text-2xl" style={{ color: "#c59862" }}>
+                      {item.title}
+                    </h3>
+                    <p className="text-gray-700 leading-relaxed flex-1">{item.description}</p>
+                  </div>
                 </div>
               </ScrollReveal>
             ))}
