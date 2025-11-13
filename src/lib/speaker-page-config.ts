@@ -51,8 +51,8 @@ export interface SpeakerPageConfig {
 export const speakerPageConfigs: { [key: string]: SpeakerPageConfig } = {
   // Quarter Wave Configuration
   quarterwave: {
-    heroImage: '/images/speakers/quarter-wave/hero/quarter-wave-hero1.avif',
-    mobileHeroImage: '/images/speakers/quarter-wave/gallery/quarterwave_pair_front_angle_in_room.avif',
+    heroImage: '/images/speakers/quarter-wave/hero/quarter-wave-hero2.jpg',
+    mobileHeroImage: '/images/speakers/quarter-wave/hero/quarterwave_hero-mobile.avif',
     specsImage: '/images/speakers/quarter-wave/technical/quarter-wave-dimensions.svg',
     lifestyleHeading: 'The most adaptable horn speaker',
     galleryImages: [
