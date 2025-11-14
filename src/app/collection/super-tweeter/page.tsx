@@ -10,10 +10,12 @@ import { ProductActionButtons } from "@/components/product-action-buttons";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/cart-context";
+import { useCurrency } from "@/contexts/currency-context";
 import { useShopifyCollection } from "@/hooks/use-shopify-collection";
 import {
   findVariantByOptions,
   formatPrice,
+  getProduct,
   type ShopifyProduct,
   type ShopifyVariant,
 } from "@/lib/shopify-storefront";
@@ -145,22 +147,51 @@ const introParagraphs = [
 
 export default function SuperTweeterPage() {
   const { addItem, isLoading: cartLoading } = useCart();
+  const { currency, region } = useCurrency();
   const { productMap } = useShopifyCollection("super-tweeter");
 
   const [selectedProduct, setSelectedProduct] = useState<typeof superTweeterProduct | null>(null);
-  const [selectedShopifyProduct, setSelectedShopifyProduct] = useState<ShopifyProduct | null>(null);
+  const [shopifyProduct, setShopifyProduct] = useState<ShopifyProduct | null>(null);
   const [isProductOpen, setIsProductOpen] = useState(false);
   const [selectedMagnet, setSelectedMagnet] = useState<string>(magnetOptions[0]);
   const [quantity, setQuantity] = useState<number>(1);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    const collectionProduct = productMap.get(superTweeterProduct.handle);
+    if (collectionProduct) {
+      setShopifyProduct(collectionProduct);
+      return;
+    }
+
+    async function fetchProduct() {
+      try {
+        const product = await getProduct(superTweeterProduct.handle, currency, region);
+        if (!cancelled && product) {
+          setShopifyProduct(product);
+        }
+      } catch {
+        if (!cancelled) {
+          setShopifyProduct(null);
+        }
+      }
+    }
+
+    fetchProduct();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [productMap, currency, region]);
+
   const getDisplayPrice = () => {
-    const shopifyMatch = productMap.get(superTweeterProduct.handle);
-    if (shopifyMatch) {
+    if (shopifyProduct) {
       return formatPrice(
-        shopifyMatch.priceRange.minVariantPrice.amount,
-        shopifyMatch.priceRange.minVariantPrice.currencyCode,
+        shopifyProduct.priceRange.minVariantPrice.amount,
+        shopifyProduct.priceRange.minVariantPrice.currencyCode,
       );
     }
     return superTweeterProduct.price;
@@ -170,8 +201,6 @@ export default function SuperTweeterPage() {
     setSelectedProduct(superTweeterProduct);
     setSelectedMagnet(magnetOptions[0]);
     setQuantity(1);
-    const match = productMap.get(superTweeterProduct.handle) ?? null;
-    setSelectedShopifyProduct(match);
     setTimeout(() => setIsProductOpen(true), 50);
   };
 
@@ -179,19 +208,11 @@ export default function SuperTweeterPage() {
     setIsProductOpen(false);
     setTimeout(() => {
       setSelectedProduct(null);
-      setSelectedShopifyProduct(null);
     }, 600);
   };
 
-  useEffect(() => {
-    if (selectedProduct) {
-      const match = productMap.get(selectedProduct.handle) ?? null;
-      setSelectedShopifyProduct(match);
-    }
-  }, [productMap, selectedProduct]);
-
   const magnetOptionName = useMemo(() => {
-    const variants = selectedShopifyProduct?.variants ?? [];
+    const variants = shopifyProduct?.variants ?? [];
     if (!variants.length) return "Magnet";
 
     const optionNames = new Set<string>();
@@ -211,14 +232,14 @@ export default function SuperTweeterPage() {
       Array.from(optionNames)[0];
 
     return magnetName ?? "Magnet";
-  }, [selectedShopifyProduct]);
+  }, [shopifyProduct]);
 
   const getCurrentVariant = (): ShopifyVariant | undefined => {
-    if (!selectedShopifyProduct) return undefined;
+    if (!shopifyProduct) return undefined;
     const options = {
       [magnetOptionName]: selectedMagnet,
     };
-    return findVariantByOptions(selectedShopifyProduct.variants, options);
+    return findVariantByOptions(shopifyProduct.variants, options);
   };
 
   const getOverlayPrice = () => {
@@ -226,10 +247,10 @@ export default function SuperTweeterPage() {
     if (variant) {
       return formatPrice(variant.price.amount, variant.price.currencyCode);
     }
-    if (selectedShopifyProduct) {
+    if (shopifyProduct) {
       return formatPrice(
-        selectedShopifyProduct.priceRange.minVariantPrice.amount,
-        selectedShopifyProduct.priceRange.minVariantPrice.currencyCode,
+        shopifyProduct.priceRange.minVariantPrice.amount,
+        shopifyProduct.priceRange.minVariantPrice.currencyCode,
       );
     }
     return superTweeterProduct.price;
@@ -238,7 +259,7 @@ export default function SuperTweeterPage() {
   const handleAddToBag = async () => {
     if (!selectedProduct) return;
 
-    if (selectedShopifyProduct) {
+    if (shopifyProduct) {
       const variant = getCurrentVariant();
       if (!variant) {
         alert("Please select a magnet option");
