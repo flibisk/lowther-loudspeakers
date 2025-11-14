@@ -77,9 +77,9 @@ const NAV = [
   ]},
   { label: 'Drive Units', href: '/category/drive-units', children: [
     { label: 'Grand Opera', href: '/collection/grand-opera' },
+    { label: 'Supertweeter', href: '/collection/super-tweeter' },
     { label: 'Philharmonic', href: '/collection/philharmonic' },
     { label: 'Concert', href: '/collection/concert' },
-    { label: 'Supertweeter', href: '/collection/super-tweeter' },
   ]},
   { label: 'Cables', href: '/category/cables' },
   { label: 'Build', href: '/build-a-lowther' },
