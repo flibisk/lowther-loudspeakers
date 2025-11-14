@@ -30,11 +30,11 @@ const superTweeterProduct = {
     "Completing the top octave with precision and intent, the Lowther Super Tweeter extends the bandwidth of our full-range instruments without adding artificial edge or glare.",
   details: [
     "Designed to take over precisely where the eight-inch Lowther driver naturally rolls off, the Super Tweeter restores the final octave of information that locks the stereo image in place.",
-    "Available with DX or PM magnet structures to match the energy, speed, and scale of the partnering driver.",
+    "Available with Neodymium (DX) magnet structure to match the energy, speed, and scale of the partnering driver.",
   ],
 };
 
-const magnetOptions = ["Neodymium (DX)", "Alnico (PM)"];
+const magnetOptions = ["Neodymium (DX)"];
 const MAGNET_OPTION_NAME = "Magnet Type";
 
 const galleryImages = [
@@ -115,7 +115,7 @@ const detailHighlights = [
   {
     title: "Magnet systems tuned for Lowther speed",
     description:
-      "Choose between DX or PM magnet assemblies to complement the energy and voicing of your system. Both options preserve transient speed while delivering effortless air and integration.",
+      "The Neodymium (DX) magnet assembly is engineered to complement the energy and voicing of your system, preserving transient speed while delivering effortless air and integration.",
     image: "/images/drive-units/super-tweeter/gallery/Super Tweeter PM.jpg",
   },
   {
@@ -412,7 +412,7 @@ export default function SuperTweeterPage() {
                 Bring the final octave to your Lowther
               </h2>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                Configure the Super Tweeter with DX or PM magnet assemblies to suit your instrument.
+                The Super Tweeter features a Neodymium (DX) magnet assembly designed to match the energy and voicing of your Lowther system.
               </p>
             </div>
           </ScrollReveal>
@@ -613,20 +613,8 @@ export default function SuperTweeterPage() {
                     <label className="block text-sm font-medium text-gray-900 mb-3">
                       Magnet Option
                     </label>
-                    <div className="grid grid-cols-2 gap-3">
-                      {magnetOptions.map((option) => (
-                        <button
-                          key={option}
-                          onClick={() => setSelectedMagnet(option)}
-                          className={`py-3 px-4 text-sm border rounded transition-all ${
-                            selectedMagnet === option
-                              ? "bg-black text-white border-black"
-                              : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
-                          }`}
-                        >
-                          {option}
-                        </button>
-                      ))}
+                    <div className="py-3 px-4 text-sm border border-gray-300 rounded bg-gray-50 text-gray-700">
+                      Neodymium (DX)
                     </div>
                   </div>
 
