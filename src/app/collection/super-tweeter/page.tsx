@@ -152,6 +152,8 @@ export default function SuperTweeterPage() {
   const [isProductOpen, setIsProductOpen] = useState(false);
   const [selectedMagnet, setSelectedMagnet] = useState<string>(magnetOptions[0]);
   const [quantity, setQuantity] = useState<number>(1);
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<number | null>(null);
 
   const getDisplayPrice = () => {
     const shopifyMatch = productMap.get(superTweeterProduct.handle);
@@ -253,6 +255,25 @@ export default function SuperTweeterPage() {
     }
 
     window.open(process.env.NEXT_PUBLIC_SHOP_URL ?? "https://shop.lowtherloudspeakers.com", "_blank");
+  };
+
+  const openGallery = (index: number) => {
+    setSelectedImage(index);
+    setIsGalleryOpen(true);
+  };
+
+  const closeGallery = () => {
+    setIsGalleryOpen(false);
+    setSelectedImage(null);
+  };
+
+  const navigateGallery = (direction: "prev" | "next") => {
+    if (selectedImage === null) return;
+    if (direction === "prev") {
+      setSelectedImage(selectedImage === 0 ? galleryImages.length - 1 : selectedImage - 1);
+    } else {
+      setSelectedImage((selectedImage + 1) % galleryImages.length);
+    }
   };
 
   return (
