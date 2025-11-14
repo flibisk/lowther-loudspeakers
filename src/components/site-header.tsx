@@ -68,6 +68,7 @@ export default function SiteHeader({ nav }: Props) {
     'sinfonia-collection': '/images/Menu/instruments/sinfonia-collection.jpg',
     'philharmonic-collection': '/images/Menu/instruments/philharmonic-collection.jpg',
     'grand-opera-collection': '/images/Menu/instruments/grand-opera-collection.jpg',
+    'super-tweeter': '/images/Menu/instruments/super-tweeter-collection.jpg',
     
     // Ensemble - Fixed paths
     'px4-amplifier': '/images/Menu/Ensemble/PX4-Amplifier.avif',
@@ -475,13 +476,14 @@ export default function SiteHeader({ nav }: Props) {
                   </button>
                   {activeDropdown === 'instruments' && (
                     <div className="mt-2 space-y-2 pl-4">
-                      {['Concert Collection', 'Sinfonia Collection', 'Philharmonic Collection', 'Grand Opera Collection'].map((item) => {
+                      {['Concert Collection', 'Sinfonia Collection', 'Philharmonic Collection', 'Grand Opera Collection', 'Super Tweeter'].map((item) => {
                         // Handle specific URL mappings
                         const slugMap: { [key: string]: string } = {
                           'Concert Collection': '/collection/concert',
                           'Sinfonia Collection': '/collection/sinfonia',
                           'Philharmonic Collection': '/collection/philharmonic',
-                          'Grand Opera Collection': '/collection/grand-opera'
+                          'Grand Opera Collection': '/collection/grand-opera',
+                          'Super Tweeter': '/collection/super-tweeter',
                         };
                         const href = slugMap[item];
                         const menuImageSlug = item.toLowerCase().replace(/\s+/g, '-');
@@ -666,6 +668,7 @@ export default function SiteHeader({ nav }: Props) {
               { label: 'Sinfonia Collection', href: '/collection/sinfonia', image: '/images/Menu/instruments/sinfonia-collection.jpg' },
               { label: 'Philharmonic Collection', href: '/collection/philharmonic', image: '/images/Menu/instruments/philharmonic-collection.jpg' },
               { label: 'Grand Opera Collection', href: '/collection/grand-opera', image: '/images/Menu/instruments/grand-opera-collection.jpg' },
+              { label: 'Super Tweeter', href: '/collection/super-tweeter', image: '/images/Menu/instruments/super-tweeter-collection.jpg' },
             ]
           },
           {
