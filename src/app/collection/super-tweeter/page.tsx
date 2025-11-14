@@ -34,7 +34,10 @@ const superTweeterProduct = {
   ],
 };
 
-const magnetOptions = ["DX", "PM"];
+const magnetOptions = [
+  { value: "Neodymium (DX)", label: "DX Magnet" },
+  { value: "Alnico (PM)", label: "PM Magnet" },
+];
 
 const galleryImages = [
   {
@@ -153,7 +156,7 @@ export default function SuperTweeterPage() {
   const [selectedProduct, setSelectedProduct] = useState<typeof superTweeterProduct | null>(null);
   const [shopifyProduct, setShopifyProduct] = useState<ShopifyProduct | null>(null);
   const [isProductOpen, setIsProductOpen] = useState(false);
-  const [selectedMagnet, setSelectedMagnet] = useState<string>(magnetOptions[0]);
+  const [selectedMagnet, setSelectedMagnet] = useState<string>(magnetOptions[0].value);
   const [quantity, setQuantity] = useState<number>(1);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
@@ -199,7 +202,7 @@ export default function SuperTweeterPage() {
 
   const openProductDetail = () => {
     setSelectedProduct(superTweeterProduct);
-    setSelectedMagnet(magnetOptions[0]);
+    setSelectedMagnet(magnetOptions[0].value);
     setQuantity(1);
     setTimeout(() => setIsProductOpen(true), 50);
   };
@@ -638,15 +641,15 @@ export default function SuperTweeterPage() {
                     <div className="grid grid-cols-2 gap-3">
                       {magnetOptions.map((option) => (
                         <button
-                          key={option}
-                          onClick={() => setSelectedMagnet(option)}
+                          key={option.value}
+                          onClick={() => setSelectedMagnet(option.value)}
                           className={`py-3 px-4 text-sm border rounded transition-all ${
-                            selectedMagnet === option
+                            selectedMagnet === option.value
                               ? "bg-black text-white border-black"
                               : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
                           }`}
                         >
-                          {option}
+                          {option.label}
                         </button>
                       ))}
                     </div>
