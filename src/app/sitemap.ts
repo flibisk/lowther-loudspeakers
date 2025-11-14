@@ -8,6 +8,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Static pages
   const staticPages = [
     '',
+    '/products',
+    '/contact',
+    '/book-appointment',
     '/category/loudspeakers',
     '/category/drive-units',
     '/category/cables',
@@ -18,10 +21,35 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/history',
     '/brand/handcrafted',
     '/brand/lasting-legacy',
+    '/brand/donald-chave-era',
+    '/brand/our-craft',
+    '/services/listening-rooms',
+    '/services/refurbishments-upgrades',
+    '/services/oem-opportunities',
+    '/ensemble/residential-system-design',
+    '/ensemble/commercial-system-design',
+    '/warranty',
     '/catalogue',
-    '/ambassador',
+    '/verify',
+    '/privacy',
+    '/shipping',
     '/landings/qw-a',
     '/landings/qw-b',
+  ];
+
+  const collectionPages = [
+    '/collection/sinfonia',
+    '/collection/philharmonic',
+    '/collection/concert',
+    '/collection/grand-opera',
+    '/collection/super-tweeter',
+  ];
+
+  const ensemblePages = [
+    '/ensemble/px4-amplifier',
+    '/ensemble/reference-cables',
+    '/ensemble/phase-plugs',
+    '/ensemble/lowther-badges',
   ];
 
   // Dynamic speaker pages
@@ -56,7 +84,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Combine all pages
   const allPages = [
     // Static pages
-    ...staticPages.map((page) => ({
+    ...[...staticPages, ...collectionPages, ...ensemblePages].map((page) => ({
       url: `${baseUrl}${page}`,
       lastModified: new Date(),
       changeFrequency: 'weekly' as const,
