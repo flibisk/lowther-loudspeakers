@@ -30,7 +30,7 @@ export default function OurCraftPage() {
           <h1 className="font-display text-4xl md:text-6xl font-bold leading-tight mb-4" style={{ color: '#c59862' }}>
             The Lowther Handmade Craft
           </h1>
-          <p className="text-xl leading-relaxed">
+          <p className="hidden 930:block text-xl leading-relaxed">
             A legacy of Hifi engineering in every speaker.
           </p>
         </div>

@@ -358,7 +358,7 @@ export default function PhilharmonicCollectionPage() {
             The Philharmonic Collection
           </h1>
           
-          <p className="text-xl leading-relaxed">
+          <p className="hidden 930:block text-xl leading-relaxed">
             Our most refined offering of instruments, standard in every Lowther masterpiece.
           </p>
         </div>

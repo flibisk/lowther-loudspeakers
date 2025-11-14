@@ -235,7 +235,7 @@ export default function ReferenceCablesPage() {
             Reference Cables
           </h1>
           
-          <p className="text-xl leading-relaxed">
+          <p className="hidden 930:block text-xl leading-relaxed">
             Hand-Crafted for Unparalleled Signal Purity.
           </p>
         </div>

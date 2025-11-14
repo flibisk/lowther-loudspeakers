@@ -302,7 +302,7 @@ export default function VerifyPage() {
             Register or Find Your Speaker
           </h1>
           
-          <p className="text-xl leading-relaxed">
+          <p className="hidden 930:block text-xl leading-relaxed">
             Lowther ownership is a guarantee, a community, a legacy to pass on and a love for music. Every speaker made officially by Lowther enjoys a 10 year warranty and access to Lowther for Life exclusives.
           </p>
         </div>

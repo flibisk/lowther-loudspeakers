@@ -428,7 +428,7 @@ export default function ConcertCollectionPage() {
             The Concert Collection
           </h1>
           
-          <p className="text-xl leading-relaxed">
+          <p className="hidden 930:block text-xl leading-relaxed">
             Hand-crafted drive units deliver the legendary immediate and detailed sound that has captivated audiophiles for nearly a century.
           </p>
         </div>

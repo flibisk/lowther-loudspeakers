@@ -85,7 +85,7 @@ export default function CommercialSystemDesignPage() {
             Commercial System Design
           </h1>
           
-          <p className="text-xl leading-relaxed">
+          <p className="hidden 930:block text-xl leading-relaxed">
             Acoustic architecture for exceptional spaces
           </p>
         </div>

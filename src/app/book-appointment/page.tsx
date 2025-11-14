@@ -140,7 +140,7 @@ export default function BookAppointmentPage() {
             Book an Appointment
           </h1>
           
-          <p className="text-xl leading-relaxed">
+          <p className="hidden 930:block text-xl leading-relaxed">
             Experience Lowther in person or chat to a Lowther expert about finding your perfect speaker.
           </p>
         </div>

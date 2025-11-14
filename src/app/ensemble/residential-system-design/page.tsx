@@ -85,7 +85,7 @@ export default function ResidentialSystemDesignPage() {
             Residential System Design
           </h1>
           
-          <p className="text-xl leading-relaxed">
+          <p className="hidden 930:block text-xl leading-relaxed">
             A complete Lowther experience, crafted exclusively for your home
           </p>
         </div>

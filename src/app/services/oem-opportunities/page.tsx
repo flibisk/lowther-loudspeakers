@@ -120,7 +120,7 @@ export default function OEMOpportunitiesPage() {
             OEM Drive Units for Speaker Designers
           </h1>
           
-          <p className="text-xl leading-relaxed">
+          <p className="hidden 930:block text-xl leading-relaxed">
             Discover Lowther's OEM drive units for speaker designers. Premium and Classic options, 10-year warranty, and trusted audio quality for over 90 years.
           </p>
         </div>

@@ -34,7 +34,7 @@ export default function DonaldChaveEraPage() {
             Donald Chave Era
           </h1>
           
-          <p className="text-xl leading-relaxed">
+          <p className="hidden 930:block text-xl leading-relaxed">
             Carrying Voigt's Vision Forward
           </p>
         </div>

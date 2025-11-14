@@ -220,7 +220,7 @@ export function SpeakerPageContent({
           </h1>
           
           {/* Description */}
-          <p className="text-lg text-white/90 leading-relaxed mb-6 930:mb-0">
+          <p className="hidden 930:block text-lg text-white/90 leading-relaxed mb-6 930:mb-0">
             {approvedCopy.hero_subheading}
           </p>
         </div>

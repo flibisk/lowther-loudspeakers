@@ -235,7 +235,7 @@ export default function GrandOperaCollectionPage() {
             The Grand Opera Collection
           </h1>
           
-          <p className="text-xl leading-relaxed">
+          <p className="hidden 930:block text-xl leading-relaxed">
             The Grand Opera Collection represents the absolute pinnacle of acoustic artistry.
           </p>
         </div>

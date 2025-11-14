@@ -183,7 +183,7 @@ export default function RefurbishmentsUpgradesPage() {
             A Second Life for a Legend
           </h1>
           
-          <p className="text-xl leading-relaxed">
+          <p className="hidden 930:block text-xl leading-relaxed">
             Upgrade or restore your Lowther to its original glory, preserving heritage while embracing the latest advances in acoustic refinement.
           </p>
         </div>

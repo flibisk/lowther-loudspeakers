@@ -193,7 +193,7 @@ export default function PX4AmplifierPage() {
             The PX4 Valve Amp
           </h1>
           
-          <p className="text-xl leading-relaxed">
+          <p className="hidden 930:block text-xl leading-relaxed">
             A harmonious blend of heritage and innovation, delivering 10 watts of exquisite sound through legendary British PX4 valves.
           </p>
         </div>

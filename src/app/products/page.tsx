@@ -216,7 +216,7 @@ export default function ProductsPage() {
             The most natural sound a loudspeaker can produce
           </h1>
           
-          <p className="text-lg md:text-xl leading-relaxed text-white/90 max-w-2xl">
+          <p className="hidden 930:block text-lg md:text-xl leading-relaxed text-white/90 max-w-2xl">
             All our speakers are designed by ear, built by hand and exist for one reason: to enhance the experience of listening to music.
           </p>
         </div>

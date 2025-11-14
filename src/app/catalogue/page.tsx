@@ -90,7 +90,7 @@ export default function CataloguePage() {
             Lowther Product Catalogue
           </h1>
           
-          <p className="text-xl leading-relaxed">
+          <p className="hidden 930:block text-xl leading-relaxed">
             Download our catalogue or fill out the form to receive the printed version of the full collection of Lowther's products.
           </p>
         </div>

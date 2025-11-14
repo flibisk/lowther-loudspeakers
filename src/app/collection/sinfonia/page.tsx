@@ -406,7 +406,7 @@ export default function SinfoniaPage() {
             The Sinfonia Collection
           </h1>
           
-          <p className="text-xl leading-relaxed">
+          <p className="hidden 930:block text-xl leading-relaxed">
             Elevate your speakers with the Sinfonia Collection. Featuring enhanced diaphragms, refined paper treatment, and improved clarity across the spectrum.
           </p>
         </div>

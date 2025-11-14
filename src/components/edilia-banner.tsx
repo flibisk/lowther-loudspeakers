@@ -37,7 +37,7 @@ export function EdiliaBanner() {
             </h2>
 
             {/* Description */}
-            <p className="text-lg leading-relaxed mb-8 text-white">
+            <p className="hidden 930:block text-lg leading-relaxed mb-8 text-white">
               A compact dual-driver masterpiece, the Edilia delivers Lowther's 
               legendary clarity with room-tunable bass. Bringing full-range 
               realism to smaller spaces without compromise.

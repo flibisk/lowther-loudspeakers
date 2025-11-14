@@ -118,7 +118,7 @@ export default function LowtherBadgesPage() {
             Official Lowther Badges
           </h1>
           
-          <p className="text-xl leading-relaxed">
+          <p className="hidden 930:block text-xl leading-relaxed">
             The finishing touch for any homemade Lowther
           </p>
         </div>

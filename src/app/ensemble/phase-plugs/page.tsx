@@ -89,7 +89,7 @@ export default function PhasePlugsPage() {
             Lowther Phase Plugs
           </h1>
           
-          <p className="text-xl leading-relaxed">
+          <p className="hidden 930:block text-xl leading-relaxed">
             Explore our collection of phase plugs, each tailored for distinct listening improvements.
           </p>
         </div>

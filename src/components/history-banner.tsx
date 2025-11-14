@@ -35,7 +35,7 @@ export function HistoryBanner() {
             </h2>
             
             {/* Description */}
-            <p className="text-lg leading-relaxed mb-8">
+            <p className="hidden 930:block text-lg leading-relaxed mb-8">
               For nearly 90 years, Lowther has been dedicated to the art of sound, developing a range of speaker cabinets and cultivating a passionate community of DIY enthusiasts. Our commitment to handmade excellence means that every speaker is crafted in Great Britain, using techniques honed over decades.
             </p>
             

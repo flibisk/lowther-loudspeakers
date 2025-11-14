@@ -100,7 +100,7 @@ export default async function BlogPage() {
             Latest news and Updates
           </h1>
           
-          <p className="text-lg text-white/90 leading-relaxed">
+          <p className="hidden 930:block text-lg text-white/90 leading-relaxed">
             Stay up to date with all Lowther news, product updates and be the first to know when we drop a special edition.
           </p>
         </div>

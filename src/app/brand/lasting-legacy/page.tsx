@@ -36,7 +36,7 @@ export default function LastingLegacyPage() {
             A Lasting Legacy
           </h1>
           
-          <p className="text-xl leading-relaxed">
+          <p className="hidden 930:block text-xl leading-relaxed">
             Made to Endure. Crafted to be Cherished.
           </p>
         </div>

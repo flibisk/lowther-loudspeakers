@@ -300,7 +300,7 @@ export default function SuperTweeterPage() {
             The Lowther Super Tweeter
           </h1>
 
-          <p className="text-xl leading-relaxed">
+          <p className="hidden 930:block text-xl leading-relaxed">
             Completing the top octave with precision and intent.
           </p>
         </div>

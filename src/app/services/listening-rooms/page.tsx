@@ -90,7 +90,7 @@ export default function ListeningRoomsPage() {
             Where to Listen
           </h1>
           
-          <p className="text-xl leading-relaxed">
+          <p className="hidden 930:block text-xl leading-relaxed">
             Our handpicked network of authorised dealers consists of passionate audio enthusiasts who deeply understand the rich history of Lowther and the unparalleled performance of our horn loudspeakers.
           </p>
         </div>

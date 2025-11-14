@@ -34,7 +34,7 @@ export default function PaulVoigtEraPage() {
             Paul Voigt
           </h1>
           
-          <p className="text-xl leading-relaxed">
+          <p className="hidden 930:block text-xl leading-relaxed">
             The Godfather of High Fidelity
           </p>
         </div>

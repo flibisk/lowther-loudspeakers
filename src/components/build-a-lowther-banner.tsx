@@ -35,7 +35,7 @@ export function BuildALowtherBanner() {
             </h2>
             
             {/* Description */}
-            <p className="text-lg leading-relaxed mb-8">
+            <p className="hidden 930:block text-lg leading-relaxed mb-8">
               With over 90 years of experience, Lowther Loudspeakers has earned a reputation as the premier supplier of full-range drive units for home builders of high-end horn-loaded speakers.
             </p>
             

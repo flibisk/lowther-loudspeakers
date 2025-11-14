@@ -275,7 +275,7 @@ export default function BuildALowtherPage() {
           <h1 className="font-display text-4xl md:text-6xl font-bold leading-tight mb-4" style={{ color: '#c59862' }}>
             Build your own Lowther
           </h1>
-          <p className="text-xl leading-relaxed">
+          <p className="hidden 930:block text-xl leading-relaxed">
             With over 90 years of experience, Lowther Loudspeakers has earned a sterling reputation as the premier supplier of full-range drive units for home builders of high-end horn-loaded speakers, offering unparalleled support and guidance at every stage of the DIY journey.
           </p>
         </div>

@@ -116,7 +116,7 @@ export default function HistoryPage() {
             The History of Lowther Loudspeakers
           </h1>
           
-          <p className="text-xl leading-relaxed">
+          <p className="hidden 930:block text-xl leading-relaxed">
             Since 1934, Lowther Loudspeakers has stood as a beacon of British craftsmanship and innovation in sound reproduction.
                     </p>
                   </div>

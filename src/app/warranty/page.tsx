@@ -36,7 +36,7 @@ export default function WarrantyPage() {
             Warranty Information
           </h1>
           
-          <p className="text-xl leading-relaxed">
+          <p className="hidden 930:block text-xl leading-relaxed">
             A commitment to excellence, backed by nearly a century of craftsmanship
           </p>
         </div>
