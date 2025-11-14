@@ -402,7 +402,7 @@ export default function SinfoniaPage() {
             <span className="text-sm tracking-wider uppercase text-white/80">DRIVE UNITS</span>
           </div>
           
-          <h1 className="font-display text-6xl font-bold leading-tight mb-4" style={{ color: '#c59862' }}>
+          <h1 className="font-display text-4xl md:text-6xl font-bold leading-tight mb-4" style={{ color: '#c59862' }}>
             The Sinfonia Collection
           </h1>
           

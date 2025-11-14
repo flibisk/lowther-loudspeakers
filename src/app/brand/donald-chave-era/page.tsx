@@ -30,7 +30,7 @@ export default function DonaldChaveEraPage() {
             <span className="text-sm tracking-wider uppercase text-white/80">LOWTHER HERITAGE</span>
           </div>
           
-          <h1 className="font-display text-6xl font-bold leading-tight mb-4" style={{ color: '#c59862' }}>
+          <h1 className="font-display text-4xl md:text-6xl font-bold leading-tight mb-4" style={{ color: '#c59862' }}>
             Donald Chave Era
           </h1>
           

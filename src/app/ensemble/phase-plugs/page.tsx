@@ -85,7 +85,7 @@ export default function PhasePlugsPage() {
             <span className="text-sm tracking-wider uppercase text-white/80">LOWTHER ENSEMBLE</span>
           </div>
           
-          <h1 className="font-display text-6xl font-bold leading-tight mb-4" style={{ color: '#c59862' }}>
+          <h1 className="font-display text-4xl md:text-6xl font-bold leading-tight mb-4" style={{ color: '#c59862' }}>
             Lowther Phase Plugs
           </h1>
           

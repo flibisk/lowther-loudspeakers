@@ -272,7 +272,7 @@ export default function BuildALowtherPage() {
             <div className="w-8 h-px bg-white mr-3"></div>
             <p className="font-sarabun text-sm tracking-[3px] uppercase">DIY</p>
           </div>
-          <h1 className="font-display text-6xl font-bold leading-tight mb-4" style={{ color: '#c59862' }}>
+          <h1 className="font-display text-4xl md:text-6xl font-bold leading-tight mb-4" style={{ color: '#c59862' }}>
             Build your own Lowther
           </h1>
           <p className="text-xl leading-relaxed">
