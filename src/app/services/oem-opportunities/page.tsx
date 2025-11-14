@@ -116,7 +116,7 @@ export default function OEMOpportunitiesPage() {
             <span className="text-sm tracking-wider uppercase text-white/80">OEM SOLUTIONS</span>
           </div>
           
-          <h1 className="font-display text-5xl sm:text-6xl font-bold leading-tight mb-4" style={{ color: '#c59862' }}>
+          <h1 className="font-display text-4xl md:text-6xl font-bold leading-tight mb-4" style={{ color: '#c59862' }}>
             OEM Drive Units for Speaker Designers
           </h1>
           

@@ -189,7 +189,7 @@ export default function ProductsPage() {
             <span className="text-sm tracking-wider uppercase text-white/80">LOWTHER LOUDSPEAKERS</span>
           </div>
           
-          <h1 className="font-display text-5xl md:text-6xl lg:text-7xl mb-6 leading-tight" style={{ color: '#c59862' }}>
+          <h1 className="font-display text-4xl md:text-6xl lg:text-7xl mb-6 leading-tight" style={{ color: '#c59862' }}>
             The most natural sound a loudspeaker can produce
           </h1>
           
