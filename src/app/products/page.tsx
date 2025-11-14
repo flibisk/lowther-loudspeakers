@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 
 // Speaker data with nav menu images
 const speakers = [
@@ -164,6 +164,29 @@ export default function ProductsPage() {
     }
   };
 
+  // Handle scrolling to sections when hash is present in URL
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash) {
+      // Wait for page to be fully rendered
+      const timer = setTimeout(() => {
+        const element = document.querySelector(hash);
+        if (element) {
+          const headerOffset = 100; // Account for fixed header
+          const elementPosition = element.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+        }
+      }, 300); // Give time for page to render
+
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-white">
       {/* Video Banner */}
@@ -210,7 +233,7 @@ export default function ProductsPage() {
       </section>
 
       {/* Our Masterpieces Section */}
-      <section className="py-24 bg-white overflow-hidden">
+      <section id="masterpieces" className="py-24 bg-white overflow-hidden">
         {/* Header with constrained width */}
         <div className="max-w-[1600px] mx-auto px-6 sm:px-8 lg:px-12 mb-12">
           <div className="flex justify-between items-end">
@@ -288,7 +311,7 @@ export default function ProductsPage() {
       <div className="border-t border-gray-200" />
 
       {/* Our Instruments Section */}
-      <section className="py-24 bg-white overflow-hidden">
+      <section id="instruments" className="py-24 bg-white overflow-hidden">
         {/* Header with constrained width */}
         <div className="max-w-[1600px] mx-auto px-6 sm:px-8 lg:px-12 mb-12">
           <div className="flex justify-between items-end">

@@ -12,6 +12,14 @@ interface BreadcrumbsProps {
   items: BreadcrumbItem[];
 }
 
+// Map breadcrumb labels to section IDs on the products page
+const sectionMap: Record<string, string> = {
+  'Masterpieces': 'masterpieces',
+  'Our Masterpieces': 'masterpieces',
+  'Instruments': 'instruments',
+  'Our Instruments': 'instruments',
+};
+
 export function Breadcrumbs({ items }: BreadcrumbsProps) {
   useEffect(() => {
     // Generate BreadcrumbList schema for SEO
@@ -50,6 +58,38 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
     };
   }, [items]);
 
+  // Handle scrolling to sections when hash is present
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash) {
+      // Wait for page to be fully loaded
+      setTimeout(() => {
+        const element = document.querySelector(hash);
+        if (element) {
+          const headerOffset = 100; // Account for fixed header
+          const elementPosition = element.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+        }
+      }, 100);
+    }
+  }, []);
+
+  const getLinkHref = (href: string, label: string): string => {
+    // If linking to products page, check if we should scroll to a section
+    if (href === '/products') {
+      const sectionId = sectionMap[label];
+      if (sectionId) {
+        return `/products#${sectionId}`;
+      }
+    }
+    return href;
+  };
+
   return (
     <nav className="bg-white border-b border-gray-200">
       <div className="pl-6 930:pl-16 pr-6 py-4">
@@ -67,7 +107,7 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
                 )}
                 {item.href ? (
                   <Link 
-                    href={item.href}
+                    href={getLinkHref(item.href, item.label)}
                     className={`text-gray-600 hover:text-[#c59862] transition-colors ${
                       shouldTruncate ? 'truncate max-w-[120px] 930:max-w-none 930:overflow-visible 930:whitespace-normal' : ''
                     }`}
