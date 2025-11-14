@@ -107,11 +107,25 @@ const detailHighlights = [
     title: "Matching the character of our full range drivers",
     description:
       "Made from the same materials and formed with the same approach as the cone and whizzer in our eight-inch instruments. The Supertweeter avoids the usual disconnect of a bolt-on HF unit and instead sounds like an organic continuation of the driver itself.",
+    image: "/images/drive-units/super-tweeter/gallery/Super Tweeter Front.jpg",
+  },
+  {
+    title: "Magnet systems tuned for Lowther speed",
+    description:
+      "Choose between DX or PM magnet assemblies to complement the energy and voicing of your system. Both options preserve transient speed while delivering effortless air and integration.",
+    image: "/images/drive-units/super-tweeter/gallery/Super Tweeter PM.jpg",
+  },
+  {
+    title: "Place it where it works best",
+    description:
+      "A compact enclosure with a broad dispersion waveguide allows the Supertweeter to sit above or behind the main driver, maintaining subtle visual presence while expanding spatial realism.",
+    image: "/images/drive-units/super-tweeter/gallery/Super Tweeter on Voigt Horn.jpg",
   },
   {
     title: "Hearing above ten kilohertz",
     description:
       "In listening sessions at our Northampton studio—even with listeners whose hearing measured a roll-off above 10 kHz—the Supertweeter delivered stronger imaging, more natural decay and a deeper sense of space. The ear may not hear the tone, yet the brain registers the cues.",
+    image: "/images/drive-units/super-tweeter/gallery/Super Tweeter Back.jpg",
   },
 ];
 
@@ -299,35 +313,75 @@ export default function SuperTweeterPage() {
       </section>
 
       {/* Gallery */}
-      <section data-surface="light" className="py-24 bg-white">
-        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
-          <ScrollReveal animation="fade-up">
-            <div className="text-center mb-16">
-              <h2 className="font-display text-4xl md:text-5xl mb-4" style={{ color: "#c59862" }}>
-                The Supertweeter in detail
-              </h2>
-              <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-                A compact enclosure with purposeful geometry, available in finishes that complement every Lowther loudspeaker.
-              </p>
-            </div>
-          </ScrollReveal>
-
+      <section data-surface="light" className="py-24 bg-[#fafaf8]">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {galleryImages.map((image, index) => (
-              <ScrollReveal key={image.src} animation="fade-up" delay={(index % 3) * 100}>
-                <div className="relative w-full aspect-square rounded-lg overflow-hidden shadow-sm">
+              <ScrollReveal key={image.src} animation="scale" delay={(index % 3) * 100}>
+                <div
+                  className="relative aspect-square overflow-hidden rounded-lg bg-white shadow-sm cursor-pointer group"
+                  onClick={() => openGallery(index)}
+                >
                   <Image
                     src={image.src}
                     alt={image.alt}
                     fill
-                    className="object-cover"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
                 </div>
               </ScrollReveal>
             ))}
           </div>
         </div>
       </section>
+
+      {/* Gallery Overlay */}
+      {isGalleryOpen && selectedImage !== null && (
+        <div
+          className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center"
+          onClick={closeGallery}
+        >
+          <button
+            onClick={closeGallery}
+            className="absolute top-8 right-8 text-white/80 hover:text-white transition-colors z-10"
+            aria-label="Close gallery"
+          >
+            <X className="w-8 h-8" />
+          </button>
+
+          <button
+            onClick={(event) => {
+              event.stopPropagation();
+              navigateGallery("prev");
+            }}
+            className="absolute left-8 text-white/80 hover:text-white transition-colors text-6xl font-light z-10"
+            aria-label="Previous image"
+          >
+            ‹
+          </button>
+
+          <div className="relative w-[90vw] h-[90vh]" onClick={(event) => event.stopPropagation()}>
+            <Image
+              src={galleryImages[selectedImage].src}
+              alt={galleryImages[selectedImage].alt}
+              fill
+              className="object-contain"
+            />
+          </div>
+
+          <button
+            onClick={(event) => {
+              event.stopPropagation();
+              navigateGallery("next");
+            }}
+            className="absolute right-8 text-white/80 hover:text-white transition-colors text-6xl font-light z-10"
+            aria-label="Next image"
+          >
+            ›
+          </button>
+        </div>
+      )}
 
       {/* Product */}
       <section data-surface="light" className="py-24 bg-[#fafaf8]">
@@ -344,21 +398,20 @@ export default function SuperTweeterPage() {
           </ScrollReveal>
 
           <ScrollReveal animation="fade-up">
-            <div className="flex flex-col items-center text-center bg-white border border-gray-200 rounded-lg shadow-sm p-8">
-              <div className="relative w-full mb-6 max-w-xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div className="relative w-full aspect-square">
                 <Image
                   src={superTweeterProduct.image}
                   alt={superTweeterProduct.title}
-                  width={800}
-                  height={600}
-                  className="w-full h-auto object-contain"
+                  fill
+                  className="object-contain"
                 />
               </div>
-              <div className="w-full max-w-xl">
-                <h3 className="font-display text-3xl mb-2" style={{ color: "#c59862" }}>
+              <div className="space-y-6 text-center lg:text-left">
+                <h3 className="font-display text-4xl md:text-5xl" style={{ color: "#c59862" }}>
                   {superTweeterProduct.title}
                 </h3>
-                <p className="text-lg text-gray-600 mb-6">
+                <p className="text-xl text-gray-600">
                   {getDisplayPrice()}
                 </p>
                 <ProductActionButtons
@@ -392,19 +445,6 @@ export default function SuperTweeterPage() {
             </div>
           </ScrollReveal>
 
-          <ScrollReveal animation="fade-up">
-            <div className="space-y-12 text-center text-lg text-gray-700 leading-relaxed mb-20">
-              {detailHighlights.map((detail) => (
-                <div key={detail.title} className="space-y-3">
-                  <h3 className="font-display text-3xl md:text-4xl" style={{ color: "#c59862" }}>
-                    {detail.title}
-                  </h3>
-                  <p>{detail.description}</p>
-                </div>
-              ))}
-            </div>
-          </ScrollReveal>
-
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
             {genericCraftsmanshipContent.map((item, index) => (
               <ScrollReveal key={item.title} animation="fade-up" delay={index * 100}>
@@ -422,6 +462,42 @@ export default function SuperTweeterPage() {
                   </h3>
                   <p className="text-gray-700 leading-relaxed">
                     {item.description}
+                  </p>
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Details */}
+      <section data-surface="light" className="py-24 bg-[#fafaf8]">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+          <ScrollReveal animation="fade-up">
+            <div className="text-center mb-16">
+              <h2 className="font-display text-4xl md:text-5xl mb-4" style={{ color: "#c59862" }}>
+                The details that define the Supertweeter
+              </h2>
+            </div>
+          </ScrollReveal>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            {detailHighlights.map((detail, index) => (
+              <ScrollReveal key={detail.title} animation="fade-up" delay={(index % 2) * 100}>
+                <div className="flex flex-col">
+                  <div className="relative w-full aspect-square mb-6 overflow-hidden rounded-lg">
+                    <Image
+                      src={detail.image}
+                      alt={detail.title}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <h3 className="font-display text-2xl mb-4" style={{ color: "#c59862" }}>
+                    {detail.title}
+                  </h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    {detail.description}
                   </p>
                 </div>
               </ScrollReveal>
