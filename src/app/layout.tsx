@@ -7,6 +7,8 @@ import { generateStructuredData } from "@/lib/seo";
 import { CurrencyProvider } from "@/contexts/currency-context";
 import { CartProvider } from "@/contexts/cart-context";
 import { WishlistProvider } from "@/contexts/wishlist-context";
+import { CookieConsent } from "@/components/cookie-consent";
+import { ClarityScript } from "@/components/clarity-script";
 import "./globals.css";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.lowtherloudspeakers.com";
@@ -129,6 +131,8 @@ export default function RootLayout({
                 <Footer />
               </div>
               <Analytics />
+              <ClarityScript />
+              <CookieConsent />
             </WishlistProvider>
           </CartProvider>
         </CurrencyProvider>
