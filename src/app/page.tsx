@@ -1,3 +1,6 @@
+import Image from "next/image";
+import Link from "next/link";
+
 import { Button } from "@/components/ui/button";
 import { FeaturedMasterpieces } from "@/components/featured-masterpieces";
 import { EdiliaBanner } from "@/components/edilia-banner";
@@ -9,7 +12,6 @@ import { ReviewsSection } from "@/components/reviews-section";
 import { HistoryBanner } from "@/components/history-banner";
 import { generateSEOMetadata } from "@/lib/seo";
 import { getPageMetadata } from "@/lib/metadata-config";
-import Link from "next/link";
 
 const pageMetadata = getPageMetadata("home");
 
@@ -21,19 +23,120 @@ export const metadata = generateSEOMetadata({
   url: "/",
 });
 
+export const dynamic = "force-dynamic";
+
+type HeroVariant =
+  | {
+      id: string;
+      type: "video";
+      src: string;
+      title: string;
+      subtitle: string;
+      eyebrow: string;
+      cta: string;
+    }
+  | {
+      id: string;
+      type: "image";
+      src: string;
+      mobileSrc?: string;
+      title: string;
+      subtitle: string;
+      eyebrow: string;
+      cta: string;
+    };
+
+const HERO_VARIANTS: HeroVariant[] = [
+  {
+    id: "voigt-horn",
+    type: "video",
+    src: "/videos/Banner-Voigt-Horn.mp4",
+    title: "The 4ft Voigt Horn",
+    subtitle:
+      "More than just a loudspeaker. Every 4ft Voigt Horn represents a piece of Hi-Fi history, a moment in time preserved in an eternity of music.",
+    eyebrow: "A LOWTHER MASTERPIECE",
+    cta: "/loudspeakers/voigt-horn",
+  },
+  {
+    id: "philharmonic-collection",
+    type: "image",
+    src: "/images/drive-units/philharmonic-collection/hero/Philharmonic-hero1.avif",
+    title: "The Philharmonic Collection",
+    subtitle: "Our most refined offering of instruments, standard in every Lowther masterpiece.",
+    eyebrow: "DRIVE UNITS",
+    cta: "/collection/philharmonic",
+  },
+  {
+    id: "super-tweeter",
+    type: "image",
+    src: "/images/drive-units/super-tweeter/hero/supertweeter-hero.jpg",
+    title: "The Lowther Super Tweeter",
+    subtitle: "Completing the top octave with precision and intent.",
+    eyebrow: "DRIVE UNITS",
+    cta: "/collection/super-tweeter",
+  },
+  {
+    id: "quarter-wave",
+    type: "image",
+    src: "/images/speakers/quarter-wave/hero/quarter-wave-hero2.jpg",
+    mobileSrc: "/images/speakers/quarter-wave/hero/quarterwave_hero-mobile.avif",
+    title: "Simply just works.",
+    subtitle: "Engineered with the flexibility to perform anywhere in a room, even behind furniture.",
+    eyebrow: "LOUDSPEAKERS",
+    cta: "/loudspeakers/acousta-quarter-wave",
+  },
+  {
+    id: "hegeman",
+    type: "image",
+    src: "/images/speakers/hegeman/hero/hegeman-hero.webp",
+    title: "Exclusive and reverent.",
+    subtitle: "Hegeman, a reimagining of Lowther's horn legacy.",
+    eyebrow: "LOUDSPEAKERS",
+    cta: "/loudspeakers/hegeman",
+  },
+];
+
 export default async function HomePage() {
+  const heroVariant =
+    HERO_VARIANTS[Math.floor(Math.random() * HERO_VARIANTS.length)] ?? HERO_VARIANTS[0];
+
+  const isVideo = heroVariant.type === "video";
+  const backgroundAlt =
+    heroVariant.type === "image"
+      ? heroVariant.title
+      : "Lowther Loudspeakers hero background";
+
   return (
     <>
       {/* HERO - Dark video section */}
       <section data-surface="dark" className="relative min-h-[100vh] overflow-hidden">
-        <video 
-          className="absolute inset-0 h-full w-full object-cover" 
-          autoPlay 
-          muted 
-          loop 
-          playsInline 
-          src="/videos/Banner-Voigt-Horn.mp4" 
-        />
+        {isVideo ? (
+          <video
+            className="absolute inset-0 h-full w-full object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
+            src={heroVariant.src}
+          />
+        ) : (
+          <>
+            <Image
+              src={heroVariant.src}
+              alt={backgroundAlt}
+              fill
+              priority
+              className="hidden 930:block absolute inset-0 h-full w-full object-cover"
+            />
+            <Image
+              src={heroVariant.mobileSrc ?? heroVariant.src}
+              alt={backgroundAlt}
+              fill
+              priority
+              className="930:hidden absolute inset-0 h-full w-full object-cover"
+            />
+          </>
+        )}
         <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/40 to-black/60"></div>
         
         {/* Text Overlay - Mobile: Stacked, Desktop: Side by side */}
@@ -41,17 +144,22 @@ export default async function HomePage() {
           {/* Small line and category */}
           <div className="flex items-center mb-2">
             <div className="w-8 h-px bg-white mr-3"></div>
-            <span className="text-sm tracking-wider uppercase text-white/80">A LOWTHER MASTERPIECE</span>
+            <span className="text-sm tracking-wider uppercase text-white/80">
+              {heroVariant.eyebrow}
+            </span>
           </div>
           
           {/* Main title */}
-          <h1 className="font-display text-6xl font-bold leading-tight mb-4" style={{ color: '#c59862' }}>
-            The 4ft Voigt Horn
+          <h1
+            className="font-display text-6xl font-bold leading-tight mb-4"
+            style={{ color: "#c59862" }}
+          >
+            {heroVariant.title}
           </h1>
           
           {/* Description */}
           <p className="text-lg text-white/90 leading-relaxed mb-6 930:mb-0">
-            More than just a loudspeaker. Every 4ft Voigt Horn represents a piece of Hi-Fi history, a moment in time preserved in an eternity of music.
+            {heroVariant.subtitle}
           </p>
         </div>
 
@@ -62,7 +170,7 @@ export default async function HomePage() {
             size="lowther"
             asChild
           >
-            <Link href="/loudspeakers/voigt-horn">LEARN MORE</Link>
+            <Link href={heroVariant.cta}>LEARN MORE</Link>
           </Button>
         </div>
 
@@ -73,7 +181,7 @@ export default async function HomePage() {
             size="lowther"
             asChild
           >
-            <Link href="/loudspeakers/voigt-horn">LEARN MORE</Link>
+            <Link href={heroVariant.cta}>LEARN MORE</Link>
           </Button>
         </div>
 
