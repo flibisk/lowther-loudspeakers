@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
@@ -34,10 +34,8 @@ const superTweeterProduct = {
   ],
 };
 
-const magnetOptions = [
-  { value: "Neodymium (DX)", label: "DX Magnet" },
-  { value: "Alnico (PM)", label: "PM Magnet" },
-];
+const magnetOptions = ["Neodymium (DX)", "Alnico (PM)"];
+const MAGNET_OPTION_NAME = "Magnet Type";
 
 const galleryImages = [
   {
@@ -156,7 +154,7 @@ export default function SuperTweeterPage() {
   const [selectedProduct, setSelectedProduct] = useState<typeof superTweeterProduct | null>(null);
   const [shopifyProduct, setShopifyProduct] = useState<ShopifyProduct | null>(null);
   const [isProductOpen, setIsProductOpen] = useState(false);
-  const [selectedMagnet, setSelectedMagnet] = useState<string>(magnetOptions[0].value);
+  const [selectedMagnet, setSelectedMagnet] = useState<string>(magnetOptions[0]);
   const [quantity, setQuantity] = useState<number>(1);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
@@ -202,7 +200,7 @@ export default function SuperTweeterPage() {
 
   const openProductDetail = () => {
     setSelectedProduct(superTweeterProduct);
-    setSelectedMagnet(magnetOptions[0].value);
+    setSelectedMagnet(magnetOptions[0]);
     setQuantity(1);
     setTimeout(() => setIsProductOpen(true), 50);
   };
@@ -214,33 +212,10 @@ export default function SuperTweeterPage() {
     }, 600);
   };
 
-  const magnetOptionName = useMemo(() => {
-    const variants = shopifyProduct?.variants ?? [];
-    if (!variants.length) return "Magnet";
-
-    const optionNames = new Set<string>();
-    for (const variant of variants) {
-      for (const option of variant.selectedOptions) {
-        optionNames.add(option.name);
-      }
-    }
-
-    if (!optionNames.size) {
-      return "Magnet";
-    }
-
-    const normalize = (value: string) => value.trim().toLowerCase().replace(/[^a-z0-9]/g, "");
-    const magnetName =
-      Array.from(optionNames).find((name) => normalize(name).includes("magnet")) ??
-      Array.from(optionNames)[0];
-
-    return magnetName ?? "Magnet";
-  }, [shopifyProduct]);
-
   const getCurrentVariant = (): ShopifyVariant | undefined => {
     if (!shopifyProduct) return undefined;
     const options = {
-      [magnetOptionName]: selectedMagnet,
+      [MAGNET_OPTION_NAME]: selectedMagnet,
     };
     return findVariantByOptions(shopifyProduct.variants, options);
   };
@@ -641,15 +616,15 @@ export default function SuperTweeterPage() {
                     <div className="grid grid-cols-2 gap-3">
                       {magnetOptions.map((option) => (
                         <button
-                          key={option.value}
-                          onClick={() => setSelectedMagnet(option.value)}
+                          key={option}
+                          onClick={() => setSelectedMagnet(option)}
                           className={`py-3 px-4 text-sm border rounded transition-all ${
-                            selectedMagnet === option.value
+                            selectedMagnet === option
                               ? "bg-black text-white border-black"
                               : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
                           }`}
                         >
-                          {option.label}
+                          {option}
                         </button>
                       ))}
                     </div>
