@@ -28,7 +28,7 @@ export default function SiteHeader({ nav }: Props) {
   const { itemCount: wishlistCount } = useWishlist();
   const [hidden, setHidden] = useState(false);
   const [solid, setSolid] = useState(false);
-  const [onDark, setOnDark] = useState(true); // assume hero is dark
+  const [onDark, setOnDark] = useState(true); // assume hero is dark - start on dark for all pages
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [hoveredImage, setHoveredImage] = useState<string | null>(null);
@@ -245,10 +245,10 @@ export default function SiteHeader({ nav }: Props) {
         <div
           className={clsx(
             'w-full flex h-16 items-center px-6 sm:h-20 sm:px-6 lg:px-8 xl:px-12 transition-colors duration-300',
-            solid
+            solid && !onDark
               ? 'bg-white/85 backdrop-blur supports-[backdrop-filter]:bg-white/70'
-              : 'bg-gradient-to-b from-black/20 via-black/10 to-transparent',
-            onDark && !solid ? 'text-white' : 'text-neutral-900'
+              : 'bg-black/60 backdrop-blur supports-[backdrop-filter]:bg-black/50',
+            solid && !onDark ? 'text-neutral-900' : 'text-white'
           )}
         >
           {/* Left Side - Menu & Search */}
@@ -264,8 +264,10 @@ export default function SiteHeader({ nav }: Props) {
                 }
               }}
               className={clsx(
-                'inline-flex items-center justify-center rounded-md p-2 hover:bg-neutral-100 transition-colors',
-                onDark && !solid ? 'text-white hover:bg-white/10' : 'text-neutral-900'
+                'inline-flex items-center justify-center rounded-md p-2 transition-colors',
+                solid && !onDark 
+                  ? 'text-neutral-900 hover:bg-neutral-100' 
+                  : 'text-white hover:bg-white/10'
               )}
             >
               <Menu className="h-5 w-5" />
@@ -273,8 +275,10 @@ export default function SiteHeader({ nav }: Props) {
             <button
               aria-label="Search"
               className={clsx(
-                'inline-flex items-center justify-center rounded-md p-2 hover:bg-neutral-100 transition-colors',
-                onDark && !solid ? 'text-white hover:bg-white/10' : 'text-neutral-900'
+                'inline-flex items-center justify-center rounded-md p-2 transition-colors',
+                solid && !onDark 
+                  ? 'text-neutral-900 hover:bg-neutral-100' 
+                  : 'text-white hover:bg-white/10'
               )}
             >
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -300,8 +304,10 @@ export default function SiteHeader({ nav }: Props) {
               href="/account"
               aria-label="Account"
               className={clsx(
-                'inline-flex items-center justify-center rounded-md p-2 hover:bg-neutral-100 transition-colors',
-                onDark && !solid ? 'text-white hover:bg-white/10' : 'text-neutral-900'
+                'inline-flex items-center justify-center rounded-md p-2 transition-colors',
+                solid && !onDark 
+                  ? 'text-neutral-900 hover:bg-neutral-100' 
+                  : 'text-white hover:bg-white/10'
               )}
             >
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -312,8 +318,10 @@ export default function SiteHeader({ nav }: Props) {
               href="/wishlist"
               aria-label="Wishlist"
               className={clsx(
-                'inline-flex items-center justify-center rounded-md p-2 hover:bg-neutral-100 transition-colors relative',
-                onDark && !solid ? 'text-white hover:bg-white/10' : 'text-neutral-900'
+                'inline-flex items-center justify-center rounded-md p-2 transition-colors relative',
+                solid && !onDark 
+                  ? 'text-neutral-900 hover:bg-neutral-100' 
+                  : 'text-white hover:bg-white/10'
               )}
             >
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -328,8 +336,10 @@ export default function SiteHeader({ nav }: Props) {
             <button
               onClick={() => setCartOpen(true)}
               className={clsx(
-                'inline-flex items-center justify-center rounded-md p-2 hover:bg-neutral-100 transition-colors relative',
-                onDark && !solid ? 'text-white hover:bg-white/10' : 'text-neutral-900'
+                'inline-flex items-center justify-center rounded-md p-2 transition-colors relative',
+                solid && !onDark 
+                  ? 'text-neutral-900 hover:bg-neutral-100' 
+                  : 'text-white hover:bg-white/10'
               )}
             >
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
