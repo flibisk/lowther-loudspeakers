@@ -327,6 +327,15 @@ export default function SuperTweeterPage() {
                   <p key={index}>{paragraph}</p>
                 ))}
               </div>
+              <div className="pt-6">
+                <Button
+                  size="lg"
+                  className="bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
+                  onClick={openProductDetail}
+                >
+                  BUY NOW
+                </Button>
+              </div>
             </div>
           </ScrollReveal>
         </div>
@@ -445,6 +454,55 @@ export default function SuperTweeterPage() {
                   onPrimary={openProductDetail}
                   onSecondary={openProductDetail}
                 />
+              </div>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* Technical Specifications Section */}
+      <section data-surface="light" className="py-24 bg-white">
+        <div className="max-w-4xl mx-auto px-6 sm:px-8 lg:px-12">
+          <ScrollReveal animation="fade-up">
+            <h2 className="font-display text-4xl md:text-5xl mb-12 text-center" style={{ color: "#c59862" }}>
+              Technical Specifications
+            </h2>
+          </ScrollReveal>
+          
+          <ScrollReveal animation="fade-up" delay={100}>
+            <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+              <div className="divide-y divide-gray-200">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6">
+                  <div className="font-medium text-gray-900">Voice coil:</div>
+                  <div className="text-gray-700">Silver or hi-ferric, 8 or 15 ohm</div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6">
+                  <div className="font-medium text-gray-900">Magnet:</div>
+                  <div className="text-gray-700">
+                    DX2 or DX3 Neodymium<br />
+                    PM6 Alnico
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6">
+                  <div className="font-medium text-gray-900">Capacitor:</div>
+                  <div className="text-gray-700">0.9µF (1st order)</div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6">
+                  <div className="font-medium text-gray-900">Wiring:</div>
+                  <div className="text-gray-700">2m</div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6">
+                  <div className="font-medium text-gray-900">Phase Plug:</div>
+                  <div className="text-gray-700">Standard Dome (black)</div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6">
+                  <div className="font-medium text-gray-900">Stand:</div>
+                  <div className="text-gray-700">Textured Black/Bespoke Veneer</div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6">
+                  <div className="font-medium text-gray-900">Additions:</div>
+                  <div className="text-gray-700">Bespoke wiring/terminals</div>
+                </div>
               </div>
             </div>
           </ScrollReveal>
