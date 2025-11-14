@@ -61,24 +61,44 @@ const galleryImages = [
   },
 ];
 
-const craftsmanshipHighlights = [
+const genericCraftsmanshipContent = [
   {
-    title: "Hand-built integration",
+    title: "Hand-Wound Voice Coils",
     description:
-      "Each Supertweeter is hand-assembled in Northampton to mirror the tone and responsiveness of the partnering Lowther driver. Every diaphragm is precision formed, matched and tested in pairs for phase-coherent extension.",
-    image: "/images/drive-units/super-tweeter/gallery/Super Tweeter Front.jpg",
+      "At the heart of every Lowther lies a voice coil wound entirely by hand, to tolerances measured in microns. Copper, silver, or gold alloy wire is layered under exact tension to achieve balance beyond the reach of machines.",
+    image: "/images/drive-units/philharmonic-collection/gallery/made-in-great-britain-coil-winding.jpg",
   },
   {
-    title: "Magnet systems to match your instrument",
+    title: "Assembled by Master Craftsmen",
     description:
-      "Choose between DX or PM magnet assemblies to complement the energy and voicing of your system. Both options are engineered to preserve transient speed while delivering effortless air.",
-    image: "/images/drive-units/super-tweeter/gallery/Super Tweeter PM.jpg",
+      "Every component is brought together by craftsmen whose experience spans decades. Their skill and intuition, the ability to feel perfect alignment within a human hair's breadth, ensure flawless centring and effortless movement.",
+    image: "/images/drive-units/philharmonic-collection/gallery/made-in-great-britain-handmade-to-order.jpg",
   },
   {
-    title: "Discreet, purposeful design",
+    title: "Cones Treated by Hand, Dried by Sunlight",
     description:
-      "Housed in a compact enclosure with a broad dispersion waveguide, the Supertweeter can be positioned directly above or behind the main driver, maintaining visual subtlety while expanding spatial realism.",
-    image: "/images/drive-units/super-tweeter/gallery/Super Tweeter Back.jpg",
+      "Our paper cones are individually brushed with proprietary treatments, then cured slowly in natural sunlight. This organic process creates a surface both rigid and alive, capturing musical textures with breathtaking speed and delicacy.",
+    image:
+      "/images/drive-units/philharmonic-collection/gallery/made-in-great-britain - lowther paper cones curing in sunlight.jpg",
+  },
+  {
+    title: "Tested to Ensure Perfection",
+    description:
+      "Every drive unit undergoes exhaustive acoustic and mechanical testing. From precise frequency analysis to the tactile inspection of cone travel, nothing leaves our bench until it meets the sonic ideal that defines Lowther.",
+    image: "/images/drive-units/philharmonic-collection/gallery/made-in-great-britain-tested.jpg",
+  },
+  {
+    title: "Superior Metalwork, Engineered for Magnetism",
+    description:
+      "Our metalwork is forged from premium lead-free steels. This geometry channels magnetic flux with maximum efficiency, forming the silent architecture beneath the Lowther signature: lightning-fast response and effortless dynamics.",
+    image: "/images/drive-units/philharmonic-collection/gallery/made-in-great-britain-handmade-to-order2.jpg",
+  },
+  {
+    title: "Choice of Magnets",
+    description:
+      "From traditional Alnico to modern Neodymium and the rare Permendur and Magmax of our Grand Opera instruments, each magnet composition shapes character and tone.",
+    image:
+      "/images/drive-units/philharmonic-collection/gallery/made-in-great-britain-higest-specifications-of-any-drive-units-in-the-world.jpg",
   },
 ];
 
@@ -360,20 +380,20 @@ export default function SuperTweeterPage() {
 
       {/* Handcrafted */}
       <section data-surface="light" className="py-24 bg-white">
-        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           <ScrollReveal animation="fade-up">
             <div className="text-center mb-16">
               <h2 className="font-display text-4xl md:text-5xl mb-4" style={{ color: "#c59862" }}>
-                Handmade to live with our full range drivers
+                Handcrafted in Great Britain
               </h2>
               <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-                From the diaphragm geometry to the magnet structures, every element of the Supertweeter is crafted to behave like an organic extension of a Lowther driver—never an afterthought.
+                Every Lowther drive unit is the result of meticulous hand assembly, decades of refinement, and an unwavering commitment to sonic excellence.
               </p>
             </div>
           </ScrollReveal>
 
           <ScrollReveal animation="fade-up">
-            <div className="space-y-12 text-center text-lg text-gray-700 leading-relaxed mb-16">
+            <div className="space-y-12 text-center text-lg text-gray-700 leading-relaxed mb-20">
               {detailHighlights.map((detail) => (
                 <div key={detail.title} className="space-y-3">
                   <h3 className="font-display text-3xl md:text-4xl" style={{ color: "#c59862" }}>
@@ -385,11 +405,11 @@ export default function SuperTweeterPage() {
             </div>
           </ScrollReveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            {craftsmanshipHighlights.map((item, index) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+            {genericCraftsmanshipContent.map((item, index) => (
               <ScrollReveal key={item.title} animation="fade-up" delay={index * 100}>
-                <div className="bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden h-full flex flex-col">
-                  <div className="relative w-full aspect-[4/3]">
+                <div className="flex flex-col">
+                  <div className="relative w-full aspect-square mb-6 overflow-hidden rounded-lg">
                     <Image
                       src={item.image}
                       alt={item.title}
@@ -397,12 +417,12 @@ export default function SuperTweeterPage() {
                       className="object-cover"
                     />
                   </div>
-                  <div className="p-8 space-y-3 flex-1 flex flex-col">
-                    <h3 className="font-display text-2xl" style={{ color: "#c59862" }}>
-                      {item.title}
-                    </h3>
-                    <p className="text-gray-700 leading-relaxed flex-1">{item.description}</p>
-                  </div>
+                  <h3 className="font-display text-2xl mb-4" style={{ color: "#c59862" }}>
+                    {item.title}
+                  </h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    {item.description}
+                  </p>
                 </div>
               </ScrollReveal>
             ))}
