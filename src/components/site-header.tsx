@@ -68,7 +68,7 @@ export default function SiteHeader({ nav }: Props) {
     'sinfonia-collection': '/images/Menu/instruments/sinfonia-collection.jpg',
     'philharmonic-collection': '/images/Menu/instruments/philharmonic-collection.jpg',
     'grand-opera-collection': '/images/Menu/instruments/grand-opera-collection.jpg',
-    'super-tweeter': '/images/Menu/instruments/super-tweeter-collection.jpg',
+    'super-tweeter': '/images/drive-units/super-tweeter/gallery/Super Tweeter - Product Image.jpg',
     
     // Ensemble - Fixed paths
     'px4-amplifier': '/images/Menu/Ensemble/PX4-Amplifier.avif',
@@ -668,7 +668,7 @@ export default function SiteHeader({ nav }: Props) {
               { label: 'Sinfonia Collection', href: '/collection/sinfonia', image: '/images/Menu/instruments/sinfonia-collection.jpg' },
               { label: 'Philharmonic Collection', href: '/collection/philharmonic', image: '/images/Menu/instruments/philharmonic-collection.jpg' },
               { label: 'Grand Opera Collection', href: '/collection/grand-opera', image: '/images/Menu/instruments/grand-opera-collection.jpg' },
-              { label: 'Super Tweeter', href: '/collection/super-tweeter', image: '/images/Menu/instruments/super-tweeter-collection.jpg' },
+              { label: 'Super Tweeter', href: '/collection/super-tweeter', image: '/images/drive-units/super-tweeter/gallery/Super Tweeter - Product Image.jpg' },
             ]
           },
           {
