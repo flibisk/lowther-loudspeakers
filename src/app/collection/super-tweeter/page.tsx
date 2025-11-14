@@ -22,7 +22,7 @@ import {
 
 const superTweeterProduct = {
   id: "super-tweeter",
-  handle: "lowther-super-tweeter",
+  handle: "lowther-supertweeter",
   title: "Lowther Supertweeter",
   price: "£0.00",
   image: "/images/drive-units/super-tweeter/gallery/Super Tweeter - Product Image.jpg",
