@@ -188,10 +188,10 @@ export const METADATA_CONFIG: Record<string, PageMetadata> = {
   },
 
   "collection/super-tweeter": {
-    title: "The Lowther Supertweeter",
-    description: "Complete the final octave of your Lowther system. The Supertweeter restores spatial cues and harmonic detail with DX or PM magnet options, perfectly matching our full-range drivers.",
+    title: "The Lowther Super Tweeter",
+    description: "Complete the final octave of your Lowther system. The Super Tweeter restores spatial cues and harmonic detail with DX or PM magnet options, perfectly matching our full-range drivers.",
     ogImage: "/images/og/supertweeter.jpg",
-    keywords: ["Supertweeter", "high frequency", "drive unit", "magnet options"],
+    keywords: ["Super Tweeter", "high frequency", "drive unit", "magnet options"],
   },
   
   "collection/sinfonia": {

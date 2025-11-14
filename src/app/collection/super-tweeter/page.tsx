@@ -23,13 +23,13 @@ import {
 const superTweeterProduct = {
   id: "super-tweeter",
   handle: "lowther-supertweeter",
-  title: "Lowther Supertweeter",
+  title: "Lowther Super Tweeter",
   price: "£0.00",
   image: "/images/drive-units/super-tweeter/gallery/Super Tweeter - Product Image.jpg",
   description:
-    "Completing the top octave with precision and intent, the Lowther Supertweeter extends the bandwidth of our full-range instruments without adding artificial edge or glare.",
+    "Completing the top octave with precision and intent, the Lowther Super Tweeter extends the bandwidth of our full-range instruments without adding artificial edge or glare.",
   details: [
-    "Designed to take over precisely where the eight-inch Lowther driver naturally rolls off, the Supertweeter restores the final octave of information that locks the stereo image in place.",
+    "Designed to take over precisely where the eight-inch Lowther driver naturally rolls off, the Super Tweeter restores the final octave of information that locks the stereo image in place.",
     "Available with DX or PM magnet structures to match the energy, speed, and scale of the partnering driver.",
   ],
 };
@@ -40,27 +40,27 @@ const MAGNET_OPTION_NAME = "Magnet Type";
 const galleryImages = [
   {
     src: "/images/drive-units/super-tweeter/gallery/Super Tweeter Front.jpg",
-    alt: "Front view of the Lowther Supertweeter in British Racing Green",
+    alt: "Front view of the Lowther Super Tweeter in British Racing Green",
   },
   {
     src: "/images/drive-units/super-tweeter/gallery/Super Tweeter Front black version.jpg",
-    alt: "Lowther Supertweeter finished in black",
+    alt: "Lowther Super Tweeter finished in black",
   },
   {
     src: "/images/drive-units/super-tweeter/gallery/Super Tweeter PM.jpg",
-    alt: "Lowther Supertweeter with PM magnet assembly",
+    alt: "Lowther Super Tweeter with PM magnet assembly",
   },
   {
     src: "/images/drive-units/super-tweeter/gallery/Super Tweeter Back.jpg",
-    alt: "Rear view of the Lowther Supertweeter",
+    alt: "Rear view of the Lowther Super Tweeter",
   },
   {
     src: "/images/drive-units/super-tweeter/gallery/Super Tweeter Back - cable.jpg",
-    alt: "Detail of the Lowther Supertweeter connectivity",
+    alt: "Detail of the Lowther Super Tweeter connectivity",
   },
   {
     src: "/images/drive-units/super-tweeter/gallery/Super Tweeter on Voigt Horn.jpg",
-    alt: "Lowther Supertweeter mounted on a Voigt Horn loudspeaker",
+    alt: "Lowther Super Tweeter mounted on a Voigt Horn loudspeaker",
   },
 ];
 
@@ -109,7 +109,7 @@ const detailHighlights = [
   {
     title: "Matching the character of our full range drivers",
     description:
-      "Made from the same materials and formed with the same approach as the cone and whizzer in our eight-inch instruments. The Supertweeter avoids the usual disconnect of a bolt-on HF unit and instead sounds like an organic continuation of the driver itself.",
+      "Made from the same materials and formed with the same approach as the cone and whizzer in our eight-inch instruments. The Super Tweeter avoids the usual disconnect of a bolt-on HF unit and instead sounds like an organic continuation of the driver itself.",
     image: "/images/drive-units/super-tweeter/gallery/Super Tweeter Front.jpg",
   },
   {
@@ -121,29 +121,29 @@ const detailHighlights = [
   {
     title: "Place it where it works best",
     description:
-      "A compact enclosure with a broad dispersion waveguide allows the Supertweeter to sit above or behind the main driver, maintaining subtle visual presence while expanding spatial realism.",
+      "A compact enclosure with a broad dispersion waveguide allows the Super Tweeter to sit above or behind the main driver, maintaining subtle visual presence while expanding spatial realism.",
     image: "/images/drive-units/super-tweeter/gallery/Super Tweeter on Voigt Horn.jpg",
   },
   {
     title: "Hearing above ten kilohertz",
     description:
-      "In listening sessions at our Northampton studio—even with listeners whose hearing measured a roll-off above 10 kHz—the Supertweeter delivered stronger imaging, more natural decay and a deeper sense of space. The ear may not hear the tone, yet the brain registers the cues.",
+      "In listening sessions at our Northampton studio—even with listeners whose hearing measured a roll-off above 10 kHz—the Super Tweeter delivered stronger imaging, more natural decay and a deeper sense of space. The ear may not hear the tone, yet the brain registers the cues.",
     image: "/images/drive-units/super-tweeter/gallery/Super Tweeter Back.jpg",
   },
 ];
 
 const testimonials = [
-  "“Once the Supertweeter was switched off the music lost height. I could not hear the tone but I could feel the difference.”",
-  "“I thought my hearing had dropped above ten kilohertz. The Supertweeter still improved the space around vocals and instruments.”",
+  "“Once the Super Tweeter was switched off the music lost height. I could not hear the tone but I could feel the difference.”",
+  "“I thought my hearing had dropped above ten kilohertz. The Super Tweeter still improved the space around vocals and instruments.”",
   "“It is not about hearing a higher note. It is about restoring the final cues that help you locate every sound in the room.”",
-  "“With the Supertweeter engaged the stereo image locks in. Without it everything feels slightly flatter.”",
+  "“With the Super Tweeter engaged the stereo image locks in. Without it everything feels slightly flatter.”",
   "“I did not expect it to matter at my age. It does.”",
   "“The highs are subtle. The effect is not.”",
 ];
 
 const introParagraphs = [
   "Every Lowther full-range instrument reaches remarkable heights on its own. Yet all eight-inch units experience a natural roll-off above ten kilohertz. Even when you cannot consciously hear those top harmonics, your brain responds to them. The result is a clearer image, stronger spatial cues and a greater sense of ease in the music.",
-  "The Lowther Supertweeter is designed to continue exactly where the full range driver falls away. It adds nothing artificial. It simply restores the final part of the spectrum that completes the experience.",
+  "The Lowther Super Tweeter is designed to continue exactly where the full range driver falls away. It adds nothing artificial. It simply restores the final part of the spectrum that completes the experience.",
 ];
 
 export default function SuperTweeterPage() {
@@ -283,7 +283,7 @@ export default function SuperTweeterPage() {
       <section data-surface="dark" className="relative min-h-[100vh] overflow-hidden">
         <Image
           src="/images/drive-units/super-tweeter/hero/supertweeter-hero.jpg"
-          alt="The Lowther Supertweeter"
+          alt="The Lowther Super Tweeter"
           fill
           className="absolute inset-0 h-full w-full object-cover"
           priority
@@ -297,7 +297,7 @@ export default function SuperTweeterPage() {
           </div>
 
           <h1 className="font-display text-6xl font-bold leading-tight mb-4" style={{ color: "#c59862" }}>
-            The Lowther Supertweeter
+            The Lowther Super Tweeter
           </h1>
 
           <p className="text-xl leading-relaxed">
@@ -310,7 +310,7 @@ export default function SuperTweeterPage() {
         items={[
           { label: "Home", href: "/" },
           { label: "Our Instruments", href: "/products" },
-          { label: "The Lowther Supertweeter" },
+          { label: "The Lowther Super Tweeter" },
         ]}
       />
 
@@ -412,7 +412,7 @@ export default function SuperTweeterPage() {
                 Bring the final octave to your Lowther
               </h2>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                Configure the Supertweeter with DX or PM magnet assemblies to suit your instrument.
+                Configure the Super Tweeter with DX or PM magnet assemblies to suit your instrument.
               </p>
             </div>
           </ScrollReveal>
@@ -432,14 +432,14 @@ export default function SuperTweeterPage() {
                   {superTweeterProduct.title}
                 </h3>
                 <p className="text-xl text-gray-600">
-                  {getDisplayPrice()}
+                  From {getDisplayPrice()}
                 </p>
                 <ProductActionButtons
                   product={{
                     id: superTweeterProduct.id,
                     handle: superTweeterProduct.handle,
                     title: superTweeterProduct.title,
-                    price: getDisplayPrice(),
+                    price: `From ${getDisplayPrice()}`,
                     image: superTweeterProduct.image,
                   }}
                   onPrimary={openProductDetail}
@@ -496,7 +496,7 @@ export default function SuperTweeterPage() {
           <ScrollReveal animation="fade-up">
             <div className="text-center mb-16">
               <h2 className="font-display text-4xl md:text-5xl mb-4" style={{ color: "#c59862" }}>
-                The details that define the Supertweeter
+                The details that define the Super Tweeter
               </h2>
             </div>
           </ScrollReveal>
@@ -535,7 +535,7 @@ export default function SuperTweeterPage() {
                 What listeners are hearing
               </h2>
               <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-                Subtle in presence, profound in impact—the Supertweeter restores spatial cues and harmonic information that transforms the listening experience.
+                Subtle in presence, profound in impact—the Super Tweeter restores spatial cues and harmonic information that transforms the listening experience.
               </p>
             </div>
           </ScrollReveal>
@@ -594,7 +594,7 @@ export default function SuperTweeterPage() {
                       {selectedProduct.title}
                     </h2>
                     <p className="text-xl text-gray-900 mb-2">
-                      {getOverlayPrice()}
+                      From {getOverlayPrice()}
                       <span className="ml-2 text-sm text-gray-500 uppercase tracking-[2px]">
                         per unit
                       </span>
