@@ -9,6 +9,7 @@ import { LowtherForLifeSection } from "@/components/lowther-for-life-section";
 import { ProductActionButtons } from "@/components/product-action-buttons";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { Button } from "@/components/ui/button";
+import { CartOverlay } from "@/components/cart-overlay";
 import { useCart } from "@/contexts/cart-context";
 import { useCurrency } from "@/contexts/currency-context";
 import { useShopifyCollection } from "@/hooks/use-shopify-collection";
@@ -158,6 +159,7 @@ export default function SuperTweeterPage() {
   const [selectedProduct, setSelectedProduct] = useState<typeof superTweeterProduct | null>(null);
   const [shopifyProduct, setShopifyProduct] = useState<ShopifyProduct | null>(null);
   const [isProductOpen, setIsProductOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
   const [selectedMagnet, setSelectedMagnet] = useState<string>(magnetOptions[0]);
   const [selectedVoiceCoil, setSelectedVoiceCoil] = useState<string>(voiceCoilOptions[0]);
   const [selectedImpedance, setSelectedImpedance] = useState<string>(impedanceOptions[0]);
@@ -258,8 +260,11 @@ export default function SuperTweeterPage() {
         return;
       }
       await addItem(variant.id, quantity);
-      alert(`Added ${quantity}× ${selectedProduct.title} to your bag!`);
       closeProductDetail();
+      // Open cart overlay after product overlay closes (600ms transition + small buffer)
+      setTimeout(() => {
+        setCartOpen(true);
+      }, 650);
       return;
     }
 
@@ -622,7 +627,10 @@ export default function SuperTweeterPage() {
 
       <LowtherForLifeSection />
 
-      {/* Overlay */}
+      {/* Cart Overlay */}
+      <CartOverlay isOpen={cartOpen} onClose={() => setCartOpen(false)} />
+
+      {/* Product Overlay */}
       {selectedProduct && (
         <div className="fixed inset-0 bg-white z-50">
           <div className="h-full flex flex-col md:flex-row">
