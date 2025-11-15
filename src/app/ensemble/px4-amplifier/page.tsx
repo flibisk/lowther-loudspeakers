@@ -8,6 +8,7 @@ import { LowtherForLifeSection } from '@/components/lowther-for-life-section';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { X } from 'lucide-react';
 import { ProductActionButtons } from '@/components/product-action-buttons';
+import { CartOverlay } from '@/components/cart-overlay';
 import { useShopifyCollection } from '@/hooks/use-shopify-collection';
 import { formatPrice, type ShopifyProduct } from '@/lib/shopify-storefront';
 import { useCart } from '@/contexts/cart-context';
@@ -62,6 +63,7 @@ export default function PX4AmplifierPage() {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<typeof px4Products[0] | null>(null);
   const [isProductOpen, setIsProductOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
   const [selectedColor, setSelectedColor] = useState<string>('green');
   const [selectedTopology, setSelectedTopology] = useState<string>('push-pull');
   const [quantity, setQuantity] = useState<number>(1);
@@ -135,8 +137,11 @@ export default function PX4AmplifierPage() {
       }
 
       await addItem(variant.id, quantity);
-      alert(`Added ${quantity}x ${selectedProduct.title} to your bag!`);
       closeProductDetail();
+      // Open cart overlay after product overlay closes (600ms transition + small buffer)
+      setTimeout(() => {
+        setCartOpen(true);
+      }, 650);
       return;
     }
 
@@ -395,6 +400,9 @@ export default function PX4AmplifierPage() {
 
       {/* Lowther for Life Video Section */}
       <LowtherForLifeSection />
+
+      {/* Cart Overlay */}
+      <CartOverlay isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
       {/* Product Detail Overlay */}
       {selectedProduct && (

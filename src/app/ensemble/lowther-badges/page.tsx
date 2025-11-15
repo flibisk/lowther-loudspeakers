@@ -8,6 +8,7 @@ import { LowtherForLifeSection } from '@/components/lowther-for-life-section';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { X } from 'lucide-react';
 import { ProductActionButtons } from '@/components/product-action-buttons';
+import { CartOverlay } from '@/components/cart-overlay';
 import { useShopifyCollection } from '@/hooks/use-shopify-collection';
 import { formatPrice, type ShopifyProduct } from '@/lib/shopify-storefront';
 import { useCart } from '@/contexts/cart-context';
@@ -16,6 +17,7 @@ export default function LowtherBadgesPage() {
   const { addItem, isLoading: cartLoading } = useCart();
   const [selectedProduct, setSelectedProduct] = useState<boolean>(false);
   const [isProductOpen, setIsProductOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
   const [quantity, setQuantity] = useState<number>(1);
   const [selectedShopifyProduct, setSelectedShopifyProduct] = useState<ShopifyProduct | null>(null);
 
@@ -75,8 +77,11 @@ export default function LowtherBadgesPage() {
         return;
       }
       await addItem(variant.id, quantity);
-      alert(`Added ${quantity}x Official Lowther Badges to your bag!`);
       closeProductDetail();
+      // Open cart overlay after product overlay closes (600ms transition + small buffer)
+      setTimeout(() => {
+        setCartOpen(true);
+      }, 650);
       return;
     }
 
@@ -202,6 +207,9 @@ export default function LowtherBadgesPage() {
 
       {/* Lowther for Life Video Section */}
       <LowtherForLifeSection />
+
+      {/* Cart Overlay */}
+      <CartOverlay isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
       {/* Product Detail Overlay */}
       {selectedProduct && (

@@ -10,6 +10,7 @@ import { X } from 'lucide-react';
 import { useCart } from '@/contexts/cart-context';
 import { useCurrency } from '@/contexts/currency-context';
 import { ProductActionButtons } from '@/components/product-action-buttons';
+import { CartOverlay } from '@/components/cart-overlay';
 import {
   getCollectionProducts,
   formatPrice,
@@ -236,6 +237,7 @@ export default function SinfoniaPage() {
   const [selectedProduct, setSelectedProduct] = useState<typeof sinfoniaProducts[0] | null>(null);
   const [selectedShopifyProduct, setSelectedShopifyProduct] = useState<ShopifyProduct | null>(null);
   const [isProductOpen, setIsProductOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
   
   // State for product options (per product ID)
   const [voiceCoil, setVoiceCoil] = useState<Record<string, string>>({});
@@ -315,8 +317,11 @@ export default function SinfoniaPage() {
       }
 
       await addItem(variant.id, getProductQuantity(selectedProduct.id));
-      alert(`Added ${getProductQuantity(selectedProduct.id)}x ${selectedProduct.title} to your bag!`);
       closeProductDetail();
+      // Open cart overlay after product overlay closes (600ms transition + small buffer)
+      setTimeout(() => {
+        setCartOpen(true);
+      }, 650);
     } else {
       // Fallback: redirect to external shop
       window.open(process.env.NEXT_PUBLIC_SHOP_URL ?? 'https://shop.lowtherloudspeakers.com', '_blank');
@@ -716,6 +721,9 @@ export default function SinfoniaPage() {
 
       {/* Lowther for Life Section */}
       <LowtherForLifeSection />
+
+      {/* Cart Overlay */}
+      <CartOverlay isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
       {/* Product Detail Overlay */}
       {selectedProduct && (

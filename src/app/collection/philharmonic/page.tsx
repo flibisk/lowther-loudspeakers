@@ -9,6 +9,7 @@ import { LowtherForLifeSection } from '@/components/lowther-for-life-section';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { X } from 'lucide-react';
 import { ProductActionButtons } from '@/components/product-action-buttons';
+import { CartOverlay } from '@/components/cart-overlay';
 import { useShopifyCollection } from '@/hooks/use-shopify-collection';
 import { findVariantByOptions, formatPrice, type ShopifyProduct } from '@/lib/shopify-storefront';
 import { useCart } from '@/contexts/cart-context';
@@ -173,6 +174,7 @@ export default function PhilharmonicCollectionPage() {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<typeof philharmonicProducts[0] | null>(null);
   const [isProductOpen, setIsProductOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
   const [quantity, setQuantity] = useState<{ [key: string]: number }>({});
   const [voiceCoil, setVoiceCoil] = useState<{ [key: string]: string }>({});
   const [impedance, setImpedance] = useState<{ [key: string]: string }>({});
@@ -304,8 +306,11 @@ export default function PhilharmonicCollectionPage() {
       }
 
       await addItem(variant.id, getProductQuantity(selectedProduct.id));
-      alert(`Added ${getProductQuantity(selectedProduct.id)}x ${selectedProduct.title} to your bag!`);
       closeProductDetail();
+      // Open cart overlay after product overlay closes (600ms transition + small buffer)
+      setTimeout(() => {
+        setCartOpen(true);
+      }, 650);
       return;
     }
 
@@ -821,6 +826,9 @@ export default function PhilharmonicCollectionPage() {
 
       {/* Lowther for Life Video Section */}
       <LowtherForLifeSection />
+
+      {/* Cart Overlay */}
+      <CartOverlay isOpen={cartOpen} onClose={() => setCartOpen(false)} />
     </div>
   );
 }
