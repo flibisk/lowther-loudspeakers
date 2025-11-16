@@ -577,8 +577,8 @@ export default function PhilharmonicCollectionPage() {
                   <h2 className="font-display text-5xl mb-4" style={{ color: '#c59862' }}>
                     {selectedProduct.title}
                   </h2>
-                  <p className="text-xl text-gray-900 mb-8">
-                    {getOverlayPrice()}
+                  <p className="text-xl text-gray-900 mb-4">
+                    {getOverlayPrice()} <span className="text-sm text-gray-600">per drive unit</span>
                   </p>
                 </div>
 
