@@ -4,11 +4,13 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
 
-// EU country codes
+// EU/UK country codes (GDPR/UK GDPR regions)
 const EU_COUNTRIES = [
   'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR',
   'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL',
-  'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE'
+  'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE',
+  // Include UK
+  'GB',
 ];
 
 export function CookieConsent() {
@@ -16,10 +18,20 @@ export function CookieConsent() {
   const [isEU, setIsEU] = useState(false);
 
   useEffect(() => {
-    // Check if user has already given consent
+    // Allow forcing the banner for testing
+    const forceBanner = process.env.NEXT_PUBLIC_FORCE_COOKIE_BANNER === 'true';
+
+    // Check if user has already given consent (with 1-year expiry)
     const consent = localStorage.getItem('cookie-consent');
-    if (consent) {
-      return; // Don't show banner if consent already given
+    const consentDate = localStorage.getItem('cookie-consent-date');
+    const oneYearMs = 365 * 24 * 60 * 60 * 1000;
+    const consentValid =
+      consent &&
+      consentDate &&
+      new Date().getTime() - new Date(consentDate).getTime() < oneYearMs;
+
+    if (!forceBanner && consentValid) {
+      return; // Don't show banner if valid consent present
     }
 
     // Check if user is in EU
@@ -55,7 +67,12 @@ export function CookieConsent() {
       }
     };
 
-    checkEUCountry();
+    if (forceBanner) {
+      setIsEU(true);
+      setShowBanner(true);
+    } else {
+      checkEUCountry();
+    }
   }, []);
 
   const handleAccept = () => {
