@@ -9,6 +9,7 @@ import { CartProvider } from "@/contexts/cart-context";
 import { WishlistProvider } from "@/contexts/wishlist-context";
 import { CookieConsent } from "@/components/cookie-consent";
 import { ClarityScript } from "@/components/clarity-script";
+import { MetaPixel } from "@/components/meta-pixel";
 import "./globals.css";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.lowtherloudspeakers.com";
@@ -132,6 +133,7 @@ export default function RootLayout({
               </div>
               <Analytics />
               <ClarityScript />
+              <MetaPixel />
               <CookieConsent />
             </WishlistProvider>
           </CartProvider>
