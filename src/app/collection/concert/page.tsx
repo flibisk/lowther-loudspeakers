@@ -759,7 +759,7 @@ export default function ConcertCollectionPage() {
                     {selectedProduct.title}
                   </h2>
                   <p className="text-xl text-gray-900 mb-8">
-                    {getOverlayPrice()} <span className="text-sm text-gray-600">VAT excluded</span>
+                    {getOverlayPrice()}
                   </p>
                 </div>
 

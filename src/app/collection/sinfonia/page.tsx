@@ -774,9 +774,7 @@ export default function SinfoniaPage() {
                   <p className="text-xl text-gray-900 mb-2">
                     {getCurrentPrice()} <span className="text-sm text-gray-600">per drive unit</span>
                   </p>
-                  <p className="text-sm text-gray-600 mb-8">
-                    VAT excluded
-                  </p>
+                  
                 </div>
 
                 {/* Specifications */}
