@@ -672,7 +672,7 @@ export default function SuperTweeterPage() {
                     </h2>
                     <p className="text-xl text-gray-900 mb-2">
                       From {getOverlayPrice()}
-                      <span className="ml-2 text-sm text-gray-500 uppercase tracking-[2px]">
+                      <span className="ml-2 text-sm text-gray-500 lowercase tracking-[2px]">
                         per unit
                       </span>
                     </p>

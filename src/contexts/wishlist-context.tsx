@@ -8,6 +8,8 @@ interface WishlistItem {
   title: string;
   price: string;
   image: string;
+  url?: string; // Product page URL
+  shopifyHandle?: string; // Shopify product handle for cart operations
 }
 
 interface WishlistContextType {

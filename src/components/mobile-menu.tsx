@@ -424,28 +424,36 @@ export function MobileMenu({ isOpen, onClose, menuItems, currentLanguage, curren
                   { code: "ja", name: "Japanese", nativeName: "日本語", flag: "🇯🇵" },
                   { code: "es", name: "Spanish", nativeName: "Español", flag: "🇪🇸" },
                   { code: "it", name: "Italian", nativeName: "Italiano", flag: "🇮🇹" },
-                ].map((language) => (
-                  <button
-                    key={language.code}
-                    onClick={() => {
-                      onLanguageChange(language.code);
-                      setCurrentView('main');
-                    }}
-                    className={`w-full text-left px-4 py-3 flex items-center justify-between hover:bg-neutral-800 transition-colors rounded-lg ${
-                      currentLanguage === language.code ? "bg-neutral-800" : ""
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="text-lg">{language.flag}</span>
-                      <span className="text-white font-medium">{language.nativeName}</span>
-                    </div>
-                    {currentLanguage === language.code && (
-                      <svg className="w-5 h-5 text-[#c59862]" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    )}
-                  </button>
-                ))}
+                ].map((language) => {
+                  const isDisabled = language.code !== "en";
+                  return (
+                    <button
+                      key={language.code}
+                      onClick={() => {
+                        if (!isDisabled) {
+                          onLanguageChange(language.code);
+                          setCurrentView('main');
+                        }
+                      }}
+                      disabled={isDisabled}
+                      className={`w-full text-left px-4 py-3 flex items-center justify-between transition-colors rounded-lg ${
+                        isDisabled
+                          ? "text-gray-500 cursor-not-allowed opacity-50"
+                          : `hover:bg-neutral-800 ${currentLanguage === language.code ? "bg-neutral-800" : ""}`
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-lg">{language.flag}</span>
+                        <span className={isDisabled ? "text-gray-500 font-medium" : "text-white font-medium"}>{language.nativeName}</span>
+                      </div>
+                      {currentLanguage === language.code && !isDisabled && (
+                        <svg className="w-5 h-5 text-[#c59862]" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           ) : currentView === 'currency' ? (

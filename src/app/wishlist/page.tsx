@@ -1,14 +1,78 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useWishlist } from '@/contexts/wishlist-context';
+import { useCart } from '@/contexts/cart-context';
+import { CartOverlay } from '@/components/cart-overlay';
+import { getProductUrl } from '@/lib/wishlist-utils';
+import { useShopifyCollection } from '@/hooks/use-shopify-collection';
 
 export default function WishlistPage() {
   const { items, itemCount, removeItem, clearWishlist } = useWishlist();
+  const { addItem: addToCart, isLoading: cartLoading } = useCart();
+  const [cartOpen, setCartOpen] = useState(false);
+  const [loadingItemId, setLoadingItemId] = useState<string | null>(null);
+
+  // Get Shopify collections for cart operations
+  const { productMap: sinfoniaMap } = useShopifyCollection('the-sinfonia-collection');
+  const { productMap: philharmonicMap } = useShopifyCollection('the-philharmonic-collection');
+  const { productMap: concertMap } = useShopifyCollection('the-concert-collection');
+  const { productMap: superTweeterMap } = useShopifyCollection('super-tweeter');
+  const { productMap: ensembleMap } = useShopifyCollection('accessories');
+
+  const handleAddToBag = async (item: typeof items[0]) => {
+    setLoadingItemId(item.id);
+    try {
+      // Try to find product in Shopify collections
+      let shopifyProduct = null;
+      
+      if (item.shopifyHandle) {
+        // Try different collections
+        shopifyProduct = sinfoniaMap.get(item.shopifyHandle) ||
+                        philharmonicMap.get(item.shopifyHandle) ||
+                        concertMap.get(item.shopifyHandle) ||
+                        superTweeterMap.get(item.shopifyHandle) ||
+                        ensembleMap.get(item.shopifyHandle) ||
+                        sinfoniaMap.get(item.handle) ||
+                        philharmonicMap.get(item.handle) ||
+                        concertMap.get(item.handle) ||
+                        superTweeterMap.get(item.handle) ||
+                        ensembleMap.get(item.handle);
+      } else {
+        // Fallback: try with handle
+        shopifyProduct = sinfoniaMap.get(item.handle) ||
+                        philharmonicMap.get(item.handle) ||
+                        concertMap.get(item.handle) ||
+                        superTweeterMap.get(item.handle) ||
+                        ensembleMap.get(item.handle);
+      }
+
+      if (shopifyProduct && shopifyProduct.variants && shopifyProduct.variants.length > 0) {
+        const variant = shopifyProduct.variants[0];
+        if (variant.availableForSale) {
+          await addToCart(variant.id, 1);
+          setTimeout(() => {
+            setCartOpen(true);
+          }, 100);
+        } else {
+          alert('This product is currently out of stock');
+        }
+      } else {
+        // If not found in Shopify, redirect to product page
+        const productUrl = item.url || getProductUrl(item.handle, item.id);
+        window.location.href = productUrl;
+      }
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      alert('Unable to add item to cart. Please try again.');
+    } finally {
+      setLoadingItemId(null);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white pt-32 pb-16">
@@ -84,7 +148,7 @@ export default function WishlistPage() {
                 </button>
 
                 {/* Product Image */}
-                <Link href={`/collection/sinfonia#${item.handle}`}>
+                <Link href={item.url || getProductUrl(item.handle, item.id)}>
                   <div className="relative w-full h-64 bg-gray-100">
                     <Image
                       src={item.image}
@@ -98,7 +162,7 @@ export default function WishlistPage() {
 
                 {/* Product Info */}
                 <div className="p-6">
-                  <Link href={`/collection/sinfonia#${item.handle}`}>
+                  <Link href={item.url || getProductUrl(item.handle, item.id)}>
                     <h3 className="text-xl font-display text-gray-900 mb-2 group-hover:text-[#c59862] transition-colors">
                       {item.title}
                     </h3>
@@ -106,14 +170,25 @@ export default function WishlistPage() {
                   <p className="text-lg text-gray-600 mb-4">
                     From {item.price}*
                   </p>
-                  <Link href={`/collection/sinfonia#${item.handle}`}>
+                  <div className="flex flex-col gap-2">
                     <Button
                       size="lg"
                       className="w-full bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
+                      onClick={() => handleAddToBag(item)}
+                      disabled={cartLoading && loadingItemId === item.id}
                     >
-                      View Details
+                      {cartLoading && loadingItemId === item.id ? 'ADDING...' : 'ADD TO BAG'}
                     </Button>
-                  </Link>
+                    <Link href={item.url || getProductUrl(item.handle, item.id)}>
+                      <Button
+                        size="lg"
+                        variant="outline"
+                        className="w-full bg-white hover:bg-black text-black hover:text-white border border-black font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
+                      >
+                        View Details
+                      </Button>
+                    </Link>
+                  </div>
                 </div>
               </div>
             ))}
@@ -129,6 +204,9 @@ export default function WishlistPage() {
           </div>
         )}
       </div>
+
+      {/* Cart Overlay */}
+      <CartOverlay isOpen={cartOpen} onClose={() => setCartOpen(false)} />
     </div>
   );
 }
