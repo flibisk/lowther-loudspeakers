@@ -10,6 +10,7 @@ import { ProductActionButtons } from "@/components/product-action-buttons";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { Button } from "@/components/ui/button";
 import { CartOverlay } from "@/components/cart-overlay";
+import { CustomOrderForm } from "@/components/forms/custom-order-form";
 import { useCart } from "@/contexts/cart-context";
 import { useCurrency } from "@/contexts/currency-context";
 import { useShopifyCollection } from "@/hooks/use-shopify-collection";
@@ -160,6 +161,7 @@ export default function SuperTweeterPage() {
   const [quantity, setQuantity] = useState<number>(1);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
+  const [isCustomOrderFormOpen, setIsCustomOrderFormOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -504,11 +506,11 @@ export default function SuperTweeterPage() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6">
                   <div className="font-medium text-gray-900">Stand:</div>
-                  <div className="text-gray-700">Textured Black/Bespoke Veneer</div>
+                  <div className="text-gray-700">Textured Black</div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6">
                   <div className="font-medium text-gray-900">Additions:</div>
-                  <div className="text-gray-700">Bespoke wiring/terminals</div>
+                  <div className="text-gray-700">Bespoke wiring/terminals, Bespoke Veneer</div>
                 </div>
               </div>
             </div>
@@ -622,6 +624,13 @@ export default function SuperTweeterPage() {
       {/* Cart Overlay */}
       <CartOverlay isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
+      {/* Custom Order Form */}
+      <CustomOrderForm
+        isOpen={isCustomOrderFormOpen}
+        onClose={() => setIsCustomOrderFormOpen(false)}
+        productName="Super Tweeter"
+      />
+
       {/* Product Overlay */}
       {selectedProduct && (
         <div className="fixed inset-0 bg-white z-50">
@@ -712,12 +721,9 @@ export default function SuperTweeterPage() {
                   <Button
                     size="lg"
                     className="w-full bg-white hover:bg-black text-black hover:text-white border border-black font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
-                    onClick={() => {
-                      closeProductDetail();
-                      window.location.href = "/book-appointment";
-                    }}
+                    onClick={() => setIsCustomOrderFormOpen(true)}
                   >
-                    Book an Appointment
+                    Custom Order
                   </Button>
                 </div>
               </div>
