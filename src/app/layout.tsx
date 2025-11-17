@@ -76,7 +76,7 @@ export const metadata: Metadata = {
 };
 
 const NAV = [
-  { label: 'Loudspeakers', href: '/category/loudspeakers', children: [
+  { label: 'Loudspeakers', href: '/products#masterpieces', children: [
     { label: 'Quarter Wave', href: '/speakers/quarter-wave', desc: 'Discreet, architectural placement' },
     { label: 'Edilia', href: '/speakers/edilia', desc: 'Balanced, expressive presentation' },
     { label: 'Hegeman', href: '/speakers/hegeman', desc: 'Classic, room-filling stage' },
