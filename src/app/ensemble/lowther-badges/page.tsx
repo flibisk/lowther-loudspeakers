@@ -65,15 +65,20 @@ export default function LowtherBadgesPage() {
     return '£60.00';
   };
 
+  const isAvailable = () => {
+    if (!selectedShopifyProduct) return false;
+    const variant = selectedShopifyProduct.variants?.[0];
+    return variant?.availableForSale ?? false;
+  };
+
   const handleAddToBag = async () => {
+    if (!isAvailable()) {
+      return;
+    }
+    
     if (selectedShopifyProduct) {
       const variant = selectedShopifyProduct.variants?.[0];
       if (!variant) {
-        alert('This product is currently unavailable');
-        return;
-      }
-      if (!variant.availableForSale) {
-        alert('This product is currently unavailable');
         return;
       }
       await addItem(variant.id, quantity);
@@ -82,10 +87,7 @@ export default function LowtherBadgesPage() {
       setTimeout(() => {
         setCartOpen(true);
       }, 650);
-      return;
     }
-
-    window.open(process.env.NEXT_PUBLIC_SHOP_URL ?? 'https://shop.lowtherloudspeakers.com', '_blank');
   };
 
   useEffect(() => {
@@ -305,14 +307,21 @@ export default function LowtherBadgesPage() {
 
                 {/* Action Buttons */}
                 <div className="space-y-4">
-                  <Button
-                    size="lg"
-                    className="w-full bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
-                    onClick={handleAddToBag}
-                    disabled={cartLoading}
-                  >
-                    {cartLoading ? 'ADDING...' : 'ADD TO BAG'}
-                  </Button>
+                  {isAvailable() ? (
+                    <Button
+                      size="lg"
+                      className="w-full bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
+                      onClick={handleAddToBag}
+                      disabled={cartLoading}
+                    >
+                      {cartLoading ? 'ADDING...' : 'ADD TO BAG'}
+                    </Button>
+                  ) : (
+                    <div className="w-full py-4 px-6 bg-gray-100 border border-gray-300 rounded text-center">
+                      <p className="text-gray-700 font-medium">Out of Stock</p>
+                      <p className="text-sm text-gray-600 mt-1">Please check back later or contact us for availability</p>
+                    </div>
+                  )}
                   <Button
                     size="lg"
                     className="w-full bg-white hover:bg-black text-black hover:text-white border border-black font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
