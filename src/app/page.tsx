@@ -137,7 +137,12 @@ export default async function HomePage() {
             />
           </>
         )}
-        <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/40 to-black/60"></div>
+        <div 
+          className="absolute inset-0"
+          style={{
+            background: 'linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.7) 20%, rgba(0, 0, 0, 0) 100%)'
+          }}
+        ></div>
         
         {/* Text Overlay - Mobile: Stacked, Desktop: Side by side */}
         <div className="absolute bottom-20 930:bottom-20 left-6 930:left-16 z-10 text-white max-w-xs sm:max-w-md 930:max-w-2xl">

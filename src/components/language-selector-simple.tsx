@@ -44,6 +44,10 @@ export function LanguageSelectorSimple({
   }, [currentLanguage]);
 
   const handleLanguageSelect = (language: Language) => {
+    // Only allow English for now
+    if (language.code !== "en") {
+      return;
+    }
     setSelectedLanguage(language);
     setIsOpen(false);
     if (onLanguageChange) {
@@ -101,29 +105,37 @@ export function LanguageSelectorSimple({
                 <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-neutral-100">
                   Select Language
                 </div>
-                {languages.map((language) => (
-                  <button
-                    key={language.code}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      handleLanguageSelect(language);
-                    }}
-                    className={`w-full text-left px-4 py-3 text-sm flex items-center justify-between hover:bg-neutral-50 transition-colors text-black ${
-                      selectedLanguage.code === language.code ? "bg-neutral-50" : ""
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="text-lg">{language.flag}</span>
-                      <span className="text-black">{language.nativeName}</span>
-                    </div>
-                    {selectedLanguage.code === language.code && (
-                      <svg className="w-4 h-4 text-[#c59862]" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    )}
-                  </button>
-                ))}
+                {languages.map((language) => {
+                  const isDisabled = language.code !== "en";
+                  return (
+                    <button
+                      key={language.code}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (!isDisabled) {
+                          handleLanguageSelect(language);
+                        }
+                      }}
+                      disabled={isDisabled}
+                      className={`w-full text-left px-4 py-3 text-sm flex items-center justify-between transition-colors ${
+                        isDisabled
+                          ? "text-gray-400 cursor-not-allowed opacity-50"
+                          : `hover:bg-neutral-50 text-black ${selectedLanguage.code === language.code ? "bg-neutral-50" : ""}`
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-lg">{language.flag}</span>
+                        <span className={isDisabled ? "text-gray-400" : "text-black"}>{language.nativeName}</span>
+                      </div>
+                      {selectedLanguage.code === language.code && !isDisabled && (
+                        <svg className="w-4 h-4 text-[#c59862]" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </>,
@@ -177,29 +189,37 @@ export function LanguageSelectorSimple({
               <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-neutral-100">
                 Select Language
               </div>
-              {languages.map((language) => (
-                <button
-                  key={language.code}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    handleLanguageSelect(language);
-                  }}
-                  className={`w-full text-left px-4 py-3 text-sm flex items-center justify-between hover:bg-neutral-50 transition-colors text-black ${
-                    selectedLanguage.code === language.code ? "bg-neutral-50" : ""
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="text-lg">{language.flag}</span>
-                    <span className="text-black">{language.nativeName}</span>
-                  </div>
-                  {selectedLanguage.code === language.code && (
-                    <svg className="w-4 h-4 text-[#c59862]" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  )}
-                </button>
-              ))}
+              {languages.map((language) => {
+                const isDisabled = language.code !== "en";
+                return (
+                  <button
+                    key={language.code}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (!isDisabled) {
+                        handleLanguageSelect(language);
+                      }
+                    }}
+                    disabled={isDisabled}
+                    className={`w-full text-left px-4 py-3 text-sm flex items-center justify-between transition-colors ${
+                      isDisabled
+                        ? "text-gray-400 cursor-not-allowed opacity-50"
+                        : `hover:bg-neutral-50 text-black ${selectedLanguage.code === language.code ? "bg-neutral-50" : ""}`
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-lg">{language.flag}</span>
+                      <span className={isDisabled ? "text-gray-400" : "text-black"}>{language.nativeName}</span>
+                    </div>
+                    {selectedLanguage.code === language.code && !isDisabled && (
+                      <svg className="w-4 h-4 text-[#c59862]" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </>,
