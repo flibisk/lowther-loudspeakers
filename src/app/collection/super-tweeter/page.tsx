@@ -35,12 +35,8 @@ const superTweeterProduct = {
   ],
 };
 
-const magnetOptions = ["Neodymium (DX)"];
+const magnetOptions = ["DXT Neodymium"];
 const MAGNET_OPTION_NAME = "Magnet Type";
-const voiceCoilOptions = ["Silver", "Hi-Ferric"];
-const VOICE_COIL_OPTION_NAME = "Voice Coil";
-const impedanceOptions = ["8 Ohms", "15 Ohms"];
-const IMPEDANCE_OPTION_NAME = "Impedance";
 
 const galleryImages = [
   {
@@ -161,8 +157,6 @@ export default function SuperTweeterPage() {
   const [isProductOpen, setIsProductOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const [selectedMagnet, setSelectedMagnet] = useState<string>(magnetOptions[0]);
-  const [selectedVoiceCoil, setSelectedVoiceCoil] = useState<string>(voiceCoilOptions[0]);
-  const [selectedImpedance, setSelectedImpedance] = useState<string>(impedanceOptions[0]);
   const [quantity, setQuantity] = useState<number>(1);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
@@ -209,8 +203,6 @@ export default function SuperTweeterPage() {
   const openProductDetail = () => {
     setSelectedProduct(superTweeterProduct);
     setSelectedMagnet(magnetOptions[0]);
-    setSelectedVoiceCoil(voiceCoilOptions[0]);
-    setSelectedImpedance(impedanceOptions[0]);
     setQuantity(1);
     setTimeout(() => setIsProductOpen(true), 50);
   };
@@ -224,10 +216,13 @@ export default function SuperTweeterPage() {
 
   const getCurrentVariant = (): ShopifyVariant | undefined => {
     if (!shopifyProduct) return undefined;
+    // If there's only one variant, return it directly
+    if (shopifyProduct.variants.length === 1) {
+      return shopifyProduct.variants[0];
+    }
+    // Otherwise, try to match by magnet option
     const options = {
       [MAGNET_OPTION_NAME]: selectedMagnet,
-      [VOICE_COIL_OPTION_NAME]: selectedVoiceCoil,
-      [IMPEDANCE_OPTION_NAME]: selectedImpedance,
     };
     return findVariantByOptions(shopifyProduct.variants, options);
   };
@@ -489,14 +484,11 @@ export default function SuperTweeterPage() {
               <div className="divide-y divide-gray-200">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6">
                   <div className="font-medium text-gray-900">Voice coil:</div>
-                  <div className="text-gray-700">Silver or hi-ferric, 8 or 15 ohm</div>
+                  <div className="text-gray-700">Silver, 8 Ω</div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6">
                   <div className="font-medium text-gray-900">Magnet:</div>
-                  <div className="text-gray-700">
-                    DX2 or DX3 Neodymium<br />
-                    PM6 Alnico
-                  </div>
+                  <div className="text-gray-700">DXT Neodymium</div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6">
                   <div className="font-medium text-gray-900">Capacitor:</div>
@@ -690,49 +682,7 @@ export default function SuperTweeterPage() {
                       Magnet Option
                     </label>
                     <div className="py-3 px-4 text-sm border border-gray-300 rounded bg-gray-50 text-gray-700">
-                      Neodymium (DX)
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-900 mb-3">
-                      Voice Coil
-                    </label>
-                    <div className="grid grid-cols-2 gap-3">
-                      {voiceCoilOptions.map((option) => (
-                        <button
-                          key={option}
-                          onClick={() => setSelectedVoiceCoil(option)}
-                          className={`py-3 px-4 text-sm border rounded transition-all ${
-                            selectedVoiceCoil === option
-                              ? "bg-black text-white border-black"
-                              : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
-                          }`}
-                        >
-                          {option}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-900 mb-3">
-                      Impedance
-                    </label>
-                    <div className="grid grid-cols-2 gap-3">
-                      {impedanceOptions.map((option) => (
-                        <button
-                          key={option}
-                          onClick={() => setSelectedImpedance(option)}
-                          className={`py-3 px-4 text-sm border rounded transition-all ${
-                            selectedImpedance === option
-                              ? "bg-black text-white border-black"
-                              : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
-                          }`}
-                        >
-                          {option}
-                        </button>
-                      ))}
+                      DXT Neodymium
                     </div>
                   </div>
 
