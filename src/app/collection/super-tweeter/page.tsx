@@ -31,7 +31,7 @@ const superTweeterProduct = {
     "Completing the top octave with precision and intent, the Lowther Super Tweeter extends the bandwidth of our full-range instruments without adding artificial edge or glare.",
   details: [
     "Designed to take over precisely where the eight-inch Lowther driver naturally rolls off, the Super Tweeter restores the final octave of information that locks the stereo image in place.",
-    "Available with Neodymium (DX) magnet structure to match the energy, speed, and scale of the partnering driver.",
+    "Available with DXT Neodymium magnet structure to match the energy, speed, and scale of the partnering driver.",
   ],
 };
 
@@ -116,7 +116,7 @@ const detailHighlights = [
   {
     title: "Magnet systems tuned for Lowther speed",
     description:
-      "The Neodymium (DX) magnet assembly is engineered to complement the energy and voicing of your system, preserving transient speed while delivering effortless air and integration.",
+      "The DXT Neodymium magnet assembly is engineered to complement the energy and voicing of your system, preserving transient speed while delivering effortless air and integration.",
     image: "/images/drive-units/super-tweeter/gallery/Super Tweeter PM.jpg",
   },
   {
@@ -431,7 +431,7 @@ export default function SuperTweeterPage() {
                 Bring the final octave to your Lowther
               </h2>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                The Super Tweeter features a Neodymium (DX) magnet assembly designed to match the energy and voicing of your Lowther system.
+                The Super Tweeter features a DXT Neodymium magnet assembly designed to match the energy and voicing of your Lowther system.
               </p>
             </div>
           </ScrollReveal>
