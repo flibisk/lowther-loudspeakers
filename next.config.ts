@@ -42,6 +42,10 @@ const nextConfig: NextConfig = {
 
       // Category landing
       { source: '/speakers', destination: '/products#instruments', permanent: true },
+      { source: '/category/loudspeakers', destination: '/products#masterpieces', permanent: true },
+      
+      // Build a Lowther redirects
+      { source: '/build-a-loudspeaker/build-a-lowther', destination: '/build-a-lowther', permanent: true },
 
       // Blog legacy categories and posts -> blog home
       { source: '/blog-categories/:path*', destination: '/blog', permanent: true },
