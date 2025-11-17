@@ -58,6 +58,50 @@ const nextConfig: NextConfig = {
       // Promotions/editions and unknown legacy paths -> homepage
       { source: '/promotions/:path*', destination: '/', permanent: true },
       { source: '/editions', destination: '/', permanent: true },
+
+      // Additional legacy product paths from old site
+      { source: '/lowther-acousta-quarter-wave-2', destination: '/loudspeakers/acousta-quarter-wave', permanent: true },
+      { source: '/lowther-205f-gb', destination: '/products', permanent: true },
+      { source: '/205f', destination: '/products', permanent: true },
+      { source: '/dx-series', destination: '/products#instruments', permanent: true },
+      { source: '/lowther-ex-series', destination: '/collection/concert', permanent: true },
+      { source: '/pm-series', destination: '/collection/concert', permanent: true },
+      { source: '/lowther-editions', destination: '/products', permanent: true },
+      { source: '/lowther-dx2', destination: '/products#instruments', permanent: true },
+      { source: '/try', destination: '/book-appointment', permanent: true },
+      { source: '/shop', destination: '/products', permanent: true },
+
+      // Legacy /product/* paths
+      { source: '/product/lowther-audiovector', destination: '/loudspeakers/audiovector', permanent: true },
+      { source: '/product/almira', destination: '/loudspeakers/almira', permanent: true },
+      { source: '/product/lowther-tp2', destination: '/products', permanent: true },
+      { source: '/product/the-lowther-acousta-90-plan', destination: '/build-a-lowther', permanent: true },
+      { source: '/product/the-lowther-acousta-116-plan', destination: '/build-a-lowther', permanent: true },
+      { source: '/product/the-lowther-accolade-4-plan', destination: '/build-a-lowther', permanent: true },
+      { source: '/product/the-academy', destination: '/products', permanent: true },
+
+      // Legacy /products/* paths (series)
+      { source: '/products/c-series', destination: '/products#instruments', permanent: true },
+      { source: '/products/a-series', destination: '/products#instruments', permanent: true },
+      { source: '/products/ex-series', destination: '/collection/concert', permanent: true },
+      { source: '/products/dx-series', destination: '/products#instruments', permanent: true },
+
+      // Legacy /product/* paths (individual products)
+      { source: '/product/standard-dome', destination: '/ensemble/phase-plugs', permanent: true },
+      { source: '/product/sound-diffuser', destination: '/ensemble/phase-plugs', permanent: true },
+      { source: '/product/phase-equalizer', destination: '/ensemble/phase-plugs', permanent: true },
+      { source: '/product/pm7a', destination: '/collection/concert', permanent: true },
+      { source: '/product/pm6c', destination: '/collection/concert', permanent: true },
+      { source: '/product/pm5a', destination: '/collection/concert', permanent: true },
+      { source: '/product/pm4a', destination: '/collection/concert', permanent: true },
+      { source: '/product/pm3a', destination: '/collection/concert', permanent: true },
+      { source: '/product/pm2a', destination: '/collection/concert', permanent: true },
+      { source: '/product/ex4', destination: '/collection/concert', permanent: true },
+      { source: '/product/ex3', destination: '/collection/concert', permanent: true },
+      { source: '/product/ex2', destination: '/collection/concert', permanent: true },
+      { source: '/product/dx4', destination: '/products#instruments', permanent: true },
+      { source: '/product/lowther-dx3', destination: '/products#instruments', permanent: true },
+      { source: '/product/dx2', destination: '/products#instruments', permanent: true },
     ];
   },
 };
