@@ -23,8 +23,12 @@ export default function LowtherBadgesPage() {
 
   const { productMap } = useShopifyCollection('accessories');
 
+  const getShopifyProduct = () => {
+    return productMap.get('official-lowther-badges') ?? null;
+  };
+
   const getDisplayPrice = () => {
-    const shopifyMatch = productMap.get('official-lowther-badges');
+    const shopifyMatch = getShopifyProduct();
     if (shopifyMatch) {
       return formatPrice(
         shopifyMatch.priceRange.minVariantPrice.amount,
@@ -32,6 +36,13 @@ export default function LowtherBadgesPage() {
       );
     }
     return '£60.00';
+  };
+
+  const isProductAvailable = () => {
+    const product = getShopifyProduct();
+    if (!product) return false;
+    const variant = product.variants?.[0];
+    return variant?.availableForSale ?? false;
   };
 
   const openProductDetail = () => {
@@ -185,9 +196,14 @@ export default function LowtherBadgesPage() {
                 <p className="text-lg text-gray-600 mb-2">
                   {getDisplayPrice()}
                 </p>
-                <p className="text-sm text-gray-600 mb-8">
+                <p className="text-sm text-gray-600 mb-2">
                   Price per pair
                 </p>
+                {!isProductAvailable() && (
+                  <p className="text-sm text-red-600 mb-6 font-medium">
+                    Out of Stock
+                  </p>
+                )}
                 <div className="flex flex-col gap-3 w-full">
                   <ProductActionButtons
                     product={{
