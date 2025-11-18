@@ -87,11 +87,17 @@ export async function POST(request: NextRequest) {
     // 2. Send discount code email via Resend
     try {
       // Use same format as other working routes
-      console.log('Attempting to send discount email:', { from: fromEmail, to: email });
+      console.log('Attempting to send discount email:', { 
+        from: fromEmail, 
+        to: email,
+        hasApiKey: !!process.env.RESEND_API_KEY,
+        apiKeyLength: process.env.RESEND_API_KEY?.length || 0
+      });
       
       const { data, error } = await resend.emails.send({
         from: `Lowther Loudspeakers <${fromEmail}>`,
         to: email,
+        replyTo: fromEmail,
         subject: `Your ${discountPercent}% Discount Code - Lowther Loudspeakers`,
         html: `
           <!DOCTYPE html>
@@ -193,21 +199,27 @@ export async function POST(request: NextRequest) {
       });
 
       if (error) {
-        console.error('Resend API error:', JSON.stringify(error, null, 2));
-        // On free tier, sending to user emails might fail
-        // Return success anyway with the code so user can still get it
-        // The code will be shown on screen as fallback
-        console.warn('Email sending failed, but returning discount code anyway');
+        console.error('Resend API error details:', {
+          error: JSON.stringify(error, null, 2),
+          message: error.message,
+          name: error.name,
+          statusCode: error.statusCode
+        });
+        // Log the full error for debugging
+        console.error('Full error object:', error);
+        
+        // Return success with code anyway so user isn't blocked
         return NextResponse.json({ 
           success: true,
           message: `Your discount code: ${discountCode}. Email delivery failed, but you can use this code now!`,
           discountCode,
-          emailSent: false
+          emailSent: false,
+          error: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
       }
 
       if (!data) {
-        console.error('Resend API returned no data');
+        console.error('Resend API returned no data and no error - this is unusual');
         // Return success with code anyway
         return NextResponse.json({ 
           success: true,
@@ -217,7 +229,11 @@ export async function POST(request: NextRequest) {
         });
       }
 
-      console.log('Discount email sent successfully:', data);
+      console.log('Discount email sent successfully:', {
+        id: data.id,
+        from: fromEmail,
+        to: email
+      });
     } catch (emailError: any) {
       console.error('Error sending discount email:', emailError);
       // Even if email fails, return the discount code so user can still use it

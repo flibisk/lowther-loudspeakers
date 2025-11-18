@@ -53,6 +53,13 @@ export async function POST(request: NextRequest) {
     const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
     const shopUrl = cartUrl || 'https://shop.lowtherloudspeakers.com/cart';
 
+    console.log('Attempting to send abandoned cart email:', {
+      from: fromEmail,
+      to: email,
+      itemCount: cartItems.length,
+      hasApiKey: !!process.env.RESEND_API_KEY
+    });
+
     // Generate cart items HTML
     const cartItemsHtml = cartItems.map(item => `
       <tr>
@@ -75,6 +82,7 @@ export async function POST(request: NextRequest) {
       const { data, error } = await resend.emails.send({
         from: `Lowther Loudspeakers <${fromEmail}>`,
         to: email,
+        replyTo: fromEmail,
         subject: `You left items in your cart - Complete your purchase`,
         html: `
           <!DOCTYPE html>
@@ -182,12 +190,36 @@ export async function POST(request: NextRequest) {
       });
 
       if (error) {
-        console.error('Resend API error:', error);
+        console.error('Resend API error details:', {
+          error: JSON.stringify(error, null, 2),
+          message: error.message,
+          name: error.name,
+          statusCode: error.statusCode
+        });
+        console.error('Full error object:', error);
+        return NextResponse.json(
+          { 
+            success: false, 
+            message: 'Failed to send abandoned cart email',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+          },
+          { status: 500 }
+        );
+      }
+
+      if (!data) {
+        console.error('Resend API returned no data and no error');
         return NextResponse.json(
           { success: false, message: 'Failed to send abandoned cart email' },
           { status: 500 }
         );
       }
+
+      console.log('Abandoned cart email sent successfully:', {
+        id: data.id,
+        from: fromEmail,
+        to: email
+      });
 
       return NextResponse.json({ 
         success: true,
