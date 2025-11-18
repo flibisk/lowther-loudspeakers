@@ -188,9 +188,6 @@ export async function POST(request: NextRequest) {
                 <div class="footer">
                   <p>Lowther Loudspeakers<br>
                   <a href="https://www.lowtherloudspeakers.com" style="color: #c59862;">www.lowtherloudspeakers.com</a></p>
-                  <p style="margin-top: 10px;">
-                    <a href="#" style="color: #666; text-decoration: underline;">Unsubscribe</a>
-                  </p>
                 </div>
               </div>
             </body>

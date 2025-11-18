@@ -135,19 +135,37 @@ export async function POST(request: NextRequest) {
     });
 
     if (error) {
-      console.error('Resend error:', error);
-      const errorMessage = error.message || 'Failed to send plan request';
-      console.error('Full error details:', JSON.stringify(error, null, 2));
+      console.error('Resend API error details:', {
+        error: JSON.stringify(error, null, 2),
+        message: error.message,
+        name: error.name,
+        statusCode: error.statusCode
+      });
+      console.error('Full error object:', error);
       return NextResponse.json(
         { 
           success: false, 
           message: process.env.NODE_ENV === 'development' 
-            ? `Error: ${errorMessage}` 
+            ? `Email error: ${error.message}` 
             : 'Failed to send plan request. Please try again or contact us directly.' 
         },
         { status: 500 }
       );
     }
+
+    if (!data) {
+      console.error('Resend API returned no data and no error');
+      return NextResponse.json(
+        { success: false, message: 'Failed to send plan request. Please try again.' },
+        { status: 500 }
+      );
+    }
+
+    console.log('Plan request email sent successfully:', {
+      id: data.id,
+      from: fromEmail,
+      to: contactEmail
+    });
 
     // Add to Beehiiv subscriber list (optional, don't fail if it errors)
     if (process.env.BEEHIIV_API_KEY && process.env.BEEHIIV_PUBLICATION_ID) {
