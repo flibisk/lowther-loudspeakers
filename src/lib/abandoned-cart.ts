@@ -37,16 +37,45 @@ export function saveAbandonedCartData(
 
   const email = localStorage.getItem(ABANDONED_CART_EMAIL_KEY);
   
+  // Get existing cart data to preserve email if it exists
+  const existingData = getAbandonedCartData();
+  
   const cartData: AbandonedCartData = {
     items,
     total,
-    timestamp: Date.now(),
-    email: email || undefined,
+    timestamp: existingData?.timestamp || Date.now(), // Preserve original timestamp
+    email: email || existingData?.email || undefined,
     cartId,
-    emailSent: false,
+    emailSent: existingData?.emailSent || false, // Preserve email sent status
   };
 
+  console.log('Saving abandoned cart data:', {
+    itemCount: items.length,
+    hasEmail: !!cartData.email,
+    email: cartData.email,
+    timestamp: new Date(cartData.timestamp).toISOString(),
+    timeSinceCart: Date.now() - cartData.timestamp
+  });
+
   localStorage.setItem(ABANDONED_CART_KEY, JSON.stringify(cartData));
+}
+
+/**
+ * Update email on existing abandoned cart data
+ * Called when user submits discount form
+ */
+export function updateAbandonedCartEmail(email: string): void {
+  if (typeof window === 'undefined') return;
+  
+  const existingData = getAbandonedCartData();
+  if (existingData) {
+    const updatedData: AbandonedCartData = {
+      ...existingData,
+      email: email,
+    };
+    localStorage.setItem(ABANDONED_CART_KEY, JSON.stringify(updatedData));
+    console.log('Updated abandoned cart email:', email);
+  }
 }
 
 /**
@@ -145,16 +174,48 @@ export async function sendAbandonedCartEmail(): Promise<boolean> {
 export function initAbandonedCartTracking(): void {
   if (typeof window === 'undefined') return;
 
-  // Check every hour
-  setInterval(() => {
-    if (shouldSendAbandonedCartEmail()) {
-      sendAbandonedCartEmail().catch(console.error);
-    }
-  }, ABANDONED_CART_CHECK_INTERVAL);
+  // Check immediately on page load (in case user returns after 1 hour)
+  const checkAndSend = () => {
+    const cartData = getAbandonedCartData();
+    console.log('Checking abandoned cart:', {
+      hasCartData: !!cartData,
+      hasEmail: !!cartData?.email,
+      emailSent: cartData?.emailSent,
+      itemCount: cartData?.items?.length || 0,
+      timeSinceCart: cartData ? Date.now() - cartData.timestamp : 0,
+      shouldSend: shouldSendAbandonedCartEmail()
+    });
 
-  // Also check immediately on load
-  if (shouldSendAbandonedCartEmail()) {
-    sendAbandonedCartEmail().catch(console.error);
-  }
+    if (shouldSendAbandonedCartEmail()) {
+      console.log('Sending abandoned cart email...');
+      sendAbandonedCartEmail()
+        .then(success => {
+          console.log('Abandoned cart email result:', success);
+        })
+        .catch(error => {
+          console.error('Error sending abandoned cart email:', error);
+        });
+    }
+  };
+
+  // Check immediately on load
+  checkAndSend();
+
+  // Check every 15 minutes while page is open (more frequent checks)
+  const checkInterval = setInterval(() => {
+    checkAndSend();
+  }, 15 * 60 * 1000); // 15 minutes
+
+  // Also check when page becomes visible again (user returns to tab)
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+      checkAndSend();
+    }
+  });
+
+  // Clean up interval on page unload (though this won't run if browser is closed)
+  window.addEventListener('beforeunload', () => {
+    clearInterval(checkInterval);
+  });
 }
 

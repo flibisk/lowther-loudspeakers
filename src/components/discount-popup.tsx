@@ -82,6 +82,13 @@ export function DiscountPopup() {
         localStorage.setItem(DISCOUNT_EMAIL_KEY, email);
         localStorage.setItem(DISCOUNT_POPUP_KEY, 'true');
         
+        // Update abandoned cart with email if cart exists
+        if (typeof window !== 'undefined') {
+          import('@/lib/abandoned-cart').then(({ updateAbandonedCartEmail }) => {
+            updateAbandonedCartEmail(email);
+          });
+        }
+        
         // Show discount code if email failed or show success message
         if (data.discountCode && !data.emailSent) {
           setSubmitStatus({
