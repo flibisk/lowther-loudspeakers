@@ -123,5 +123,11 @@
       "destination": "https://shop.lowtherloudspeakers.com",
       "permanent": true
     }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron/abandoned-carts",
+      "schedule": "0 * * * *"
+    }
   ]
 }

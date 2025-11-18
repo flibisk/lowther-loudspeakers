@@ -36,7 +36,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const itemCount = cart?.lines.reduce((total, line) => total + line.quantity, 0) ?? 0;
 
   // Helper function to track abandoned cart
-  const trackAbandonedCart = useCallback((updatedCart: ShopifyCart) => {
+  const trackAbandonedCart = useCallback(async (updatedCart: ShopifyCart) => {
     const cartItems = updatedCart.lines.map(line => ({
       title: line.merchandise.product.title,
       quantity: line.quantity,
@@ -49,10 +49,49 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       : '0';
     
     if (cartItems.length > 0) {
+      // Save locally (for client-side tracking)
       saveAbandonedCartData(cartItems, cartTotal, updatedCart.id);
+      
+      // Also store server-side for cron job (if email exists)
+      if (typeof window !== 'undefined') {
+        const email = localStorage.getItem('lowther_discount_email');
+        if (email) {
+          try {
+            await fetch('/api/abandoned-carts', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                email,
+                cartItems,
+                cartTotal,
+                cartId: updatedCart.id,
+              }),
+            });
+          } catch (error) {
+            console.error('Error storing cart server-side:', error);
+            // Don't fail if server-side storage fails
+          }
+        }
+      }
     } else {
       // Cart is empty, clear abandoned cart data
       clearAbandonedCartData();
+      
+      // Also clear server-side
+      if (typeof window !== 'undefined') {
+        const email = localStorage.getItem('lowther_discount_email');
+        if (email) {
+          try {
+            await fetch(`/api/abandoned-carts?email=${encodeURIComponent(email)}&cartId=${encodeURIComponent(updatedCart.id || '')}`, {
+              method: 'DELETE',
+            });
+          } catch (error) {
+            // Don't fail if deletion fails
+          }
+        }
+      }
     }
   }, []);
 
