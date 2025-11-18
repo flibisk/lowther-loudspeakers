@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { Resend } from 'resend';
 
 /**
  * Custom Order API route
@@ -7,13 +8,15 @@ import { NextRequest, NextResponse } from 'next/server';
  * 2. Sending email notifications to the team via Resend
  */
 
+const resend = new Resend(process.env.RESEND_API_KEY);
+
 interface CustomOrderBody {
   name: string;
   email: string;
   country: string;
-  bespokeVeneer: string;
+  bespokeVeneer?: string;
   magnetType: string;
-  extraQuestions: string;
+  extraQuestions?: string;
   productName: string;
 }
 
@@ -30,9 +33,23 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Check if Resend API key is configured
+    if (!process.env.RESEND_API_KEY) {
+      console.error('RESEND_API_KEY is not configured');
+      return NextResponse.json(
+        { success: false, message: 'Email service not configured. Please contact support.' },
+        { status: 500 }
+      );
+    }
+
     const beehiivApiKey = process.env.BEEHIIV_API_KEY;
     const beehiivPublicationId = process.env.BEEHIIV_PUBLICATION_ID;
-    const resendApiKey = process.env.RESEND_API_KEY;
+    const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+    const contactEmail = process.env.CONTACT_EMAIL || 'hello@lowtherloudspeakers.com';
+    const secondaryEmail = process.env.RESEND_SECONDARY_EMAIL || 'peter@lowtherloudspeakers.com';
+
+    let beehiivSuccess = false;
+    let resendSuccess = false;
 
     // 1. Add contact to Beehiiv
     if (beehiivApiKey && beehiivPublicationId) {
@@ -48,7 +65,7 @@ export async function POST(request: NextRequest) {
             body: JSON.stringify({
               email: email,
               reactivate_existing: true,
-              utm_source: 'Custom Order',
+              utm_source: `Custom Order: ${productName}`,
               send_welcome_email: false,
               custom_fields: [
                 {
@@ -71,58 +88,149 @@ export async function POST(request: NextRequest) {
                   name: 'bespoke_veneer',
                   value: bespokeVeneer
                 }] : []),
+                ...(extraQuestions ? [{
+                  name: 'extra_questions',
+                  value: extraQuestions
+                }] : []),
               ],
             }),
           }
         );
 
-        if (!beehiivResponse.ok) {
+        if (beehiivResponse.ok) {
+          beehiivSuccess = true;
+        } else {
           const errorText = await beehiivResponse.text();
           console.error('Beehiiv API error:', errorText);
-          // Continue even if Beehiiv fails - we still want to send the notification
         }
       } catch (beehiivError) {
         console.error('Error adding to Beehiiv:', beehiivError);
-        // Continue even if Beehiiv fails
       }
     }
 
     // 2. Send notification email via Resend
-    if (resendApiKey) {
-      try {
-        const emailResponse = await fetch('https://api.resend.com/emails', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${resendApiKey}`,
-          },
-          body: JSON.stringify({
-            from: 'Lowther Custom Order <noreply@lowtherloudspeakers.com>',
-            to: ['hello@lowtherloudspeakers.com', 'peter@lowtherloudspeakers.com'],
-            subject: `New Custom Order Enquiry - ${productName}`,
-            html: `
-              <h2>New Custom Order Enquiry</h2>
-              <p><strong>Product:</strong> ${productName}</p>
-              <p><strong>Name:</strong> ${name}</p>
-              <p><strong>Email:</strong> ${email}</p>
-              <p><strong>Country:</strong> ${country}</p>
-              <p><strong>Magnet Type:</strong> ${magnetType}</p>
-              ${bespokeVeneer ? `<p><strong>Bespoke Veneer:</strong> ${bespokeVeneer}</p>` : ''}
-              ${extraQuestions ? `<hr><p><strong>Extra Questions/Requirements:</strong></p><p>${extraQuestions.replace(/\n/g, '<br>')}</p>` : ''}
-              <hr>
-              <p><em>Submitted: ${new Date().toLocaleString('en-GB', { timeZone: 'Europe/London' })}</em></p>
-              <p><em>This contact has been added to Beehiiv with segment: Custom Order</em></p>
-            `,
-          }),
-        });
+    try {
+      const { data, error } = await resend.emails.send({
+        from: `Lowther Custom Order <${fromEmail}>`,
+        to: [contactEmail, secondaryEmail],
+        replyTo: email,
+        subject: `New Custom Order Enquiry - ${productName}`,
+        html: `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <style>
+                body {
+                  font-family: 'Arial', sans-serif;
+                  line-height: 1.6;
+                  color: #333;
+                  max-width: 600px;
+                  margin: 0 auto;
+                  padding: 20px;
+                }
+                .header {
+                  background: linear-gradient(135deg, #c59862 0%, #b0874f 100%);
+                  color: white;
+                  padding: 30px;
+                  text-align: center;
+                  border-radius: 10px 10px 0 0;
+                }
+                .content {
+                  background: #f9f9f9;
+                  padding: 30px;
+                  border-radius: 0 0 10px 10px;
+                }
+                .field {
+                  margin-bottom: 20px;
+                  padding: 15px;
+                  background: white;
+                  border-left: 4px solid #c59862;
+                  border-radius: 4px;
+                }
+                .label {
+                  font-weight: bold;
+                  color: #c59862;
+                  text-transform: uppercase;
+                  font-size: 12px;
+                  letter-spacing: 1px;
+                  margin-bottom: 5px;
+                }
+                .value {
+                  color: #333;
+                  margin-top: 5px;
+                }
+                .footer {
+                  margin-top: 30px;
+                  padding-top: 20px;
+                  border-top: 1px solid #ddd;
+                  font-size: 12px;
+                  color: #666;
+                  text-align: center;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="header">
+                <h1>New Custom Order Enquiry</h1>
+              </div>
+              <div class="content">
+                <div class="field">
+                  <div class="label">Product</div>
+                  <div class="value">${productName}</div>
+                </div>
+                <div class="field">
+                  <div class="label">Name</div>
+                  <div class="value">${name}</div>
+                </div>
+                <div class="field">
+                  <div class="label">Email</div>
+                  <div class="value"><a href="mailto:${email}">${email}</a></div>
+                </div>
+                <div class="field">
+                  <div class="label">Country</div>
+                  <div class="value">${country}</div>
+                </div>
+                <div class="field">
+                  <div class="label">Magnet Type</div>
+                  <div class="value">${magnetType}</div>
+                </div>
+                ${bespokeVeneer ? `
+                <div class="field">
+                  <div class="label">Bespoke Veneer</div>
+                  <div class="value">${bespokeVeneer}</div>
+                </div>
+                ` : ''}
+                ${extraQuestions ? `
+                <div class="field">
+                  <div class="label">Extra Questions/Requirements</div>
+                  <div class="value">${extraQuestions.replace(/\n/g, '<br>')}</div>
+                </div>
+                ` : ''}
+                <div class="footer">
+                  <p>Submitted: ${new Date().toLocaleString('en-GB', { timeZone: 'Europe/London' })}</p>
+                  ${beehiivSuccess ? '<p>✓ Contact added to Beehiiv</p>' : '<p>⚠ Could not add to Beehiiv</p>'}
+                </div>
+              </div>
+            </body>
+          </html>
+        `,
+      });
 
-        if (!emailResponse.ok) {
-          const errorText = await emailResponse.text();
-          console.error('Resend API error:', errorText);
-        }
-      } catch (emailError) {
-        console.error('Error sending notification email:', emailError);
+      if (error) {
+        console.error('Resend API error:', error);
+        return NextResponse.json(
+          { success: false, message: 'Failed to send email notification. Please try again or contact us directly.' },
+          { status: 500 }
+        );
       }
+
+      resendSuccess = true;
+    } catch (emailError) {
+      console.error('Error sending notification email:', emailError);
+      return NextResponse.json(
+        { success: false, message: 'Failed to send email notification. Please try again or contact us directly.' },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({ 
