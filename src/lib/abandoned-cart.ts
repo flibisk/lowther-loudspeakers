@@ -102,6 +102,10 @@ export async function sendAbandonedCartEmail(): Promise<boolean> {
   if (!cartData || !cartData.email) return false;
 
   try {
+    const siteUrl = typeof window !== 'undefined' 
+      ? window.location.origin 
+      : (process.env.NEXT_PUBLIC_SITE_URL || 'https://www.lowtherloudspeakers.com');
+    
     const response = await fetch('/api/abandoned-cart', {
       method: 'POST',
       headers: {
@@ -111,9 +115,7 @@ export async function sendAbandonedCartEmail(): Promise<boolean> {
         email: cartData.email,
         cartItems: cartData.items,
         cartTotal: cartData.total,
-        cartUrl: cartData.cartId 
-          ? `https://shop.lowtherloudspeakers.com/cart/${cartData.cartId}`
-          : 'https://shop.lowtherloudspeakers.com/cart',
+        cartUrl: `${siteUrl}/products`,
       }),
     });
 

@@ -176,7 +176,7 @@ export async function POST(request: NextRequest) {
                 <p>Simply enter this code at checkout to receive your discount. This code is valid for your first purchase.</p>
 
                 <div style="text-align: center;">
-                  <a href="https://shop.lowtherloudspeakers.com" class="button">Shop Now</a>
+                  <a href="https://www.lowtherloudspeakers.com/products" class="button">Shop Now</a>
                 </div>
 
                 <p style="margin-top: 30px; font-size: 14px; color: #666;">

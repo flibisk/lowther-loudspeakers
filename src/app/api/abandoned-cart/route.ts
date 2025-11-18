@@ -51,7 +51,8 @@ export async function POST(request: NextRequest) {
     }
 
     const fromEmail = process.env.RESEND_FROM_EMAIL || 'noreply@lowtherloudspeakers.com';
-    const shopUrl = cartUrl || 'https://shop.lowtherloudspeakers.com/cart';
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.lowtherloudspeakers.com';
+    const shopUrl = cartUrl || `${siteUrl}/products`;
 
     console.log('Attempting to send abandoned cart email:', {
       from: fromEmail,
