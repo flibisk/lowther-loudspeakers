@@ -34,6 +34,7 @@ export async function POST(request: NextRequest) {
 
     const beehiivApiKey = process.env.BEEHIIV_API_KEY;
     const beehiivPublicationId = process.env.BEEHIIV_PUBLICATION_ID;
+    // Use configured email or fallback to Resend sandbox
     const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
 
     // Get discount code from environment or use default
@@ -85,8 +86,13 @@ export async function POST(request: NextRequest) {
 
     // 2. Send discount code email via Resend
     try {
+      // Format the from address properly
+      const fromAddress = fromEmail.includes('<') ? fromEmail : `Lowther Loudspeakers <${fromEmail}>`;
+      
+      console.log('Attempting to send discount email:', { from: fromAddress, to: email });
+      
       const { data, error } = await resend.emails.send({
-        from: `Lowther Loudspeakers <${fromEmail}>`,
+        from: fromAddress,
         to: email,
         subject: `Your ${discountPercent}% Discount Code - Lowther Loudspeakers`,
         html: `
@@ -189,16 +195,41 @@ export async function POST(request: NextRequest) {
       });
 
       if (error) {
-        console.error('Resend API error:', error);
+        console.error('Resend API error:', JSON.stringify(error, null, 2));
+        // Return more specific error message
+        const errorMessage = error.message || 'Failed to send discount code. Please try again.';
+        return NextResponse.json(
+          { 
+            success: false, 
+            message: process.env.NODE_ENV === 'development' 
+              ? `Email error: ${errorMessage}` 
+              : 'Failed to send discount code. Please try again.',
+            error: process.env.NODE_ENV === 'development' ? error : undefined
+          },
+          { status: 500 }
+        );
+      }
+
+      if (!data) {
+        console.error('Resend API returned no data');
         return NextResponse.json(
           { success: false, message: 'Failed to send discount code. Please try again.' },
           { status: 500 }
         );
       }
-    } catch (emailError) {
+
+      console.log('Discount email sent successfully:', data);
+    } catch (emailError: any) {
       console.error('Error sending discount email:', emailError);
+      const errorMessage = emailError?.message || 'An unexpected error occurred';
       return NextResponse.json(
-        { success: false, message: 'Failed to send discount code. Please try again.' },
+        { 
+          success: false, 
+          message: process.env.NODE_ENV === 'development' 
+            ? `Error: ${errorMessage}` 
+            : 'Failed to send discount code. Please try again.',
+          error: process.env.NODE_ENV === 'development' ? emailError : undefined
+        },
         { status: 500 }
       );
     }

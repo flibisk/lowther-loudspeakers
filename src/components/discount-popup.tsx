@@ -65,6 +65,16 @@ export function DiscountPopup() {
         body: JSON.stringify({ email }),
       });
 
+      // Check if response is ok first
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: 'Network error occurred' }));
+        setSubmitStatus({
+          type: 'error',
+          message: errorData.message || `Server error (${response.status}). Please try again.`,
+        });
+        return;
+      }
+
       const data = await response.json();
 
       if (data.success) {
