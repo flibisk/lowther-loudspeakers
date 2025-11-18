@@ -108,12 +108,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${sarabun.variable} ${hvmuse.variable} scroll-smooth`}>
       <head>
-        {/* Favicon Links - Explicit for better browser compatibility */}
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16" />
-        <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
-        <link rel="shortcut icon" href="/favicon.ico" />
+        {/* Favicon Links - Safari-compatible order and cache-busting */}
+        <link rel="shortcut icon" href="/favicon.ico?v=2" />
+        <link rel="icon" href="/favicon.ico?v=2" sizes="any" />
+        <link rel="icon" type="image/png" href="/favicon-16x16.png?v=2" sizes="16x16" />
+        <link rel="icon" type="image/png" href="/favicon-32x32.png?v=2" sizes="32x32" />
+        <link rel="apple-touch-icon" type="image/png" href="/apple-touch-icon.png?v=2" sizes="180x180" />
         
         {/* Organization Schema for Answer Engine Optimization (AEO) */}
         <script
