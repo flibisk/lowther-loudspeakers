@@ -82,15 +82,23 @@ export function DiscountPopup() {
         localStorage.setItem(DISCOUNT_EMAIL_KEY, email);
         localStorage.setItem(DISCOUNT_POPUP_KEY, 'true');
         
-        setSubmitStatus({
-          type: 'success',
-          message: 'Success! Check your email for your 20% discount code.',
-        });
+        // Show discount code if email failed or show success message
+        if (data.discountCode && !data.emailSent) {
+          setSubmitStatus({
+            type: 'success',
+            message: `Your discount code: ${data.discountCode}. Use it at checkout!`,
+          });
+        } else {
+          setSubmitStatus({
+            type: 'success',
+            message: 'Success! Check your email for your 20% discount code.',
+          });
+        }
         
-        // Close popup after 2 seconds
+        // Close popup after 3 seconds (longer if showing code)
         setTimeout(() => {
           handleClose();
-        }, 2000);
+        }, data.emailSent ? 2000 : 5000);
       } else {
         setSubmitStatus({
           type: 'error',

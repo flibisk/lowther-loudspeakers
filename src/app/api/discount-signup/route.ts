@@ -86,13 +86,11 @@ export async function POST(request: NextRequest) {
 
     // 2. Send discount code email via Resend
     try {
-      // Format the from address properly
-      const fromAddress = fromEmail.includes('<') ? fromEmail : `Lowther Loudspeakers <${fromEmail}>`;
-      
-      console.log('Attempting to send discount email:', { from: fromAddress, to: email });
+      // Use same format as other working routes
+      console.log('Attempting to send discount email:', { from: fromEmail, to: email });
       
       const { data, error } = await resend.emails.send({
-        from: fromAddress,
+        from: `Lowther Loudspeakers <${fromEmail}>`,
         to: email,
         subject: `Your ${discountPercent}% Discount Code - Lowther Loudspeakers`,
         html: `
@@ -196,48 +194,47 @@ export async function POST(request: NextRequest) {
 
       if (error) {
         console.error('Resend API error:', JSON.stringify(error, null, 2));
-        // Return more specific error message
-        const errorMessage = error.message || 'Failed to send discount code. Please try again.';
-        return NextResponse.json(
-          { 
-            success: false, 
-            message: process.env.NODE_ENV === 'development' 
-              ? `Email error: ${errorMessage}` 
-              : 'Failed to send discount code. Please try again.',
-            error: process.env.NODE_ENV === 'development' ? error : undefined
-          },
-          { status: 500 }
-        );
+        // On free tier, sending to user emails might fail
+        // Return success anyway with the code so user can still get it
+        // The code will be shown on screen as fallback
+        console.warn('Email sending failed, but returning discount code anyway');
+        return NextResponse.json({ 
+          success: true,
+          message: `Your discount code: ${discountCode}. Email delivery failed, but you can use this code now!`,
+          discountCode,
+          emailSent: false
+        });
       }
 
       if (!data) {
         console.error('Resend API returned no data');
-        return NextResponse.json(
-          { success: false, message: 'Failed to send discount code. Please try again.' },
-          { status: 500 }
-        );
+        // Return success with code anyway
+        return NextResponse.json({ 
+          success: true,
+          message: `Your discount code: ${discountCode}. Email delivery failed, but you can use this code now!`,
+          discountCode,
+          emailSent: false
+        });
       }
 
       console.log('Discount email sent successfully:', data);
     } catch (emailError: any) {
       console.error('Error sending discount email:', emailError);
-      const errorMessage = emailError?.message || 'An unexpected error occurred';
-      return NextResponse.json(
-        { 
-          success: false, 
-          message: process.env.NODE_ENV === 'development' 
-            ? `Error: ${errorMessage}` 
-            : 'Failed to send discount code. Please try again.',
-          error: process.env.NODE_ENV === 'development' ? emailError : undefined
-        },
-        { status: 500 }
-      );
+      // Even if email fails, return the discount code so user can still use it
+      console.warn('Email sending exception, but returning discount code anyway');
+      return NextResponse.json({ 
+        success: true,
+        message: `Your discount code: ${discountCode}. Email delivery failed, but you can use this code now!`,
+        discountCode,
+        emailSent: false
+      });
     }
 
     return NextResponse.json({ 
       success: true,
       message: 'Discount code sent! Check your email.',
-      discountCode // Optional: return code if you want to show it immediately
+      discountCode,
+      emailSent: true
     });
 
   } catch (error) {
