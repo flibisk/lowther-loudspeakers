@@ -11,6 +11,7 @@ import {
   type ShopifyCart,
 } from '@/lib/shopify-storefront';
 import { useCurrency } from '@/contexts/currency-context';
+import { saveAbandonedCartData, clearAbandonedCartData } from '@/lib/abandoned-cart';
 
 interface CartContextType {
   cart: ShopifyCart | null;
@@ -33,6 +34,27 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   // Calculate total item count
   const itemCount = cart?.lines.reduce((total, line) => total + line.quantity, 0) ?? 0;
+
+  // Helper function to track abandoned cart
+  const trackAbandonedCart = useCallback((updatedCart: ShopifyCart) => {
+    const cartItems = updatedCart.lines.map(line => ({
+      title: line.merchandise.product.title,
+      quantity: line.quantity,
+      price: line.cost.totalAmount.amount + ' ' + line.cost.totalAmount.currencyCode,
+      image: line.merchandise.image?.url,
+      variantId: line.merchandise.id,
+    }));
+    const cartTotal = updatedCart.cost?.totalAmount?.amount 
+      ? updatedCart.cost.totalAmount.amount + ' ' + updatedCart.cost.totalAmount.currencyCode
+      : '0';
+    
+    if (cartItems.length > 0) {
+      saveAbandonedCartData(cartItems, cartTotal, updatedCart.id);
+    } else {
+      // Cart is empty, clear abandoned cart data
+      clearAbandonedCartData();
+    }
+  }, []);
 
   // Initialize cart from localStorage and reload when currency changes
   useEffect(() => {
@@ -81,13 +103,22 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         const alignedCart = await updateCartBuyerIdentity(cartId, currency, region);
         if (alignedCart) {
           setCart(alignedCart);
+          
+          // Update abandoned cart tracking
+          trackAbandonedCart(alignedCart);
           return;
         }
       }
 
       setCart(updatedCart);
+      
+      // Update abandoned cart tracking
+      trackAbandonedCart(updatedCart);
+    } else {
+      // Cart doesn't exist, clear abandoned cart data
+      clearAbandonedCartData();
     }
-  }, [cart?.id, currency, region]);
+  }, [cart?.id, currency, region, trackAbandonedCart]);
 
   // Add item to cart
   const addItem = useCallback(async (variantId: string, quantity: number) => {
@@ -111,6 +142,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       if (updatedCart) {
         setCart(updatedCart);
         localStorage.setItem(CART_ID_KEY, updatedCart.id);
+        
+        // Track abandoned cart
+        trackAbandonedCart(updatedCart);
       }
     } catch (error) {
       console.error('Error adding to cart:', error);
@@ -129,13 +163,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       const updatedCart = await updateCartLine(cartId, lineId, quantity, currency, region);
       if (updatedCart) {
         setCart(updatedCart);
+        // Update abandoned cart tracking
+        trackAbandonedCart(updatedCart);
       }
     } catch (error) {
       console.error('Error updating cart:', error);
     } finally {
       setIsLoading(false);
     }
-  }, [cart?.id, currency, region]);
+  }, [cart?.id, currency, region, trackAbandonedCart]);
 
   // Remove item from cart
   const removeItem = useCallback(async (lineId: string) => {
@@ -147,13 +183,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       const updatedCart = await removeFromCartAPI(cartId, lineId, currency, region);
       if (updatedCart) {
         setCart(updatedCart);
+        // Update abandoned cart tracking
+        trackAbandonedCart(updatedCart);
       }
     } catch (error) {
       console.error('Error removing from cart:', error);
     } finally {
       setIsLoading(false);
     }
-  }, [cart?.id, currency, region]);
+  }, [cart?.id, currency, region, trackAbandonedCart]);
 
   return (
     <CartContext.Provider
