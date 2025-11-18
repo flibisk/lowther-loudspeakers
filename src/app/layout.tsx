@@ -10,7 +10,6 @@ import { WishlistProvider } from "@/contexts/wishlist-context";
 import { CookieConsent } from "@/components/cookie-consent";
 import { ClarityScript } from "@/components/clarity-script";
 import { MetaPixel } from "@/components/meta-pixel";
-import { DiscountPopup } from "@/components/discount-popup";
 import { AbandonedCartTracker } from "@/components/abandoned-cart-tracker";
 import "./globals.css";
 
@@ -147,7 +146,6 @@ export default function RootLayout({
               <ClarityScript />
               <MetaPixel />
               <CookieConsent />
-              <DiscountPopup />
               <AbandonedCartTracker />
             </WishlistProvider>
           </CartProvider>

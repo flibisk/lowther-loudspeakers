@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { LowtherForLifeSection } from '@/components/lowther-for-life-section';
 import { Breadcrumbs } from '@/components/breadcrumbs';
+import { DiscountPopup } from '@/components/discount-popup';
 import { X } from 'lucide-react';
 
 // Product data for Phase Plugs
@@ -348,6 +349,7 @@ export default function PhasePlugsPage() {
           </div>
         </div>
       )}
+      <DiscountPopup />
     </div>
   );
 }

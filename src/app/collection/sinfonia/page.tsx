@@ -11,6 +11,7 @@ import { useCart } from '@/contexts/cart-context';
 import { useCurrency } from '@/contexts/currency-context';
 import { ProductActionButtons } from '@/components/product-action-buttons';
 import { CartOverlay } from '@/components/cart-overlay';
+import { DiscountPopup } from '@/components/discount-popup';
 import {
   getCollectionProducts,
   formatPrice,
@@ -898,6 +899,7 @@ export default function SinfoniaPage() {
           </div>
         </div>
       )}
+      <DiscountPopup />
     </div>
   );
 }

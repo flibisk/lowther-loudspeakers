@@ -52,12 +52,13 @@ export async function GET(request: NextRequest) {
     let errors = 0;
 
     for (const cart of carts) {
-      if (cart.emailSent) continue; // Skip if already sent
-
       const timeSinceCart = now - cart.timestamp;
       const shouldSendFirst = timeSinceCart >= ABANDONED_CART_DELAY && timeSinceCart < FOLLOW_UP_DELAY;
       const shouldSendFollowUp = timeSinceCart >= FOLLOW_UP_DELAY;
 
+      // Skip if first email already sent (but allow 24-hour follow-up)
+      if (cart.emailSent && !shouldSendFollowUp) continue;
+      
       if (!shouldSendFirst && !shouldSendFollowUp) continue;
 
       try {

@@ -9,6 +9,7 @@ import { Breadcrumbs } from '@/components/breadcrumbs';
 import { X } from 'lucide-react';
 import { ProductActionButtons } from '@/components/product-action-buttons';
 import { CartOverlay } from '@/components/cart-overlay';
+import { DiscountPopup } from '@/components/discount-popup';
 import { useShopifyCollection } from '@/hooks/use-shopify-collection';
 import { findVariantByOptions, formatPrice, type ShopifyProduct, type ShopifyVariant } from '@/lib/shopify-storefront';
 import { useCart } from '@/contexts/cart-context';
@@ -882,6 +883,7 @@ export default function ConcertCollectionPage() {
           </div>
         </div>
       )}
+      <DiscountPopup />
     </div>
   );
 }
