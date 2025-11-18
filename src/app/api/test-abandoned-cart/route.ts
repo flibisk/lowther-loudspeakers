@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+    const fromEmail = process.env.RESEND_FROM_EMAIL || 'noreply@lowtherloudspeakers.com';
     const shopUrl = 'https://shop.lowtherloudspeakers.com/cart';
 
     // Sample cart items for testing

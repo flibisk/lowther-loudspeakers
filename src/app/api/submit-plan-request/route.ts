@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Use configured email or fallback to sandbox
-    const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+    const fromEmail = process.env.RESEND_FROM_EMAIL || 'noreply@lowtherloudspeakers.com';
 
     // Send email via Resend
     const contactEmail = process.env.CONTACT_EMAIL || 'social@lowtherloudspeakers.com';

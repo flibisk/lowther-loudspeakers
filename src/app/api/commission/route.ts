@@ -26,9 +26,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Use onboarding@resend.dev for testing until domain is verified
-    // Change this to your verified domain once ready
-    const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+    // Use verified domain email
+    const fromEmail = process.env.RESEND_FROM_EMAIL || 'noreply@lowtherloudspeakers.com';
     const contactEmail = process.env.CONTACT_EMAIL || 'social@lowtherloudspeakers.com';
     const secondaryEmail = process.env.RESEND_SECONDARY_EMAIL || 'hello@lowtherloudspeakers.com';
 

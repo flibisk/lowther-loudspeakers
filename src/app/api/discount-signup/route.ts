@@ -34,8 +34,8 @@ export async function POST(request: NextRequest) {
 
     const beehiivApiKey = process.env.BEEHIIV_API_KEY;
     const beehiivPublicationId = process.env.BEEHIIV_PUBLICATION_ID;
-    // Use configured email or fallback to Resend sandbox
-    const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+    // Use configured email or default to verified domain
+    const fromEmail = process.env.RESEND_FROM_EMAIL || 'noreply@lowtherloudspeakers.com';
 
     // Get discount code from environment or use default
     const discountCode = process.env.DISCOUNT_CODE || 'WELCOME20';
