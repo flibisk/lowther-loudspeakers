@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { sarabun, hvmuse } from "@/lib/fonts";
-import { Analytics } from "@vercel/analytics/react";
+import { Analytics } from "@vercel/analytics/next";
 import SiteHeader from "@/components/site-header";
 import { Footer } from "@/components/footer";
 import { generateStructuredData } from "@/lib/seo";
