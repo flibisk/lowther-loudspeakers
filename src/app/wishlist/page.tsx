@@ -80,27 +80,27 @@ export default function WishlistPage() {
       <div id="hero-sentinel" className="absolute top-0 left-0 w-full h-16" />
 
       {/* Hero Banner */}
-      <section data-surface="dark" className="relative min-h-[100vh] overflow-hidden">
+      <section data-surface="dark" className="relative h-[40vh] overflow-hidden">
         <Image
           src="/images/wishlist/Mrs-Bird.JPG"
           alt="Your Wishlist"
           fill
-          className="absolute inset-0 h-full w-full object-cover"
+          className="object-cover"
           priority
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
         
-        <div className="absolute bottom-20 930:bottom-20 left-6 930:left-16 z-10 text-white max-w-xs sm:max-w-md 930:max-w-2xl">
+        <div className="absolute bottom-8 930:bottom-12 left-6 930:left-16 z-10 text-white max-w-xs sm:max-w-md 930:max-w-2xl">
           <div className="flex items-center mb-2">
             <div className="w-8 h-px bg-white mr-3"></div>
             <span className="text-sm tracking-wider uppercase text-white/80">SAVED ITEMS</span>
           </div>
           
-          <h1 className="font-display text-4xl md:text-6xl font-bold leading-tight mb-4" style={{ color: '#c59862' }}>
+          <h1 className="font-display text-3xl md:text-5xl font-bold leading-tight mb-2" style={{ color: '#c59862' }}>
             Your Wishlist
           </h1>
           
-          <p className="hidden 930:block text-xl leading-relaxed">
+          <p className="hidden 930:block text-lg leading-relaxed">
             {itemCount === 0 
               ? 'Save your favorite products to easily find them later' 
               : `${itemCount} ${itemCount === 1 ? 'item' : 'items'} saved for later`}
