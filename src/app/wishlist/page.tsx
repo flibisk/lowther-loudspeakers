@@ -83,7 +83,7 @@ export default function WishlistPage() {
       <section data-surface="dark" className="relative h-[40vh] overflow-hidden">
         <div className="absolute inset-0">
           <Image
-            src="/images/wishlist/Mrs-Bird.JPG"
+            src="/images/wishlist/mrs-bird-2.jpg"
             alt="Your Wishlist"
             fill
             className="object-cover"
