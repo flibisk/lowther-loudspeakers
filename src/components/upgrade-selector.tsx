@@ -26,7 +26,7 @@ const concertDriveUnits = [
 ];
 
 export function UpgradeSelector() {
-  const { currency } = useCurrency();
+  const { currency, region } = useCurrency();
   const { addItem, isLoading: cartLoading } = useCart();
   const [cartOpen, setCartOpen] = useState(false);
   const [upgradeProducts, setUpgradeProducts] = useState<ShopifyProduct[]>([]);
@@ -41,7 +41,7 @@ export function UpgradeSelector() {
     async function fetchUpgradeProducts() {
       setLoading(true);
       try {
-        const products = await getProductsByTag('hidden-upgrade', currency.code, currency.countryCode);
+        const products = await getProductsByTag('hidden-upgrade', currency, region);
         // Filter to only include products with "(Upgrade)" in the name
         const filteredProducts = products.filter(product => 
           product.title.includes('(Upgrade)')
@@ -55,7 +55,7 @@ export function UpgradeSelector() {
     }
     
     fetchUpgradeProducts();
-  }, [currency.code, currency.countryCode]);
+  }, [currency, region]);
 
   // Get selected upgrade product
   const selectedUpgradeProduct = useMemo(() => {
