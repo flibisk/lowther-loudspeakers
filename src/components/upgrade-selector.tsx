@@ -8,21 +8,32 @@ import { useCurrency } from '@/contexts/currency-context';
 import { CartOverlay } from '@/components/cart-overlay';
 import { getProductsByTag, formatPrice, type ShopifyProduct } from '@/lib/shopify-storefront';
 
-// Concert collection drive units for the "current drive unit" dropdown
-const concertDriveUnits = [
-  { id: 'pm2a-concert', title: 'PM2A Concert', handle: 'lowther-pm2a-concert' },
-  { id: 'pm3a-concert', title: 'PM3A Concert', handle: 'lowther-pm3a-concert' },
-  { id: 'pm4a-concert', title: 'PM4A Concert', handle: 'lowther-pm4a-concert' },
-  { id: 'pm5a-concert', title: 'PM5A Concert', handle: 'lowther-pm5a-concert' },
-  { id: 'pm6a-concert', title: 'PM6A Concert', handle: 'lowther-pm6a-concert' },
-  { id: 'pm6c-concert', title: 'PM6C Concert', handle: 'lowther-pm6c-concert' },
-  { id: 'pm7a-concert', title: 'PM7A Concert', handle: 'lowther-pm7a-concert' },
-  { id: 'dx2-concert', title: 'DX2 Concert', handle: 'lowther-dx2-concert' },
-  { id: 'dx3-concert', title: 'DX3 Concert', handle: 'lowther-dx3-concert' },
-  { id: 'dx4-concert', title: 'DX4 Concert', handle: 'lowther-dx4-concert' },
-  { id: 'ex2-concert', title: 'EX2 Concert', handle: 'lowther-ex2-concert' },
-  { id: 'ex3-concert', title: 'EX3 Concert', handle: 'lowther-ex3-concert' },
-  { id: 'ex4-concert', title: 'EX4 Concert', handle: 'lowther-ex4-concert' },
+// Concert and Sinfonia collection drive units for the "current drive unit" dropdown
+const currentDriveUnits = [
+  // Concert Collection
+  { id: 'pm2a-concert', title: 'PM2A Concert', handle: 'lowther-pm2a-concert', collection: 'Concert' },
+  { id: 'pm3a-concert', title: 'PM3A Concert', handle: 'lowther-pm3a-concert', collection: 'Concert' },
+  { id: 'pm4a-concert', title: 'PM4A Concert', handle: 'lowther-pm4a-concert', collection: 'Concert' },
+  { id: 'pm5a-concert', title: 'PM5A Concert', handle: 'lowther-pm5a-concert', collection: 'Concert' },
+  { id: 'pm6a-concert', title: 'PM6A Concert', handle: 'lowther-pm6a-concert', collection: 'Concert' },
+  { id: 'pm6c-concert', title: 'PM6C Concert', handle: 'lowther-pm6c-concert', collection: 'Concert' },
+  { id: 'pm7a-concert', title: 'PM7A Concert', handle: 'lowther-pm7a-concert', collection: 'Concert' },
+  { id: 'dx2-concert', title: 'DX2 Concert', handle: 'lowther-dx2-concert', collection: 'Concert' },
+  { id: 'dx3-concert', title: 'DX3 Concert', handle: 'lowther-dx3-concert', collection: 'Concert' },
+  { id: 'dx4-concert', title: 'DX4 Concert', handle: 'lowther-dx4-concert', collection: 'Concert' },
+  { id: 'ex2-concert', title: 'EX2 Concert', handle: 'lowther-ex2-concert', collection: 'Concert' },
+  { id: 'ex3-concert', title: 'EX3 Concert', handle: 'lowther-ex3-concert', collection: 'Concert' },
+  { id: 'ex4-concert', title: 'EX4 Concert', handle: 'lowther-ex4-concert', collection: 'Concert' },
+  // Sinfonia Collection
+  { id: 'pm2a-sinfonia', title: 'PM2A Sinfonia', handle: 'lowther-pm2a-sinfonia', collection: 'Sinfonia' },
+  { id: 'pm3a-sinfonia', title: 'PM3A Sinfonia', handle: 'lowther-pm3a-sinfonia', collection: 'Sinfonia' },
+  { id: 'pm4a-sinfonia', title: 'PM4A Sinfonia', handle: 'lowther-pm4a-sinfonia', collection: 'Sinfonia' },
+  { id: 'pm5a-sinfonia', title: 'PM5A Sinfonia', handle: 'lowther-pm5a-sinfonia', collection: 'Sinfonia' },
+  { id: 'pm6a-sinfonia', title: 'PM6A Sinfonia', handle: 'lowther-pm6a-sinfonia', collection: 'Sinfonia' },
+  { id: 'pm7a-sinfonia', title: 'PM7A Sinfonia', handle: 'lowther-pm7a-sinfonia', collection: 'Sinfonia' },
+  { id: 'dx2-sinfonia', title: 'DX2 Sinfonia', handle: 'lowther-dx2-sinfonia', collection: 'Sinfonia' },
+  { id: 'dx3-sinfonia', title: 'DX3 Sinfonia', handle: 'lowther-dx3-sinfonia', collection: 'Sinfonia' },
+  { id: 'dx4-sinfonia', title: 'DX4 Sinfonia', handle: 'lowther-dx4-sinfonia', collection: 'Sinfonia' },
 ];
 
 export function UpgradeSelector() {
@@ -62,13 +73,22 @@ export function UpgradeSelector() {
     return upgradeProducts.find(p => p.id === selectedUpgradeUnit);
   }, [upgradeProducts, selectedUpgradeUnit]);
 
-  // Calculate total price
-  const totalPrice = useMemo(() => {
-    if (!selectedUpgradeProduct || !selectedUpgradeProduct.variants.length) return null;
+  // Calculate total price and RRP
+  const { totalPrice, rrpPrice } = useMemo(() => {
+    if (!selectedUpgradeProduct || !selectedUpgradeProduct.variants.length) {
+      return { totalPrice: null, rrpPrice: null };
+    }
     
     const variant = selectedUpgradeProduct.variants[0];
     const priceAmount = parseFloat(variant.price.amount);
-    return priceAmount * quantity;
+    const total = priceAmount * quantity;
+    
+    // Get RRP from compareAtPrice if available
+    const rrp = variant.compareAtPrice 
+      ? parseFloat(variant.compareAtPrice.amount) * quantity
+      : null;
+    
+    return { totalPrice: total, rrpPrice: rrp };
   }, [selectedUpgradeProduct, quantity]);
 
   // Handle add to bag
@@ -105,7 +125,7 @@ export function UpgradeSelector() {
               <SelectValue placeholder="Select your current drive unit" />
             </SelectTrigger>
             <SelectContent>
-              {concertDriveUnits.map((unit) => (
+              {currentDriveUnits.map((unit) => (
                 <SelectItem key={unit.id} value={unit.id}>
                   {unit.title}
                 </SelectItem>
@@ -169,8 +189,15 @@ export function UpgradeSelector() {
             {totalPrice && selectedUpgradeProduct && (
               <div className="border border-gray-200 rounded-sm p-4 bg-gray-50">
                 <div className="text-sm text-gray-600 mb-1">Total Price</div>
-                <div className="text-2xl font-display" style={{ color: '#c59862' }}>
-                  {formatPrice(totalPrice.toString(), selectedUpgradeProduct.variants[0].price.currencyCode)}
+                <div className="flex items-center gap-3">
+                  {rrpPrice && (
+                    <div className="text-xl font-display text-gray-400 line-through">
+                      {formatPrice(rrpPrice.toString(), selectedUpgradeProduct.variants[0].price.currencyCode)}
+                    </div>
+                  )}
+                  <div className="text-2xl font-display" style={{ color: '#c59862' }}>
+                    {formatPrice(totalPrice.toString(), selectedUpgradeProduct.variants[0].price.currencyCode)}
+                  </div>
                 </div>
               </div>
             )}

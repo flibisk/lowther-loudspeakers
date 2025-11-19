@@ -77,6 +77,7 @@ export interface ShopifyVariant {
   id: string;
   title: string;
   price: ShopifyMoney;
+  compareAtPrice?: ShopifyMoney | null;
   availableForSale: boolean;
   quantityAvailable: number;
   selectedOptions: Array<{
@@ -444,7 +445,10 @@ export async function getCollectionProducts(
       title: edge.node.title,
       description: edge.node.description,
       images: edge.node.images.edges.map((imgEdge: any) => imgEdge.node),
-      variants: edge.node.variants.edges.map((varEdge: any) => varEdge.node),
+      variants: edge.node.variants.edges.map((varEdge: any) => ({
+        ...varEdge.node,
+        compareAtPrice: varEdge.node.compareAtPrice || null,
+      })),
       priceRange: edge.node.priceRange,
     }));
   } catch (error) {
@@ -497,6 +501,10 @@ export async function getProductsByTag(
                     amount
                     currencyCode
                   }
+                  compareAtPrice {
+                    amount
+                    currencyCode
+                  }
                 }
               }
             }
@@ -540,7 +548,10 @@ export async function getProductsByTag(
       title: edge.node.title,
       description: edge.node.description,
       images: edge.node.images.edges.map((imgEdge: any) => imgEdge.node),
-      variants: edge.node.variants.edges.map((varEdge: any) => varEdge.node),
+      variants: edge.node.variants.edges.map((varEdge: any) => ({
+        ...varEdge.node,
+        compareAtPrice: varEdge.node.compareAtPrice || null,
+      })),
       priceRange: edge.node.priceRange,
     }));
   } catch (error) {
