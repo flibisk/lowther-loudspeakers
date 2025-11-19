@@ -631,7 +631,7 @@ export default function SiteHeader({ nav }: Props) {
                   <img 
                     src={hoveredImage} 
                     alt="Menu preview" 
-                    className="w-full h-full object-cover opacity-0 animate-fade-in rounded-lg"
+                    className="w-full h-full object-cover opacity-100 transition-opacity duration-300 rounded-lg"
                   />
                   </div>
                 )}
