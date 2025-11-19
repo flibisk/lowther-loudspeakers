@@ -60,8 +60,16 @@ export function UpgradeSelector() {
           product.title.includes('(Upgrade)')
         );
         
-        // Sort products by model number (PM2A, PM3A, PM4A, etc.)
+        // Sort products by collection first (Concert, Sinfonia, Philharmonic), then by model number
         const sortedProducts = filteredProducts.sort((a, b) => {
+          // Extract collection from title (e.g., "PM2A Concert (Upgrade)" -> "Concert")
+          const extractCollection = (title: string): string => {
+            if (title.toLowerCase().includes('concert')) return 'Concert';
+            if (title.toLowerCase().includes('sinfonia')) return 'Sinfonia';
+            if (title.toLowerCase().includes('philharmonic')) return 'Philharmonic';
+            return 'Other';
+          };
+          
           // Extract model number from title (e.g., "PM2A Concert (Upgrade)" -> "PM2A")
           const extractModel = (title: string) => {
             const match = title.match(/(PM|DX|EX)(\d+)([A-Z]?)/);
@@ -74,6 +82,26 @@ export function UpgradeSelector() {
             return { prefix: '', number: 999, suffix: '', full: title };
           };
           
+          const collectionA = extractCollection(a.title);
+          const collectionB = extractCollection(b.title);
+          
+          // Define collection order
+          const collectionOrder: Record<string, number> = {
+            'Concert': 1,
+            'Sinfonia': 2,
+            'Philharmonic': 3,
+            'Other': 4,
+          };
+          
+          // Sort by collection first
+          const collectionOrderA = collectionOrder[collectionA] || 99;
+          const collectionOrderB = collectionOrder[collectionB] || 99;
+          
+          if (collectionOrderA !== collectionOrderB) {
+            return collectionOrderA - collectionOrderB;
+          }
+          
+          // Within same collection, sort by model number
           const modelA = extractModel(a.title);
           const modelB = extractModel(b.title);
           
@@ -145,15 +173,35 @@ export function UpgradeSelector() {
   
   // Get current variant based on selections
   const currentVariant = useMemo((): ShopifyVariant | undefined => {
-    if (!selectedUpgradeProduct || !voiceCoil || !impedance) {
-      return selectedUpgradeProduct?.variants[0];
+    if (!selectedUpgradeProduct) {
+      return undefined;
     }
     
-    return findVariantByOptions(selectedUpgradeProduct.variants, {
-      'Voice Coil': voiceCoil,
-      'Impedance': impedance,
-    });
-  }, [selectedUpgradeProduct, voiceCoil, impedance]);
+    // If no variant options are required, return first variant
+    if (voiceCoilOptions.length === 0 && impedanceOptions.length === 0) {
+      return selectedUpgradeProduct.variants[0];
+    }
+    
+    // Build options object only with selected values
+    const options: Record<string, string> = {};
+    if (voiceCoil) {
+      options['Voice Coil'] = voiceCoil;
+    }
+    if (impedance) {
+      options['Impedance'] = impedance;
+    }
+    
+    // If we have options, try to find matching variant
+    if (Object.keys(options).length > 0) {
+      const variant = findVariantByOptions(selectedUpgradeProduct.variants, options);
+      if (variant) {
+        return variant;
+      }
+    }
+    
+    // Fallback to first variant if no match found
+    return selectedUpgradeProduct.variants[0];
+  }, [selectedUpgradeProduct, voiceCoil, impedance, voiceCoilOptions.length, impedanceOptions.length]);
 
   // Calculate total price and RRP
   const { totalPrice, rrpPrice } = useMemo(() => {

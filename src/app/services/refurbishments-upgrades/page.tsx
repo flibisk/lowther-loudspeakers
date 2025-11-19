@@ -289,7 +289,7 @@ export default function RefurbishmentsUpgradesPage() {
             Upgrade Your Drive Unit
           </h3>
           <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
-            Select your current drive unit and choose the upgrade option. Your exclusive upgrade discount is applied automatically.
+            Select your current drive unit and choose the upgrade option. Your exclusive upgrade discount is applied automatically. Quantity means per drive unit.
           </p>
           <UpgradeSelector />
         </div>
