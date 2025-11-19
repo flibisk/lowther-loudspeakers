@@ -203,6 +203,8 @@ Add the following images to `public/images/`:
 2. Set environment variables in Vercel dashboard
 3. Deploy automatically on push to main branch
 
+**Note:** If deployments aren't triggering automatically, check the GitHub-Vercel integration in Vercel dashboard under Settings > Git.
+
 ### Manual Deployment
 
 1. Build the project:
