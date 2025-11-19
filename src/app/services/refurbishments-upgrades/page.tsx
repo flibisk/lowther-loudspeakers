@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { LowtherForLifeSection } from '@/components/lowther-for-life-section';
 import { Breadcrumbs } from '@/components/breadcrumbs';
+import { UpgradeSelector } from '@/components/upgrade-selector';
 
 export default function RefurbishmentsUpgradesPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -281,140 +282,16 @@ export default function RefurbishmentsUpgradesPage() {
         </div>
       </section>
 
-      {/* Upgrade Form Section */}
+      {/* Upgrade Selector Section */}
       <section className="py-24 px-6 930:px-16">
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <h3 className="font-display text-3xl md:text-4xl mb-8 text-center" style={{ color: '#c59862' }}>
-            Upgrade Form
+            Upgrade Your Drive Unit
           </h3>
-          {upgradeSubmitted ? (
-            <div className="text-center py-12">
-              <h4 className="font-display text-2xl mb-4" style={{ color: '#c59862' }}>Thank You</h4>
-              <p className="text-lg text-gray-700 font-light">
-                We've received your upgrade request and will be in touch shortly.
-              </p>
-            </div>
-          ) : (
-            <form onSubmit={handleUpgradeSubmit} className="space-y-6">
-              <div>
-                <label htmlFor="upgrade-name" className="block text-sm font-medium text-gray-700 mb-2">
-                  Name *
-                </label>
-                <input
-                  type="text"
-                  id="upgrade-name"
-                  required
-                  value={upgradeFormData.name}
-                  onChange={(e) => setUpgradeFormData({ ...upgradeFormData, name: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#c59862] focus:border-transparent"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="upgrade-address" className="block text-sm font-medium text-gray-700 mb-2">
-                  Address *
-                </label>
-                <textarea
-                  id="upgrade-address"
-                  required
-                  rows={3}
-                  value={upgradeFormData.address}
-                  onChange={(e) => setUpgradeFormData({ ...upgradeFormData, address: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#c59862] focus:border-transparent"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="upgrade-email" className="block text-sm font-medium text-gray-700 mb-2">
-                  Email *
-                </label>
-                <input
-                  type="email"
-                  id="upgrade-email"
-                  required
-                  value={upgradeFormData.email}
-                  onChange={(e) => setUpgradeFormData({ ...upgradeFormData, email: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#c59862] focus:border-transparent"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="upgrade-phone" className="block text-sm font-medium text-gray-700 mb-2">
-                  Phone Number *
-                </label>
-                <input
-                  type="tel"
-                  id="upgrade-phone"
-                  required
-                  value={upgradeFormData.phone}
-                  onChange={(e) => setUpgradeFormData({ ...upgradeFormData, phone: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#c59862] focus:border-transparent"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="upgrade-drive-unit" className="block text-sm font-medium text-gray-700 mb-2">
-                  Drive Unit Type Being Upgraded *
-                </label>
-                <input
-                  type="text"
-                  id="upgrade-drive-unit"
-                  required
-                  value={upgradeFormData.driveUnitType}
-                  onChange={(e) => setUpgradeFormData({ ...upgradeFormData, driveUnitType: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#c59862] focus:border-transparent"
-                  placeholder="e.g. PM6A, DX3, EX3"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="upgrade-serial" className="block text-sm font-medium text-gray-700 mb-2">
-                  Serial Number (Optional)
-                </label>
-                <input
-                  type="text"
-                  id="upgrade-serial"
-                  value={upgradeFormData.serialNumber}
-                  onChange={(e) => setUpgradeFormData({ ...upgradeFormData, serialNumber: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#c59862] focus:border-transparent"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="upgrade-year" className="block text-sm font-medium text-gray-700 mb-2">
-                  Year Purchased *
-                </label>
-                <input
-                  type="text"
-                  id="upgrade-year"
-                  required
-                  value={upgradeFormData.yearPurchased}
-                  onChange={(e) => setUpgradeFormData({ ...upgradeFormData, yearPurchased: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#c59862] focus:border-transparent"
-                  placeholder="e.g. 2018"
-                />
-              </div>
-
-              {/* Error Message */}
-              {upgradeError && (
-                <div className="p-4 rounded-sm bg-red-50 border border-red-200">
-                  <p className="text-sm text-red-800">{upgradeError}</p>
-                </div>
-              )}
-
-              <div className="pt-4">
-                <Button 
-                  type="submit" 
-                  variant="black" 
-                  size="lowther" 
-                  className="w-full disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled={upgradeSubmitting}
-                >
-                  {upgradeSubmitting ? 'Submitting...' : 'Submit Upgrade Request'}
-                </Button>
-              </div>
-            </form>
-          )}
+          <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+            Select your current drive unit and choose the upgrade option. Your exclusive upgrade discount is applied automatically.
+          </p>
+          <UpgradeSelector />
         </div>
       </section>
 

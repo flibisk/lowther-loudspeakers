@@ -453,6 +453,102 @@ export async function getCollectionProducts(
   }
 }
 
+/**
+ * Fetch products by tag with currency context
+ */
+export async function getProductsByTag(
+  tag: string,
+  currencyCode: string = 'GBP',
+  countryCode?: string,
+): Promise<ShopifyProduct[]> {
+  const countryCodeToUse = resolveCountryCode(currencyCode, countryCode);
+  
+  const query = `
+    query getProductsByTag($query: String!, $country: CountryCode!) @inContext(country: $country) {
+      products(first: 50, query: $query) {
+        edges {
+          node {
+            id
+            handle
+            title
+            description
+            images(first: 1) {
+              edges {
+                node {
+                  url
+                  altText
+                  width
+                  height
+                }
+              }
+            }
+            variants(first: 20) {
+              edges {
+                node {
+                  id
+                  title
+                  availableForSale
+                  quantityAvailable
+                  selectedOptions {
+                    name
+                    value
+                  }
+                  price {
+                    amount
+                    currencyCode
+                  }
+                }
+              }
+            }
+            priceRange {
+              minVariantPrice {
+                amount
+                currencyCode
+              }
+              maxVariantPrice {
+                amount
+                currencyCode
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  try {
+    const client = getClient();
+    const { data, errors } = await client.request(
+      query,
+      withStorefrontHeaders({
+        variables: { query: `tag:${tag}`, country: countryCodeToUse },
+      }),
+    );
+
+    if (errors) {
+      console.error('Shopify API errors:', errors);
+      return [];
+    }
+
+    if (!data?.products) {
+      return [];
+    }
+
+    return data.products.edges.map((edge: any) => ({
+      id: edge.node.id,
+      handle: edge.node.handle,
+      title: edge.node.title,
+      description: edge.node.description,
+      images: edge.node.images.edges.map((imgEdge: any) => imgEdge.node),
+      variants: edge.node.variants.edges.map((varEdge: any) => varEdge.node),
+      priceRange: edge.node.priceRange,
+    }));
+  } catch (error) {
+    console.error('Error fetching products by tag:', error);
+    return [];
+  }
+}
+
 // ============================================================================
 // CART OPERATIONS
 // ============================================================================
