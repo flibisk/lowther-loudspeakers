@@ -136,7 +136,6 @@ export default function WishlistPage() {
             <span className="text-gray-900">Your Wishlist</span>
           </nav>
         </div>
-        </div>
 
         {/* Empty State */}
         {itemCount === 0 ? (
