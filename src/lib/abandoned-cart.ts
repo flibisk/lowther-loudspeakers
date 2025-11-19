@@ -172,7 +172,7 @@ export async function sendAbandonedCartEmail(): Promise<boolean> {
       };
       localStorage.setItem(ABANDONED_CART_KEY, JSON.stringify(updatedCartData));
       console.log('Abandoned cart email sent and timestamp recorded:', {
-        timestamp: new Date(updatedCartData.lastEmailSentTimestamp).toISOString()
+        timestamp: updatedCartData.lastEmailSentTimestamp ? new Date(updatedCartData.lastEmailSentTimestamp).toISOString() : 'N/A'
       });
       return true;
     }
