@@ -12,6 +12,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 const ABANDONED_CART_DELAY = 60 * 60 * 1000; // 1 hour
 const FOLLOW_UP_DELAY = 24 * 60 * 60 * 1000; // 24 hours
+const WEEKLY_LIMIT = 7 * 24 * 60 * 60 * 1000; // 7 days (1 week) - maximum frequency for abandoned cart emails
 
 export async function GET(request: NextRequest) {
   // Verify this is called by Vercel Cron
@@ -66,6 +67,18 @@ export async function GET(request: NextRequest) {
       if (cart.emailSent && !shouldSendFollowUp) continue;
       
       if (!shouldSendFirst && !shouldSendFollowUp) continue;
+
+      // Enforce weekly limit: don't send if an email was sent within the last 7 days
+      if (cart.lastEmailSentTimestamp) {
+        const timeSinceLastEmail = now - cart.lastEmailSentTimestamp;
+        if (timeSinceLastEmail < WEEKLY_LIMIT) {
+          console.log(`Skipping abandoned cart email for ${cart.email}: less than 7 days since last email`, {
+            daysSinceLastEmail: Math.floor(timeSinceLastEmail / (24 * 60 * 60 * 1000)),
+            lastEmailSent: new Date(cart.lastEmailSentTimestamp).toISOString()
+          });
+          continue;
+        }
+      }
 
       try {
         const cartItemsHtml = cart.cartItems.map((item: any) => `
@@ -218,11 +231,11 @@ export async function GET(request: NextRequest) {
           continue;
         }
 
-        // Mark as sent
+        // Mark as sent and record timestamp for weekly limit
         emailsSent++;
         console.log(`Sent abandoned cart email to ${cart.email}`, data);
         
-        // Update cart to mark as sent (for first email only, keep for follow-up)
+        // Update cart to mark as sent and record timestamp (for first email only, keep for follow-up)
         if (!shouldSendFollowUp) {
           try {
             await fetch(`${baseUrl}/api/abandoned-carts`, {
@@ -234,6 +247,7 @@ export async function GET(request: NextRequest) {
                 email: cart.email,
                 cartId: cart.cartId,
                 emailSent: true,
+                lastEmailSentTimestamp: now, // Record when email was sent for weekly limit
               }),
             });
           } catch (updateError) {

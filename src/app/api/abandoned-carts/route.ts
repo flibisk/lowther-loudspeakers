@@ -17,6 +17,7 @@ interface StoredCart {
   timestamp: number;
   cartId?: string;
   emailSent?: boolean;
+  lastEmailSentTimestamp?: number; // Track when last email was sent for weekly limit
 }
 
 // In-memory store (in production, use a database like Upstash Redis)
@@ -86,10 +87,10 @@ export async function GET() {
 }
 
 export async function PATCH(request: NextRequest) {
-  // Mark a cart as email sent
+  // Mark a cart as email sent and record timestamp
   try {
     const body = await request.json();
-    const { email, cartId, emailSent } = body;
+    const { email, cartId, emailSent, lastEmailSentTimestamp } = body;
 
     if (!email) {
       return NextResponse.json(
@@ -109,6 +110,9 @@ export async function PATCH(request: NextRequest) {
     }
 
     cart.emailSent = emailSent !== undefined ? emailSent : true;
+    if (lastEmailSentTimestamp !== undefined) {
+      cart.lastEmailSentTimestamp = lastEmailSentTimestamp;
+    }
     cartStore.set(key, cart);
 
     return NextResponse.json({ 

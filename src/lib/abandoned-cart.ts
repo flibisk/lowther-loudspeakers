@@ -7,6 +7,7 @@ const ABANDONED_CART_KEY = 'lowther_abandoned_cart';
 const ABANDONED_CART_EMAIL_KEY = 'lowther_discount_email';
 const ABANDONED_CART_CHECK_INTERVAL = 60 * 60 * 1000; // 1 hour in milliseconds
 const ABANDONED_CART_DELAY = 60 * 60 * 1000; // 1 hour before sending email
+const ABANDONED_CART_WEEKLY_LIMIT = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds (1 week)
 
 export interface AbandonedCartItem {
   title: string;
@@ -23,6 +24,7 @@ export interface AbandonedCartData {
   email?: string;
   cartId?: string;
   emailSent?: boolean;
+  lastEmailSentTimestamp?: number; // Track when last email was sent to enforce weekly limit
 }
 
 /**
@@ -109,18 +111,29 @@ export function shouldSendAbandonedCartEmail(): boolean {
   const cartData = getAbandonedCartData();
   if (!cartData) return false;
 
-  // Don't send if already sent
-  if (cartData.emailSent) return false;
-
   // Don't send if no email
   if (!cartData.email) return false;
 
   // Don't send if cart is empty
   if (!cartData.items || cartData.items.length === 0) return false;
 
-  // Check if enough time has passed (1 hour)
+  // Check if enough time has passed since cart was abandoned (1 hour)
   const timeSinceCart = Date.now() - cartData.timestamp;
-  return timeSinceCart >= ABANDONED_CART_DELAY;
+  if (timeSinceCart < ABANDONED_CART_DELAY) return false;
+
+  // Check weekly limit: don't send if an email was sent within the last 7 days
+  if (cartData.lastEmailSentTimestamp) {
+    const timeSinceLastEmail = Date.now() - cartData.lastEmailSentTimestamp;
+    if (timeSinceLastEmail < ABANDONED_CART_WEEKLY_LIMIT) {
+      console.log('Abandoned cart email skipped: less than 7 days since last email', {
+        daysSinceLastEmail: Math.floor(timeSinceLastEmail / (24 * 60 * 60 * 1000)),
+        lastEmailSent: new Date(cartData.lastEmailSentTimestamp).toISOString()
+      });
+      return false;
+    }
+  }
+
+  return true;
 }
 
 /**
@@ -151,12 +164,16 @@ export async function sendAbandonedCartEmail(): Promise<boolean> {
     const data = await response.json();
 
     if (data.success) {
-      // Mark as sent
+      // Mark as sent and record timestamp for weekly limit
       const updatedCartData: AbandonedCartData = {
         ...cartData,
         emailSent: true,
+        lastEmailSentTimestamp: Date.now(), // Record when email was sent
       };
       localStorage.setItem(ABANDONED_CART_KEY, JSON.stringify(updatedCartData));
+      console.log('Abandoned cart email sent and timestamp recorded:', {
+        timestamp: new Date(updatedCartData.lastEmailSentTimestamp).toISOString()
+      });
       return true;
     }
 
