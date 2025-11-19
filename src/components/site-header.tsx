@@ -627,7 +627,7 @@ export default function SiteHeader({ nav }: Props) {
             {/* Right Panel - Image */}
             <div className="w-2/3 relative overflow-hidden flex items-center justify-center">
               {hoveredImage && (
-                <div className="relative w-3/4 h-3/4">
+                <div key={hoveredImage} className="relative w-3/4 h-3/4">
                   <img 
                     src={hoveredImage} 
                     alt="Menu preview" 
