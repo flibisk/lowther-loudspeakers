@@ -426,7 +426,10 @@ export default function SiteHeader({ nav }: Props) {
           </div>
 
           {/* Menu Content - 90% opacity */}
-          <div className="flex min-h-[calc(100vh-80px)] bg-black/90">
+          <div 
+            className="flex min-h-[calc(100vh-80px)] bg-black/90"
+            onMouseLeave={() => setHoveredImage(null)}
+          >
             {/* Left Panel - Menu Items */}
             <div className="w-1/3 px-6 sm:px-6 lg:px-8 xl:px-12 py-12">
               <nav className="space-y-4">
@@ -622,10 +625,7 @@ export default function SiteHeader({ nav }: Props) {
             </div>
 
             {/* Right Panel - Image */}
-            <div 
-              className="w-2/3 relative overflow-hidden flex items-center justify-center"
-              onMouseLeave={() => setHoveredImage(null)}
-            >
+            <div className="w-2/3 relative overflow-hidden flex items-center justify-center">
               {hoveredImage && (
                 <div className="relative w-3/4 h-3/4">
                   <img 
