@@ -31,12 +31,18 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // Import the cart store directly (they're in the same process)
-    // For Vercel, we need to fetch from the API since functions are isolated
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.lowtherloudspeakers.com';
+    // For Vercel, we need to fetch from the API since serverless functions are isolated
+    // Use internal URL during build/runtime, or fallback to public URL
+    const baseUrl = process.env.VERCEL_URL 
+      ? `https://${process.env.VERCEL_URL}` 
+      : (process.env.NEXT_PUBLIC_SITE_URL || 'https://www.lowtherloudspeakers.com');
+    
     const cartsResponse = await fetch(`${baseUrl}/api/abandoned-carts`, {
       method: 'GET',
       cache: 'no-store',
+      headers: {
+        'Cache-Control': 'no-cache',
+      },
     });
 
     if (!cartsResponse.ok) {
