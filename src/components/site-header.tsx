@@ -463,7 +463,6 @@ export default function SiteHeader({ nav }: Props) {
                             className="block text-neutral-400 hover:text-white transition-colors py-1" 
                             onClick={() => setMenuOpen(false)}
                             onMouseEnter={() => setHoveredImage(menuImages[slug as keyof typeof menuImages])}
-                            onMouseLeave={() => setHoveredImage(null)}
                           >
                             {item}
                           </Link>
@@ -504,7 +503,6 @@ export default function SiteHeader({ nav }: Props) {
                             className="block text-neutral-400 hover:text-white transition-colors py-1" 
                             onClick={() => setMenuOpen(false)}
                             onMouseEnter={() => setHoveredImage(menuImages[menuImageSlug as keyof typeof menuImages])}
-                            onMouseLeave={() => setHoveredImage(null)}
                           >
                             {item}
                           </Link>
@@ -527,12 +525,12 @@ export default function SiteHeader({ nav }: Props) {
                   </button>
                   {activeDropdown === 'ensemble' && (
                     <div className="mt-2 space-y-2 pl-4">
-                      <Link href="/ensemble/px4-amplifier" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages['px4-amplifier'])} onMouseLeave={() => setHoveredImage(null)}>PX4 Tube Amplifier</Link>
-                      <Link href="/ensemble/reference-cables" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages['reference-cables'])} onMouseLeave={() => setHoveredImage(null)}>Lowther Reference Cables</Link>
-                      <Link href="/ensemble/phase-plugs" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages['phase-equalisers'])} onMouseLeave={() => setHoveredImage(null)}>Phase Plugs</Link>
-                      <Link href="/ensemble/lowther-badges" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages['lowther-badges'])} onMouseLeave={() => setHoveredImage(null)}>Lowther Badges</Link>
-                      <Link href="/ensemble/residential-system-design" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages['white-glove-residential'])} onMouseLeave={() => setHoveredImage(null)}>Residential System Design</Link>
-                      <Link href="/ensemble/commercial-system-design" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages['white-glove-commercial'])} onMouseLeave={() => setHoveredImage(null)}>Commercial System Design</Link>
+                      <Link href="/ensemble/px4-amplifier" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages['px4-amplifier'])}>PX4 Tube Amplifier</Link>
+                      <Link href="/ensemble/reference-cables" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages['reference-cables'])}>Lowther Reference Cables</Link>
+                      <Link href="/ensemble/phase-plugs" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages['phase-equalisers'])}>Phase Plugs</Link>
+                      <Link href="/ensemble/lowther-badges" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages['lowther-badges'])}>Lowther Badges</Link>
+                      <Link href="/ensemble/residential-system-design" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages['white-glove-residential'])}>Residential System Design</Link>
+                      <Link href="/ensemble/commercial-system-design" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages['white-glove-commercial'])}>Commercial System Design</Link>
                     </div>
                   )}
                 </div>
@@ -550,11 +548,11 @@ export default function SiteHeader({ nav }: Props) {
                   </button>
                   {activeDropdown === 'brand' && (
                     <div className="mt-2 space-y-2 pl-4">
-                      <Link href="/history" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages.history)} onMouseLeave={() => setHoveredImage(null)}>History</Link>
-                      <Link href="/brand/handcrafted" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages.handcrafted)} onMouseLeave={() => setHoveredImage(null)}>Handcrafted</Link>
-                      <Link href="/brand/lasting-legacy" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages['lasting-legacy'])} onMouseLeave={() => setHoveredImage(null)}>Lasting Legacy</Link>
-                      <Link href="/brand/paul-voigt-era" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages['paul-voigt-era'])} onMouseLeave={() => setHoveredImage(null)}>Paul Voigt Era</Link>
-                      <Link href="/brand/donald-chave-era" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages['donald-chave-era'])} onMouseLeave={() => setHoveredImage(null)}>Donald Chave Era</Link>
+                      <Link href="/history" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages.history)}>History</Link>
+                      <Link href="/brand/handcrafted" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages.handcrafted)}>Handcrafted</Link>
+                      <Link href="/brand/lasting-legacy" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages['lasting-legacy'])}>Lasting Legacy</Link>
+                      <Link href="/brand/paul-voigt-era" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages['paul-voigt-era'])}>Paul Voigt Era</Link>
+                      <Link href="/brand/donald-chave-era" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages['donald-chave-era'])}>Donald Chave Era</Link>
                     </div>
                   )}
                 </div>
@@ -572,8 +570,8 @@ export default function SiteHeader({ nav }: Props) {
                   </button>
                   {activeDropdown === 'speaker-making' && (
                     <div className="mt-2 space-y-2 pl-4">
-                      <Link href="/brand/our-craft" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages['our-craft'])} onMouseLeave={() => setHoveredImage(null)}>Our Craft</Link>
-                      <Link href="/build-a-lowther" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages['build-your-own'])} onMouseLeave={() => setHoveredImage(null)}>Build Your Own</Link>
+                      <Link href="/brand/our-craft" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages['our-craft'])}>Our Craft</Link>
+                      <Link href="/build-a-lowther" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages['build-your-own'])}>Build Your Own</Link>
                     </div>
                   )}
                 </div>
@@ -591,12 +589,12 @@ export default function SiteHeader({ nav }: Props) {
                   </button>
                   {activeDropdown === 'services' && (
                     <div className="mt-2 space-y-2 pl-4">
-                      <Link href="/services/refurbishments-upgrades" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages['refurbishments-upgrades'])} onMouseLeave={() => setHoveredImage(null)}>Refurbishments & Upgrades</Link>
-                      <Link href="/warranty" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages.warranty)} onMouseLeave={() => setHoveredImage(null)}>Warranty</Link>
-                      <Link href="/verify" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages['authenticity-checker'])} onMouseLeave={() => setHoveredImage(null)}>Authenticity Checker</Link>
-                      <Link href="/services/listening-rooms" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages['listening-rooms'])} onMouseLeave={() => setHoveredImage(null)}>Listening Rooms</Link>
-                      <Link href="/catalogue" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages['order-catalogue'])} onMouseLeave={() => setHoveredImage(null)}>Order a Catalogue</Link>
-                      <Link href="/services/oem-opportunities" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages['oem-opportunities'])} onMouseLeave={() => setHoveredImage(null)}>OEM Opportunities</Link>
+                      <Link href="/services/refurbishments-upgrades" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages['refurbishments-upgrades'])}>Refurbishments & Upgrades</Link>
+                      <Link href="/warranty" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages.warranty)}>Warranty</Link>
+                      <Link href="/verify" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages['authenticity-checker'])}>Authenticity Checker</Link>
+                      <Link href="/services/listening-rooms" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages['listening-rooms'])}>Listening Rooms</Link>
+                      <Link href="/catalogue" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages['order-catalogue'])}>Order a Catalogue</Link>
+                      <Link href="/services/oem-opportunities" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages['oem-opportunities'])}>OEM Opportunities</Link>
                     </div>
                   )}
                 </div>
@@ -624,7 +622,10 @@ export default function SiteHeader({ nav }: Props) {
             </div>
 
             {/* Right Panel - Image */}
-            <div className="w-2/3 relative overflow-hidden flex items-center justify-center">
+            <div 
+              className="w-2/3 relative overflow-hidden flex items-center justify-center"
+              onMouseLeave={() => setHoveredImage(null)}
+            >
               {hoveredImage && (
                 <div className="relative w-3/4 h-3/4">
                   <img 
