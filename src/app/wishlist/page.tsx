@@ -81,13 +81,15 @@ export default function WishlistPage() {
 
       {/* Hero Banner */}
       <section data-surface="dark" className="relative h-[40vh] overflow-hidden">
-        <Image
-          src="/images/wishlist/Mrs-Bird.JPG"
-          alt="Your Wishlist"
-          fill
-          className="absolute inset-0 h-full w-full object-cover"
-          priority
-        />
+        <div className="absolute inset-0">
+          <Image
+            src="/images/wishlist/Mrs-Bird.JPG"
+            alt="Your Wishlist"
+            fill
+            className="object-cover"
+            priority
+          />
+        </div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
         
         <div className="absolute bottom-8 930:bottom-12 left-6 930:left-16 z-10 text-white max-w-xs sm:max-w-md 930:max-w-2xl">
