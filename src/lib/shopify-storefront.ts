@@ -347,7 +347,10 @@ export async function getProduct(
       title: product.title,
       description: product.description,
       images: product.images.edges.map((edge: any) => edge.node),
-      variants: product.variants.edges.map((edge: any) => edge.node),
+      variants: product.variants.edges.map((edge: any) => ({
+        ...edge.node,
+        compareAtPrice: edge.node.compareAtPrice || null,
+      })),
       priceRange: product.priceRange,
     };
   } catch (error) {
