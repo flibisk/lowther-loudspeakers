@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useCart } from '@/contexts/cart-context';
 import { useCurrency } from '@/contexts/currency-context';
 import { CartOverlay } from '@/components/cart-overlay';
-import { getProductsByTag, formatPrice, type ShopifyProduct } from '@/lib/shopify-storefront';
+import { getProductsByTag, formatPrice, findVariantByOptions, type ShopifyProduct, type ShopifyVariant } from '@/lib/shopify-storefront';
 
 // Concert and Sinfonia collection drive units for the "current drive unit" dropdown
 const currentDriveUnits = [
@@ -46,6 +46,8 @@ export function UpgradeSelector() {
   const [selectedCurrentUnit, setSelectedCurrentUnit] = useState<string>('');
   const [selectedUpgradeUnit, setSelectedUpgradeUnit] = useState<string>('');
   const [quantity, setQuantity] = useState<number>(1);
+  const [voiceCoil, setVoiceCoil] = useState<string>('');
+  const [impedance, setImpedance] = useState<string>('');
 
   // Fetch upgrade products from Shopify
   useEffect(() => {
@@ -57,7 +59,35 @@ export function UpgradeSelector() {
         const filteredProducts = products.filter(product => 
           product.title.includes('(Upgrade)')
         );
-        setUpgradeProducts(filteredProducts);
+        
+        // Sort products by model number (PM2A, PM3A, PM4A, etc.)
+        const sortedProducts = filteredProducts.sort((a, b) => {
+          // Extract model number from title (e.g., "PM2A Concert (Upgrade)" -> "PM2A")
+          const extractModel = (title: string) => {
+            const match = title.match(/(PM|DX|EX)(\d+)([A-Z]?)/);
+            if (match) {
+              const prefix = match[1];
+              const number = parseInt(match[2]);
+              const suffix = match[3] || '';
+              return { prefix, number, suffix, full: prefix + number + suffix };
+            }
+            return { prefix: '', number: 999, suffix: '', full: title };
+          };
+          
+          const modelA = extractModel(a.title);
+          const modelB = extractModel(b.title);
+          
+          // Sort by prefix (PM, DX, EX), then by number, then by suffix
+          if (modelA.prefix !== modelB.prefix) {
+            return modelA.prefix.localeCompare(modelB.prefix);
+          }
+          if (modelA.number !== modelB.number) {
+            return modelA.number - modelB.number;
+          }
+          return modelA.suffix.localeCompare(modelB.suffix);
+        });
+        
+        setUpgradeProducts(sortedProducts);
       } catch (error) {
         console.error('Error fetching upgrade products:', error);
       } finally {
@@ -67,42 +97,95 @@ export function UpgradeSelector() {
     
     fetchUpgradeProducts();
   }, [currency, region]);
+  
+  // Reset variant selections when upgrade product changes
+  useEffect(() => {
+    setVoiceCoil('');
+    setImpedance('');
+  }, [selectedUpgradeUnit]);
 
   // Get selected upgrade product
   const selectedUpgradeProduct = useMemo(() => {
     return upgradeProducts.find(p => p.id === selectedUpgradeUnit);
   }, [upgradeProducts, selectedUpgradeUnit]);
+  
+  // Get available options for selected product
+  const { voiceCoilOptions, impedanceOptions } = useMemo(() => {
+    if (!selectedUpgradeProduct || !selectedUpgradeProduct.variants.length) {
+      return { voiceCoilOptions: [], impedanceOptions: [] };
+    }
+    
+    const voiceCoilSet = new Set<string>();
+    const impedanceSet = new Set<string>();
+    
+    selectedUpgradeProduct.variants.forEach(variant => {
+      variant.selectedOptions.forEach(option => {
+        if (option.name.toLowerCase().includes('voice') || option.name.toLowerCase().includes('coil')) {
+          voiceCoilSet.add(option.value);
+        }
+        if (option.name.toLowerCase().includes('impedance') || option.name.toLowerCase().includes('ohm')) {
+          impedanceSet.add(option.value);
+        }
+      });
+    });
+    
+    return {
+      voiceCoilOptions: Array.from(voiceCoilSet).sort(),
+      impedanceOptions: Array.from(impedanceSet).sort((a, b) => {
+        // Sort by numeric value if possible (8 Ohms before 15 Ohms)
+        const numA = parseInt(a);
+        const numB = parseInt(b);
+        if (!isNaN(numA) && !isNaN(numB)) {
+          return numA - numB;
+        }
+        return a.localeCompare(b);
+      }),
+    };
+  }, [selectedUpgradeProduct]);
+  
+  // Get current variant based on selections
+  const currentVariant = useMemo((): ShopifyVariant | undefined => {
+    if (!selectedUpgradeProduct || !voiceCoil || !impedance) {
+      return selectedUpgradeProduct?.variants[0];
+    }
+    
+    return findVariantByOptions(selectedUpgradeProduct.variants, {
+      'Voice Coil': voiceCoil,
+      'Impedance': impedance,
+    });
+  }, [selectedUpgradeProduct, voiceCoil, impedance]);
 
   // Calculate total price and RRP
   const { totalPrice, rrpPrice } = useMemo(() => {
-    if (!selectedUpgradeProduct || !selectedUpgradeProduct.variants.length) {
+    if (!currentVariant) {
       return { totalPrice: null, rrpPrice: null };
     }
     
-    const variant = selectedUpgradeProduct.variants[0];
-    const priceAmount = parseFloat(variant.price.amount);
+    const priceAmount = parseFloat(currentVariant.price.amount);
     const total = priceAmount * quantity;
     
     // Get RRP from compareAtPrice if available
-    const rrp = variant.compareAtPrice 
-      ? parseFloat(variant.compareAtPrice.amount) * quantity
+    const rrp = currentVariant.compareAtPrice 
+      ? parseFloat(currentVariant.compareAtPrice.amount) * quantity
       : null;
     
     return { totalPrice: total, rrpPrice: rrp };
-  }, [selectedUpgradeProduct, quantity]);
+  }, [currentVariant, quantity]);
 
   // Handle add to bag
   const handleAddToBag = async () => {
-    if (!selectedUpgradeProduct || !selectedUpgradeProduct.variants.length) return;
+    if (!currentVariant) {
+      alert('Please select all product options');
+      return;
+    }
     
-    const variant = selectedUpgradeProduct.variants[0];
-    if (!variant.availableForSale) {
+    if (!currentVariant.availableForSale) {
       alert('This upgrade product is currently out of stock');
       return;
     }
 
     try {
-      await addItem(variant.id, quantity);
+      await addItem(currentVariant.id, quantity);
       setTimeout(() => {
         setCartOpen(true);
       }, 100);
@@ -135,31 +218,75 @@ export function UpgradeSelector() {
         </div>
 
         {/* Column 2: Upgrade Drive Unit */}
-        <div>
-          <label htmlFor="upgrade-unit" className="block text-sm font-medium text-gray-700 mb-2">
-            Upgrade To *
-          </label>
-          {loading ? (
-            <div className="w-full px-4 py-3 border border-gray-300 rounded-sm text-gray-500">
-              Loading upgrade options...
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="upgrade-unit" className="block text-sm font-medium text-gray-700 mb-2">
+              Upgrade To *
+            </label>
+            {loading ? (
+              <div className="w-full px-4 py-3 border border-gray-300 rounded-sm text-gray-500">
+                Loading upgrade options...
+              </div>
+            ) : (
+              <Select 
+                value={selectedUpgradeUnit} 
+                onValueChange={setSelectedUpgradeUnit}
+                disabled={!selectedCurrentUnit}
+              >
+                <SelectTrigger id="upgrade-unit" className="w-full">
+                  <SelectValue placeholder={selectedCurrentUnit ? "Select upgrade" : "Select current unit first"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {upgradeProducts.map((product) => (
+                    <SelectItem key={product.id} value={product.id}>
+                      {product.title.replace(' (Upgrade)', '')}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          </div>
+          
+          {/* Voice Coil Selector */}
+          {selectedUpgradeProduct && voiceCoilOptions.length > 0 && (
+            <div>
+              <label htmlFor="voice-coil" className="block text-sm font-medium text-gray-700 mb-2">
+                Voice Coil *
+              </label>
+              <Select value={voiceCoil} onValueChange={setVoiceCoil}>
+                <SelectTrigger id="voice-coil" className="w-full">
+                  <SelectValue placeholder="Select voice coil" />
+                </SelectTrigger>
+                <SelectContent>
+                  {voiceCoilOptions.map((option) => (
+                    <SelectItem key={option} value={option}>
+                      {option}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-          ) : (
-            <Select 
-              value={selectedUpgradeUnit} 
-              onValueChange={setSelectedUpgradeUnit}
-              disabled={!selectedCurrentUnit}
-            >
-              <SelectTrigger id="upgrade-unit" className="w-full">
-                <SelectValue placeholder={selectedCurrentUnit ? "Select upgrade" : "Select current unit first"} />
-              </SelectTrigger>
-              <SelectContent>
-                {upgradeProducts.map((product) => (
-                  <SelectItem key={product.id} value={product.id}>
-                    {product.title.replace(' (Upgrade)', '')}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          )}
+          
+          {/* Impedance Selector */}
+          {selectedUpgradeProduct && impedanceOptions.length > 0 && (
+            <div>
+              <label htmlFor="impedance" className="block text-sm font-medium text-gray-700 mb-2">
+                Impedance *
+              </label>
+              <Select value={impedance} onValueChange={setImpedance}>
+                <SelectTrigger id="impedance" className="w-full">
+                  <SelectValue placeholder="Select impedance" />
+                </SelectTrigger>
+                <SelectContent>
+                  {impedanceOptions.map((option) => (
+                    <SelectItem key={option} value={option}>
+                      {option}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           )}
         </div>
 
@@ -186,17 +313,17 @@ export function UpgradeSelector() {
               </SelectContent>
             </Select>
 
-            {totalPrice && selectedUpgradeProduct && (
+            {totalPrice && currentVariant && (
               <div className="border border-gray-200 rounded-sm p-4 bg-gray-50">
                 <div className="text-sm text-gray-600 mb-1">Total Price</div>
                 <div className="flex items-center gap-3">
                   {rrpPrice && (
                     <div className="text-xl font-display text-gray-400 line-through">
-                      {formatPrice(rrpPrice.toString(), selectedUpgradeProduct.variants[0].price.currencyCode)}
+                      {formatPrice(rrpPrice.toString(), currentVariant.price.currencyCode)}
                     </div>
                   )}
                   <div className="text-2xl font-display" style={{ color: '#c59862' }}>
-                    {formatPrice(totalPrice.toString(), selectedUpgradeProduct.variants[0].price.currencyCode)}
+                    {formatPrice(totalPrice.toString(), currentVariant.price.currencyCode)}
                   </div>
                 </div>
               </div>
@@ -206,7 +333,15 @@ export function UpgradeSelector() {
               size="lg"
               className="w-full bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={handleAddToBag}
-              disabled={!selectedUpgradeUnit || !selectedCurrentUnit || cartLoading || loading}
+              disabled={
+                !selectedUpgradeUnit || 
+                !selectedCurrentUnit || 
+                cartLoading || 
+                loading ||
+                (voiceCoilOptions.length > 0 && !voiceCoil) ||
+                (impedanceOptions.length > 0 && !impedance) ||
+                !currentVariant
+              }
             >
               {cartLoading ? 'ADDING...' : 'ADD TO BAG'}
             </Button>
