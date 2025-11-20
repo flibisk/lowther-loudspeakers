@@ -146,13 +146,44 @@ export function UpgradeSelector() {
     const voiceCoilSet = new Set<string>();
     const impedanceSet = new Set<string>();
     
+    // Debug: log all options to see what we're working with
+    if (selectedUpgradeProduct.title.includes('DX2')) {
+      console.log('DX2 Concert Upgrade variants:', selectedUpgradeProduct.variants.map(v => ({
+        id: v.id,
+        options: v.selectedOptions
+      })));
+    }
+    
     selectedUpgradeProduct.variants.forEach(variant => {
       variant.selectedOptions.forEach(option => {
-        if (option.name.toLowerCase().includes('voice') || option.name.toLowerCase().includes('coil')) {
+        const optionNameLower = option.name.toLowerCase();
+        const optionValueLower = option.value.toLowerCase();
+        
+        // Check for voice coil options (more flexible matching)
+        if (
+          optionNameLower.includes('voice') || 
+          optionNameLower.includes('coil') ||
+          optionValueLower.includes('silver') ||
+          optionValueLower.includes('aluminium') ||
+          optionValueLower.includes('aluminum')
+        ) {
           voiceCoilSet.add(option.value);
         }
-        if (option.name.toLowerCase().includes('impedance') || option.name.toLowerCase().includes('ohm')) {
-          impedanceSet.add(option.value);
+        
+        // Check for impedance options (more flexible matching)
+        if (
+          optionNameLower.includes('impedance') || 
+          optionNameLower.includes('ohm') ||
+          optionNameLower.includes('imped') ||
+          optionValueLower.includes('ohm') ||
+          optionValueLower.includes('8') ||
+          optionValueLower.includes('15')
+        ) {
+          // Only add if it looks like an impedance value
+          const value = option.value;
+          if (value.match(/\d+\s*(ohm|ω|Ω)/i) || value.match(/^(8|15)/i)) {
+            impedanceSet.add(option.value);
+          }
         }
       });
     });
