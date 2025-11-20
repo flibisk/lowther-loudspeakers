@@ -44,6 +44,9 @@ const nextConfig: NextConfig = {
       { source: '/speakers', destination: '/products#instruments', permanent: true },
       { source: '/category/loudspeakers', destination: '/products#masterpieces', permanent: true },
       
+      // Listen page redirect
+      { source: '/listen', destination: '/services/listening-rooms', permanent: true },
+      
       // Build a Lowther redirects
       { source: '/build-a-loudspeaker/build-a-lowther', destination: '/build-a-lowther', permanent: true },
 
