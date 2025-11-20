@@ -209,10 +209,10 @@ export default function RefurbishmentsUpgradesPage() {
       {/* Upgrading Your Lowther Section */}
       <section className="py-24 px-6 930:px-16">
         <div className="max-w-4xl mx-auto">
-          <h2 className="font-display text-4xl md:text-5xl mb-8 leading-tight" style={{ color: '#c59862' }}>
+          <h2 className="font-display text-4xl md:text-5xl mb-8 leading-tight text-center" style={{ color: '#c59862' }}>
             Upgrading Your Lowther
           </h2>
-          <div className="space-y-6 text-lg md:text-xl font-light leading-relaxed text-gray-800">
+          <div className="space-y-6 text-lg md:text-xl font-light leading-relaxed text-gray-800 text-center">
             <p>
               For nearly a century, we've built instruments designed to last a lifetime and beyond. When it's time to step into the next chapter of the Lowther journey, our upgrade programme makes it beautifully simple.
             </p>
@@ -298,10 +298,10 @@ export default function RefurbishmentsUpgradesPage() {
       {/* Refurbishment Section */}
       <section className="py-24 px-6 930:px-16 bg-[#fafaf8]">
         <div className="max-w-4xl mx-auto">
-          <h2 className="font-display text-4xl md:text-5xl mb-8 leading-tight" style={{ color: '#c59862' }}>
+          <h2 className="font-display text-4xl md:text-5xl mb-8 leading-tight text-center" style={{ color: '#c59862' }}>
             Refurbishment
           </h2>
-          <div className="space-y-6 text-lg md:text-xl font-light leading-relaxed text-gray-800 mb-12">
+          <div className="space-y-6 text-lg md:text-xl font-light leading-relaxed text-gray-800 mb-12 text-center">
             <p>
               Sometimes a lifelong companion deserves a little care. Our refurbishment service ensures your Lowther continues to perform as beautifully as the day it was made, extending its life for another generation of listening.
             </p>
