@@ -156,8 +156,10 @@ export function UpgradeSelector() {
     
     selectedUpgradeProduct.variants.forEach(variant => {
       variant.selectedOptions.forEach(option => {
-        const optionNameLower = option.name.toLowerCase();
-        const optionValueLower = option.value.toLowerCase();
+        const optionNameLower = option.name.toLowerCase().trim();
+        const optionValueLower = option.value.toLowerCase().trim();
+        const optionName = option.name.trim();
+        const optionValue = option.value.trim();
         
         // Check for voice coil options (more flexible matching)
         if (
@@ -167,23 +169,35 @@ export function UpgradeSelector() {
           optionValueLower.includes('aluminium') ||
           optionValueLower.includes('aluminum')
         ) {
-          voiceCoilSet.add(option.value);
+          voiceCoilSet.add(optionValue);
         }
         
         // Check for impedance options (more flexible matching)
-        if (
-          optionNameLower.includes('impedance') || 
-          optionNameLower.includes('ohm') ||
+        // Check option name first
+        const isImpedanceOption = 
+          optionNameLower === 'impedance' ||
+          optionNameLower.includes('impedance') ||
           optionNameLower.includes('imped') ||
-          optionValueLower.includes('ohm') ||
-          optionValueLower.includes('8') ||
-          optionValueLower.includes('15')
-        ) {
-          // Only add if it looks like an impedance value
-          const value = option.value;
-          if (value.match(/\d+\s*(ohm|ω|Ω)/i) || value.match(/^(8|15)/i)) {
-            impedanceSet.add(option.value);
-          }
+          optionNameLower.includes('ohm') ||
+          optionName === 'Impedance' ||
+          optionName === 'Ohms' ||
+          optionName === 'Ohm';
+        
+        // Check if value looks like impedance (8, 15, 8 Ohms, 15 Ohms, 8Ω, etc.)
+        const isImpedanceValue = 
+          /^\d+\s*(ohm|ohms|ω|Ω|ωs)/i.test(optionValue) ||
+          /^(8|15)(\s|$)/i.test(optionValue) ||
+          optionValue === '8' ||
+          optionValue === '15' ||
+          optionValue === '8 Ohms' ||
+          optionValue === '15 Ohms' ||
+          optionValue === '8 Ohm' ||
+          optionValue === '15 Ohm' ||
+          optionValue === '8Ω' ||
+          optionValue === '15Ω';
+        
+        if (isImpedanceOption || isImpedanceValue) {
+          impedanceSet.add(optionValue);
         }
       });
     });
