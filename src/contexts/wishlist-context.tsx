@@ -10,6 +10,7 @@ interface WishlistItem {
   image: string;
   url?: string; // Product page URL
   shopifyHandle?: string; // Shopify product handle for cart operations
+  type?: 'shopify' | 'masterpiece'; // Type of item - defaults to 'shopify' for backward compatibility
 }
 
 interface WishlistContextType {

@@ -208,18 +208,29 @@ export default function WishlistPage() {
                     </h3>
                   </Link>
                   <p className="text-lg text-gray-600 mb-4">
-                    From {item.price}*
+                    {item.type === 'masterpiece' ? item.price : `From ${item.price}*`}
                   </p>
                   <div className="flex flex-col gap-2">
-                    <Button
-                      size="lg"
-                      className="w-full bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
-                      onClick={() => handleAddToBag(item)}
-                      disabled={cartLoading && loadingItemId === item.id}
-                    >
-                      {cartLoading && loadingItemId === item.id ? 'ADDING...' : 'ADD TO BAG'}
-                    </Button>
-                    <Link href={item.url || getProductUrl(item.handle, item.id)}>
+                    {item.type === 'masterpiece' ? (
+                      <Link href={item.url || `/loudspeakers/${item.handle}`}>
+                        <Button
+                          size="lg"
+                          className="w-full bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
+                        >
+                          REQUEST COMMISSION
+                        </Button>
+                      </Link>
+                    ) : (
+                      <Button
+                        size="lg"
+                        className="w-full bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
+                        onClick={() => handleAddToBag(item)}
+                        disabled={cartLoading && loadingItemId === item.id}
+                      >
+                        {cartLoading && loadingItemId === item.id ? 'ADDING...' : 'ADD TO BAG'}
+                      </Button>
+                    )}
+                    <Link href={item.url || (item.type === 'masterpiece' ? `/loudspeakers/${item.handle}` : getProductUrl(item.handle, item.id))}>
                       <Button
                         size="lg"
                         variant="outline"

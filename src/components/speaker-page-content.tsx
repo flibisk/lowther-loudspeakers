@@ -8,7 +8,8 @@ import { CommissionForm } from '@/components/commission-form';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { LowtherForLifeSection } from '@/components/lowther-for-life-section';
-import { X, ChevronLeft, ChevronRight, Play, ExternalLink } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Play, ExternalLink, Heart } from 'lucide-react';
+import { useWishlist } from '@/contexts/wishlist-context';
 
 interface SpeakerPageContentProps {
   speaker: any;
@@ -89,6 +90,32 @@ export function SpeakerPageContent({
   const [currentVideoUrl, setCurrentVideoUrl] = useState('');
   const [currentVideoTitle, setCurrentVideoTitle] = useState('');
   const [hoveredVideo, setHoveredVideo] = useState<number | null>(null);
+  
+  // Wishlist functionality
+  const { addItem, removeItem, isInWishlist } = useWishlist();
+  // Generate a consistent ID for the masterpiece based on speaker title
+  const masterpieceId = `masterpiece-${speaker.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+  const isSaved = isInWishlist(masterpieceId);
+  
+  const handleWishlistToggle = () => {
+    if (isSaved) {
+      removeItem(masterpieceId);
+    } else {
+      // Get the current page URL
+      const currentUrl = typeof window !== 'undefined' ? window.location.pathname : '';
+      // Extract slug from URL or generate from title
+      const slug = currentUrl.split('/').pop() || speaker.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      addItem({
+        id: masterpieceId,
+        handle: slug,
+        title: speaker.title,
+        price: 'Commission Only',
+        image: heroImage,
+        url: currentUrl,
+        type: 'masterpiece',
+      });
+    }
+  };
 
   // Generic craftsmanship content (same for all speakers)
   const genericCraftsmanship = [
@@ -226,7 +253,7 @@ export function SpeakerPageContent({
         </div>
 
         {/* Button - Mobile: Below text, Desktop: Bottom Right */}
-        <div className="absolute bottom-8 930:bottom-20 left-6 930:left-auto 930:right-16 z-10 w-auto 930:w-auto">
+        <div className="absolute bottom-8 930:bottom-20 left-6 930:left-auto 930:right-16 z-10 w-auto 930:w-auto flex items-center gap-3">
           <Button 
             variant="white"
             size="lowther"
@@ -234,6 +261,29 @@ export function SpeakerPageContent({
           >
             COMMISSION YOURS
           </Button>
+          <button
+            type="button"
+            title={isSaved ? 'Remove from wish list' : 'Save to wish list'}
+            aria-label={isSaved ? 'Remove from wish list' : 'Save to wish list'}
+            className={`group relative flex h-12 w-12 items-center justify-center rounded border transition-all duration-200 ${
+              isSaved
+                ? 'bg-[#c59862] border-[#c59862] text-white hover:bg-[#b78955]'
+                : 'bg-white/10 backdrop-blur-sm border-white text-white hover:bg-white hover:text-[#c59862]'
+            }`}
+            onClick={handleWishlistToggle}
+          >
+            <Heart
+              className="w-5 h-5 transition-transform duration-200 group-hover:scale-110"
+              strokeWidth={isSaved ? 0 : 1.6}
+              fill={isSaved ? 'currentColor' : 'none'}
+            />
+            <span className="sr-only">
+              {isSaved ? 'Remove from wish list' : 'Save to wish list'}
+            </span>
+            <span className="wishlist-tooltip pointer-events-none absolute top-[calc(100%+0.5rem)] left-1/2 -translate-x-1/2 rounded bg-black px-2 py-1 text-[10px] font-medium uppercase tracking-[2px] text-white opacity-0 transition-opacity duration-75 group-hover:opacity-100 whitespace-nowrap">
+              {isSaved ? 'Saved' : 'Save to wish list'}
+            </span>
+          </button>
         </div>
 
         {/* Scroll Indicator - Bottom Center - Hidden on mobile when button is below text */}
@@ -288,13 +338,38 @@ export function SpeakerPageContent({
 
           {/* CTA Button */}
           <ScrollReveal animation="scale" delay={300}>
-            <Button 
-              variant="black" 
-              size="lowther" 
-              onClick={() => setIsCommissionFormOpen(true)}
-            >
-              COMMISSION YOURS
-            </Button>
+            <div className="flex items-center justify-center gap-3">
+              <Button 
+                variant="black" 
+                size="lowther" 
+                onClick={() => setIsCommissionFormOpen(true)}
+              >
+                COMMISSION YOURS
+              </Button>
+              <button
+                type="button"
+                title={isSaved ? 'Remove from wish list' : 'Save to wish list'}
+                aria-label={isSaved ? 'Remove from wish list' : 'Save to wish list'}
+                className={`group relative flex h-12 w-12 items-center justify-center rounded border transition-all duration-200 ${
+                  isSaved
+                    ? 'bg-[#c59862] border-[#c59862] text-white hover:bg-[#b78955]'
+                    : 'bg-white border-[#c59862] text-[#c59862] hover:bg-[#c59862] hover:text-white'
+                }`}
+                onClick={handleWishlistToggle}
+              >
+                <Heart
+                  className="w-5 h-5 transition-transform duration-200 group-hover:scale-110"
+                  strokeWidth={isSaved ? 0 : 1.6}
+                  fill={isSaved ? 'currentColor' : 'none'}
+                />
+                <span className="sr-only">
+                  {isSaved ? 'Remove from wish list' : 'Save to wish list'}
+                </span>
+                <span className="wishlist-tooltip pointer-events-none absolute top-[calc(100%+0.5rem)] left-1/2 -translate-x-1/2 rounded bg-black px-2 py-1 text-[10px] font-medium uppercase tracking-[2px] text-white opacity-0 transition-opacity duration-75 group-hover:opacity-100 whitespace-nowrap">
+                  {isSaved ? 'Saved' : 'Save to wish list'}
+                </span>
+              </button>
+            </div>
           </ScrollReveal>
         </div>
       </section>
@@ -514,14 +589,38 @@ export function SpeakerPageContent({
                 <p className="text-gray-700">{technical.weight}</p>
               </div>
 
-              <div className="pt-6">
+              <div className="pt-6 flex items-center gap-3">
                 <Button 
                   variant="black" 
                   size="lowther" 
                   onClick={() => setIsCommissionFormOpen(true)}
+                  className="flex-1"
                 >
                   ENQUIRE NOW
                 </Button>
+                <button
+                  type="button"
+                  title={isSaved ? 'Remove from wish list' : 'Save to wish list'}
+                  aria-label={isSaved ? 'Remove from wish list' : 'Save to wish list'}
+                  className={`group relative flex h-12 w-12 items-center justify-center rounded border transition-all duration-200 ${
+                    isSaved
+                      ? 'bg-[#c59862] border-[#c59862] text-white hover:bg-[#b78955]'
+                      : 'bg-white border-[#c59862] text-[#c59862] hover:bg-[#c59862] hover:text-white'
+                  }`}
+                  onClick={handleWishlistToggle}
+                >
+                  <Heart
+                    className="w-5 h-5 transition-transform duration-200 group-hover:scale-110"
+                    strokeWidth={isSaved ? 0 : 1.6}
+                    fill={isSaved ? 'currentColor' : 'none'}
+                  />
+                  <span className="sr-only">
+                    {isSaved ? 'Remove from wish list' : 'Save to wish list'}
+                  </span>
+                  <span className="wishlist-tooltip pointer-events-none absolute top-[calc(100%+0.5rem)] left-1/2 -translate-x-1/2 rounded bg-black px-2 py-1 text-[10px] font-medium uppercase tracking-[2px] text-white opacity-0 transition-opacity duration-75 group-hover:opacity-100 whitespace-nowrap">
+                    {isSaved ? 'Saved' : 'Save to wish list'}
+                  </span>
+                </button>
               </div>
             </div>
           </div>
@@ -666,13 +765,38 @@ export function SpeakerPageContent({
                 {approvedCopy.lifestyle_copy}
               </p>
 
-              <Button 
-                variant="black" 
-                size="lowther" 
-                onClick={() => setIsCommissionFormOpen(true)}
-              >
-                ORDER NOW
-              </Button>
+              <div className="flex items-center justify-center gap-3">
+                <Button 
+                  variant="black" 
+                  size="lowther" 
+                  onClick={() => setIsCommissionFormOpen(true)}
+                >
+                  ORDER NOW
+                </Button>
+                <button
+                  type="button"
+                  title={isSaved ? 'Remove from wish list' : 'Save to wish list'}
+                  aria-label={isSaved ? 'Remove from wish list' : 'Save to wish list'}
+                  className={`group relative flex h-12 w-12 items-center justify-center rounded border transition-all duration-200 ${
+                    isSaved
+                      ? 'bg-[#c59862] border-[#c59862] text-white hover:bg-[#b78955]'
+                      : 'bg-white border-[#c59862] text-[#c59862] hover:bg-[#c59862] hover:text-white'
+                  }`}
+                  onClick={handleWishlistToggle}
+                >
+                  <Heart
+                    className="w-5 h-5 transition-transform duration-200 group-hover:scale-110"
+                    strokeWidth={isSaved ? 0 : 1.6}
+                    fill={isSaved ? 'currentColor' : 'none'}
+                  />
+                  <span className="sr-only">
+                    {isSaved ? 'Remove from wish list' : 'Save to wish list'}
+                  </span>
+                  <span className="wishlist-tooltip pointer-events-none absolute top-[calc(100%+0.5rem)] left-1/2 -translate-x-1/2 rounded bg-black px-2 py-1 text-[10px] font-medium uppercase tracking-[2px] text-white opacity-0 transition-opacity duration-75 group-hover:opacity-100 whitespace-nowrap">
+                    {isSaved ? 'Saved' : 'Save to wish list'}
+                  </span>
+                </button>
+              </div>
             </div>
           </ScrollReveal>
         </div>
@@ -796,7 +920,7 @@ export function SpeakerPageContent({
 
           {/* CTA Button */}
           <ScrollReveal animation="scale" delay={300}>
-            <div className="text-center mt-12">
+            <div className="text-center mt-12 flex items-center justify-center gap-3">
               <Button 
                 variant="black" 
                 size="lowther" 
@@ -804,6 +928,29 @@ export function SpeakerPageContent({
               >
                 COMMISSION YOUR PAIR
               </Button>
+              <button
+                type="button"
+                title={isSaved ? 'Remove from wish list' : 'Save to wish list'}
+                aria-label={isSaved ? 'Remove from wish list' : 'Save to wish list'}
+                className={`group relative flex h-12 w-12 items-center justify-center rounded border transition-all duration-200 ${
+                  isSaved
+                    ? 'bg-[#c59862] border-[#c59862] text-white hover:bg-[#b78955]'
+                    : 'bg-white border-[#c59862] text-[#c59862] hover:bg-[#c59862] hover:text-white'
+                }`}
+                onClick={handleWishlistToggle}
+              >
+                <Heart
+                  className="w-5 h-5 transition-transform duration-200 group-hover:scale-110"
+                  strokeWidth={isSaved ? 0 : 1.6}
+                  fill={isSaved ? 'currentColor' : 'none'}
+                />
+                <span className="sr-only">
+                  {isSaved ? 'Remove from wish list' : 'Save to wish list'}
+                </span>
+                <span className="wishlist-tooltip pointer-events-none absolute top-[calc(100%+0.5rem)] left-1/2 -translate-x-1/2 rounded bg-black px-2 py-1 text-[10px] font-medium uppercase tracking-[2px] text-white opacity-0 transition-opacity duration-75 group-hover:opacity-100 whitespace-nowrap">
+                  {isSaved ? 'Saved' : 'Save to wish list'}
+                </span>
+              </button>
             </div>
           </ScrollReveal>
         </div>
