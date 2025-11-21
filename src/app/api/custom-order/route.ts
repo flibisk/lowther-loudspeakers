@@ -45,8 +45,8 @@ export async function POST(request: NextRequest) {
     const beehiivApiKey = process.env.BEEHIIV_API_KEY;
     const beehiivPublicationId = process.env.BEEHIIV_PUBLICATION_ID;
     const fromEmail = process.env.RESEND_FROM_EMAIL || 'noreply@lowtherloudspeakers.com';
-    const contactEmail = process.env.CONTACT_EMAIL || 'hello@lowtherloudspeakers.com';
-    const secondaryEmail = process.env.RESEND_SECONDARY_EMAIL || 'peter@lowtherloudspeakers.com';
+    const contactEmail = process.env.CONTACT_EMAIL || 'social@lowtherloudspeakers.com';
+    const secondaryEmail = process.env.RESEND_SECONDARY_EMAIL || 'hello@lowtherloudspeakers.com';
 
     let beehiivSuccess = false;
     let resendSuccess = false;
