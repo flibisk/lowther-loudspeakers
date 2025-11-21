@@ -9,6 +9,57 @@ interface CommissionFormProps {
   speakerName: string;
 }
 
+// Lead time mapping for masterpieces
+const LEAD_TIMES: Record<string, string> = {
+  'Quarter Wave': '4-6 weeks',
+  'Acousta Quarter Wave': '4-6 weeks',
+  'Acousta 117': '4-6 weeks',
+  'Edilia': '6-8 weeks',
+  'Almira': '6-8 weeks',
+  'TP2': '10-12 weeks',
+  'AudioVector': '10-12 weeks',
+  '4ft Voigt Horn': '16-18 weeks',
+  'Voigt Horn': '16-18 weeks',
+  'Hegeman': '16-18 weeks',
+};
+
+function getLeadTime(speakerName: string): string | null {
+  // Try exact match first
+  if (LEAD_TIMES[speakerName]) {
+    return LEAD_TIMES[speakerName];
+  }
+  
+  // Try case-insensitive match
+  const normalizedName = speakerName.toLowerCase();
+  for (const [key, value] of Object.entries(LEAD_TIMES)) {
+    if (key.toLowerCase() === normalizedName) {
+      return value;
+    }
+  }
+  
+  // Try partial match for variations
+  if (normalizedName.includes('quarter wave') || normalizedName.includes('acousta')) {
+    return LEAD_TIMES['Quarter Wave'];
+  }
+  if (normalizedName.includes('edilia')) {
+    return LEAD_TIMES['Edilia'];
+  }
+  if (normalizedName.includes('almira')) {
+    return LEAD_TIMES['Almira'];
+  }
+  if (normalizedName.includes('tp2')) {
+    return LEAD_TIMES['TP2'];
+  }
+  if (normalizedName.includes('audiovector')) {
+    return LEAD_TIMES['AudioVector'];
+  }
+  if (normalizedName.includes('voigt') || normalizedName.includes('hegeman')) {
+    return LEAD_TIMES['Voigt Horn'];
+  }
+  
+  return null;
+}
+
 export function CommissionForm({ isOpen, onClose, speakerName }: CommissionFormProps) {
   const [formData, setFormData] = useState({
     fullName: '',
@@ -25,6 +76,8 @@ export function CommissionForm({ isOpen, onClose, speakerName }: CommissionFormP
     type: 'success' | 'error' | null;
     message: string;
   }>({ type: null, message: '' });
+  
+  const leadTime = getLeadTime(speakerName);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -129,6 +182,26 @@ export function CommissionForm({ isOpen, onClose, speakerName }: CommissionFormP
               </svg>
             </button>
           </div>
+
+          {/* Lead Time Box */}
+          {leadTime && (
+            <div className="mb-8 p-6 bg-[#c59862]/10 border-2 border-[#c59862] rounded-lg">
+              <div className="flex items-center gap-3 mb-2">
+                <svg className="w-5 h-5 text-[#c59862] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <h3 className="font-display text-lg font-semibold text-[#c59862]">
+                  Estimated Lead Time
+                </h3>
+              </div>
+              <p className="text-gray-800 font-medium">
+                {leadTime}
+              </p>
+              <p className="text-sm text-gray-600 mt-2">
+                Lead times may vary based on material availability and current order volume.
+              </p>
+            </div>
+          )}
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
