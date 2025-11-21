@@ -185,20 +185,12 @@ export function CommissionForm({ isOpen, onClose, speakerName }: CommissionFormP
 
           {/* Lead Time Box */}
           {leadTime && (
-            <div className="mb-8 p-6 bg-[#c59862]/10 border-2 border-[#c59862] rounded-lg">
-              <div className="flex items-center gap-3 mb-2">
-                <svg className="w-5 h-5 text-[#c59862] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <h3 className="font-display text-lg font-semibold text-[#c59862]">
-                  Estimated Lead Time
-                </h3>
-              </div>
-              <p className="text-gray-800 font-medium">
-                {leadTime}
+            <div className="mb-8 p-6 bg-white border-2 border-black rounded-lg">
+              <p className="text-gray-800 leading-relaxed">
+                Crafting your speaker takes time.
               </p>
-              <p className="text-sm text-gray-600 mt-2">
-                Lead times may vary based on material availability and current order volume.
+              <p className="text-gray-800 font-medium mt-2">
+                Current lead time is {leadTime}
               </p>
             </div>
           )}
