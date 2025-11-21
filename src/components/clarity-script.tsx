@@ -5,11 +5,12 @@ import { useEffect } from 'react';
 export function ClarityScript() {
   useEffect(() => {
     const loadClarity = () => {
-      // Check if user has accepted cookies
+      // Check if user has explicitly rejected cookies
       const consent = localStorage.getItem('cookie-consent');
       
-      if (consent === 'accepted') {
-        // Only load Clarity if consent is given and not already loaded
+      // Load Clarity by default unless explicitly rejected
+      if (consent !== 'rejected') {
+        // Only load if not already loaded
         if (typeof window !== 'undefined' && !(window as any).clarity) {
           const script = document.createElement('script');
           script.type = 'text/javascript';
@@ -24,16 +25,22 @@ export function ClarityScript() {
           document.head.appendChild(script);
           console.log('Microsoft Clarity loaded');
         }
+      } else {
+        console.log('Microsoft Clarity blocked - user declined cookies');
       }
     };
 
     // Load on mount
     loadClarity();
 
-    // Also listen for storage changes (in case consent is accepted in another tab)
+    // Also listen for storage changes (in case consent changes in another tab)
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'cookie-consent' && e.newValue === 'accepted') {
-        loadClarity();
+      if (e.key === 'cookie-consent') {
+        // If consent changed to rejected, we can't unload but we can prevent future loads
+        // If consent changed from rejected to accepted/null, load Clarity
+        if (e.newValue !== 'rejected') {
+          loadClarity();
+        }
       }
     };
 

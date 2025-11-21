@@ -80,10 +80,11 @@ export function CookieConsent() {
     localStorage.setItem('cookie-consent-date', new Date().toISOString());
     setShowBanner(false);
     
-    // Load Clarity script after consent
+    // Clarity is already loaded by default, but ensure it's loaded if not already
     if (typeof window !== 'undefined' && !(window as any).clarity) {
       const script = document.createElement('script');
       script.type = 'text/javascript';
+      script.async = true;
       script.innerHTML = `
         (function(c,l,a,r,i,t,y){
           c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
@@ -99,6 +100,10 @@ export function CookieConsent() {
     localStorage.setItem('cookie-consent', 'rejected');
     localStorage.setItem('cookie-consent-date', new Date().toISOString());
     setShowBanner(false);
+    
+    // Note: We can't actually unload Clarity once it's loaded, but we prevent future loads
+    // The ClarityScript component checks for 'rejected' status and won't load on future page loads
+    console.log('Cookies rejected - Clarity will not load on future page visits');
   };
 
   if (!showBanner || !isEU) {
