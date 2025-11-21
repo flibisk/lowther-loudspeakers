@@ -167,6 +167,7 @@ export default async function SpeakerPage({ params }: SpeakerPageProps) {
       speakerVideos={pageConfig.speakerVideos}
       remakingVideo={pageConfig.remakingVideo}
       pressReviews={pageConfig.pressReviews}
+      slug={slug}
     />
   );
 }

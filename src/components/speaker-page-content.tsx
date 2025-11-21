@@ -59,6 +59,7 @@ interface SpeakerPageContentProps {
     publication: string;
     link: string;
   }>;
+  slug?: string; // URL slug for wishlist
 }
 
 export function SpeakerPageContent({ 
@@ -81,7 +82,8 @@ export function SpeakerPageContent({
   speakerVideo,
   speakerVideos,
   remakingVideo,
-  pressReviews
+  pressReviews,
+  slug
 }: SpeakerPageContentProps) {
   const [isCommissionFormOpen, setIsCommissionFormOpen] = useState(false);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
@@ -103,15 +105,15 @@ export function SpeakerPageContent({
     } else {
       // Get the current page URL
       const currentUrl = typeof window !== 'undefined' ? window.location.pathname : '';
-      // Extract slug from URL or generate from title
-      const slug = currentUrl.split('/').pop() || speaker.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      // Use provided slug or extract from URL or generate from title
+      const speakerSlug = slug || (typeof window !== 'undefined' ? window.location.pathname.split('/').pop() : '') || speaker.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
       addItem({
         id: masterpieceId,
-        handle: slug,
+        handle: speakerSlug,
         title: speaker.title,
         price: 'Commission Only',
         image: heroImage,
-        url: currentUrl,
+        url: currentUrl || `/loudspeakers/${speakerSlug}`,
         type: 'masterpiece',
       });
     }
