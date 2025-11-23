@@ -52,7 +52,32 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
       if (prev.some(i => i.id === item.id)) {
         return prev;
       }
-      return [...prev, item];
+      const newItems = [...prev, item];
+      
+      // Send notification to server (fire and forget - don't block UI)
+      try {
+        // Get user email from localStorage if available
+        const userEmail = localStorage.getItem('user_email') || undefined;
+        
+        fetch('/api/wishlist-notification', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            item,
+            userEmail,
+          }),
+        }).catch(error => {
+          // Silently fail - don't interrupt user experience
+          console.error('Failed to send wishlist notification:', error);
+        });
+      } catch (error) {
+        // Silently fail
+        console.error('Error sending wishlist notification:', error);
+      }
+      
+      return newItems;
     });
   };
 

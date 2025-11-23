@@ -31,6 +31,10 @@ export function Footer() {
       const data = await response.json();
 
       if (data.success) {
+        // Store email in localStorage for wishlist notifications
+        if (email) {
+          localStorage.setItem('user_email', email);
+        }
         setSubmitStatus({
           type: 'success',
           message: data.message || 'Successfully subscribed!',

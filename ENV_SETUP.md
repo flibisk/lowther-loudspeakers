@@ -16,6 +16,16 @@ RESEND_API_KEY=re_your_api_key_here
 # The email address where form submissions will be sent
 CONTACT_EMAIL=info@lowtherloudspeakers.com
 
+# Secondary email address for notifications (optional)
+RESEND_SECONDARY_EMAIL=hello@lowtherloudspeakers.com
+
+# From email address (must be verified with Resend)
+RESEND_FROM_EMAIL=noreply@lowtherloudspeakers.com
+
+# Wishlist notifications (set to 'false' to disable)
+# When enabled, sends email to CONTACT_EMAIL when users add items to wishlist
+WISHLIST_NOTIFICATIONS_ENABLED=true
+
 # ===================================
 # BEEHIIV NEWSLETTER CONFIGURATION
 # ===================================
@@ -84,6 +94,7 @@ The following form endpoints are available:
 - **Contact Form:** `/api/contact` - Sends emails via Resend
 - **Commission Form:** `/api/commission` - Sends commission requests via Resend
 - **Newsletter:** `/api/newsletter` - Subscribes users to Beehiiv
+- **Wishlist Notifications:** `/api/wishlist-notification` - Sends email when users add items to wishlist (controlled by `WISHLIST_NOTIFICATIONS_ENABLED`)
 
 ## Testing Locally
 

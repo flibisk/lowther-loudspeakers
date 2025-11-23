@@ -68,6 +68,10 @@ export function BookAppointmentForm({ isOpen, onClose }: BookAppointmentFormProp
       const data = await response.json();
 
       if (data.success) {
+        // Store email in localStorage for wishlist notifications
+        if (formData.email) {
+          localStorage.setItem('user_email', formData.email);
+        }
         setSubmitStatus({
           type: 'success',
           message: data.message || 'Your appointment request has been sent successfully!',
