@@ -45,18 +45,32 @@ export function DriveUnitCard({ driveUnitString, label, description }: DriveUnit
       return;
     }
 
-    // Try to find the product by handle
-    let foundProduct = productMap.get(parsed.handle);
-    
-    // If not found, try without the "lowther-" prefix
-    if (!foundProduct && parsed.handle.startsWith('lowther-')) {
-      const handleWithoutPrefix = parsed.handle.replace(/^lowther-/, '');
-      foundProduct = productMap.get(handleWithoutPrefix);
+    // Try multiple handle variations to find the product
+    let foundProduct = null;
+    const handleVariations = [
+      parsed.handle, // Original parsed handle
+      parsed.handle.replace(/^lowther-/, ''), // Without lowther- prefix
+      `lowther-${parsed.handle}`, // With lowther- prefix
+      parsed.handle.replace(/^lowther-/, '').replace(/-sinfonia$/, '-sinfonia'), // Ensure correct suffix
+      parsed.handle.replace(/^lowther-/, '').replace(/-concert$/, '-concert'), // Ensure correct suffix
+    ];
+
+    // Try each variation
+    for (const handle of handleVariations) {
+      foundProduct = productMap.get(handle);
+      if (foundProduct) break;
     }
-    
-    // If still not found, try with "lowther-" prefix
-    if (!foundProduct && !parsed.handle.startsWith('lowther-')) {
-      foundProduct = productMap.get(`lowther-${parsed.handle}`);
+
+    // Also try case-insensitive matching by checking all handles
+    if (!foundProduct && productMap.size > 0) {
+      const searchHandle = parsed.handle.toLowerCase().replace(/^lowther-/, '');
+      for (const [handle, product] of productMap.entries()) {
+        const normalizedHandle = handle.toLowerCase().replace(/^lowther-/, '');
+        if (normalizedHandle === searchHandle) {
+          foundProduct = product;
+          break;
+        }
+      }
     }
 
     // Debug logging
@@ -64,8 +78,9 @@ export function DriveUnitCard({ driveUnitString, label, description }: DriveUnit
       console.log('DriveUnitCard: Product not found', {
         parsedHandle: parsed.handle,
         collectionHandle,
-        availableHandles: Array.from(productMap.keys()).slice(0, 5),
+        availableHandles: Array.from(productMap.keys()).slice(0, 10),
         driveUnitString,
+        triedVariations: handleVariations,
       });
     }
 
@@ -126,7 +141,7 @@ export function DriveUnitCard({ driveUnitString, label, description }: DriveUnit
 
   if (loading || !parsed) {
     return (
-      <div className="bg-white rounded-lg border border-gray-200 p-4 animate-pulse">
+      <div className="bg-gray-50 rounded-lg border-2 border-[#c59862] p-4 animate-pulse">
         <div className="flex gap-4">
           <div className="w-24 h-24 bg-gray-200 rounded"></div>
           <div className="flex-1">
@@ -140,7 +155,7 @@ export function DriveUnitCard({ driveUnitString, label, description }: DriveUnit
   }
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow">
+    <div className="bg-gray-50 rounded-lg border-2 border-[#c59862] p-4 hover:shadow-md transition-shadow">
       <div className="flex gap-4">
         {/* Image */}
         <div className="relative w-24 h-24 flex-shrink-0 bg-gray-100 rounded overflow-hidden">
@@ -232,7 +247,7 @@ export function DriveUnitCard({ driveUnitString, label, description }: DriveUnit
               <div className="flex gap-2">
                 <Button
                   size="sm"
-                  className="flex-1 bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
+                  className="flex-1 h-10 bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
                   onClick={handleAddToCart}
                   disabled={addingToCart || cartLoading || !product.variants[0]?.availableForSale}
                 >
@@ -241,7 +256,7 @@ export function DriveUnitCard({ driveUnitString, label, description }: DriveUnit
                 <button
                   type="button"
                   onClick={handleWishlistToggle}
-                  className={`flex-shrink-0 w-10 h-10 flex items-center justify-center rounded border transition-all duration-200 ${
+                  className={`flex-shrink-0 h-10 w-10 flex items-center justify-center rounded border transition-all duration-200 ${
                     isSaved
                       ? 'bg-[#c59862] border-[#c59862] text-white hover:bg-[#b78955]'
                       : 'bg-white border-[#c59862] text-[#c59862] hover:bg-[#c59862] hover:text-white'
