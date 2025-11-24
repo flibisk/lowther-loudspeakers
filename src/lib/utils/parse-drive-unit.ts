@@ -16,15 +16,18 @@ export interface ParsedDriveUnit {
 /**
  * Converts a drive unit name to a Shopify handle
  * Examples:
- * - "DX3 Concert" -> "dx3-concert"
- * - "PM7A Sinfonia" -> "pm7a-sinfonia"
- * - "EX3 Concert" -> "ex3-concert"
+ * - "DX3 Concert" -> "lowther-dx3-concert"
+ * - "PM7A Sinfonia" -> "lowther-pm7a-sinfonia"
+ * - "EX3 Concert" -> "lowther-ex3-concert"
  */
 function nameToHandle(name: string): string {
-  return name
+  const baseHandle = name
     .toLowerCase()
     .replace(/\s+/g, '-')
     .trim();
+  
+  // Add "lowther-" prefix if not already present
+  return baseHandle.startsWith('lowther-') ? baseHandle : `lowther-${baseHandle}`;
 }
 
 /**

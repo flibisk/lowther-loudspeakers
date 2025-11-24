@@ -24,6 +24,7 @@ export function DriveUnitCard({ driveUnitString, label, description }: DriveUnit
   const { addItem: addToCart, isLoading: cartLoading } = useCart();
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlist();
   const [addingToCart, setAddingToCart] = useState(false);
+  const [quantity, setQuantity] = useState(1);
 
   // Parse the drive unit string
   const parsed = useMemo(() => parseDriveUnitString(driveUnitString), [driveUnitString]);
@@ -44,10 +45,38 @@ export function DriveUnitCard({ driveUnitString, label, description }: DriveUnit
       return;
     }
 
-    const foundProduct = productMap.get(parsed.handle);
+    // Try to find the product by handle
+    let foundProduct = productMap.get(parsed.handle);
+    
+    // If not found, try without the "lowther-" prefix
+    if (!foundProduct && parsed.handle.startsWith('lowther-')) {
+      const handleWithoutPrefix = parsed.handle.replace(/^lowther-/, '');
+      foundProduct = productMap.get(handleWithoutPrefix);
+    }
+    
+    // If still not found, try with "lowther-" prefix
+    if (!foundProduct && !parsed.handle.startsWith('lowther-')) {
+      foundProduct = productMap.get(`lowther-${parsed.handle}`);
+    }
+
+    // Debug logging
+    if (!foundProduct) {
+      console.log('DriveUnitCard: Product not found', {
+        parsedHandle: parsed.handle,
+        collectionHandle,
+        availableHandles: Array.from(productMap.keys()).slice(0, 5),
+        driveUnitString,
+      });
+    }
+
     setProduct(foundProduct || null);
     setLoading(false);
-  }, [parsed, productMap, collectionLoading]);
+    
+    // Set initial quantity from parsed string
+    if (parsed && parsed.quantity > 1) {
+      setQuantity(parsed.quantity);
+    }
+  }, [parsed, productMap, collectionLoading, collectionHandle, driveUnitString]);
 
   const handleAddToCart = async () => {
     if (!product || !product.variants || product.variants.length === 0) return;
@@ -56,7 +85,7 @@ export function DriveUnitCard({ driveUnitString, label, description }: DriveUnit
     try {
       const variant = product.variants[0];
       if (variant.availableForSale) {
-        await addToCart(variant.id, parsed?.quantity || 1);
+        await addToCart(variant.id, quantity);
       } else {
         alert('This product is currently out of stock');
       }
@@ -90,7 +119,7 @@ export function DriveUnitCard({ driveUnitString, label, description }: DriveUnit
   };
 
   const isSaved = product ? isInWishlist(product.id) : false;
-  const productImage = product?.images[0]?.url || '/images/placeholder-drive-unit.jpg';
+  const productImage = product?.images?.[0]?.url || null;
   const productPrice = product 
     ? formatPrice(product.priceRange.minVariantPrice.amount, product.priceRange.minVariantPrice.currencyCode)
     : null;
@@ -115,17 +144,18 @@ export function DriveUnitCard({ driveUnitString, label, description }: DriveUnit
       <div className="flex gap-4">
         {/* Image */}
         <div className="relative w-24 h-24 flex-shrink-0 bg-gray-100 rounded overflow-hidden">
-          {product ? (
+          {product && productImage ? (
             <Image
               src={productImage}
               alt={product.title}
               fill
               className="object-contain p-2"
               sizes="96px"
+              unoptimized
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs text-center p-2">
-              {parsed.label}
+              {product ? product.title : parsed.label}
             </div>
           )}
         </div>
@@ -152,15 +182,54 @@ export function DriveUnitCard({ driveUnitString, label, description }: DriveUnit
 
           {/* Price */}
           {productPrice && (
-            <p className="text-sm text-gray-600 mb-3">
+            <p className="text-sm text-gray-600 mb-2">
               From {productPrice}*
             </p>
           )}
 
-          {/* Buttons */}
-          <div className="flex gap-2">
-            {product ? (
-              <>
+          {/* Quantity Selector and Buttons */}
+          {product ? (
+            <div className="space-y-2">
+              {/* Quantity Selector */}
+              <div className="flex items-center gap-2 mb-2">
+                <label htmlFor={`quantity-${parsed.handle}`} className="text-sm text-gray-600">
+                  Quantity:
+                </label>
+                <div className="flex items-center border border-gray-300 rounded">
+                  <button
+                    type="button"
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    className="px-2 py-1 text-gray-600 hover:bg-gray-100 transition-colors"
+                    aria-label="Decrease quantity"
+                  >
+                    −
+                  </button>
+                  <input
+                    id={`quantity-${parsed.handle}`}
+                    type="number"
+                    min="1"
+                    value={quantity}
+                    onChange={(e) => {
+                      const val = parseInt(e.target.value, 10);
+                      if (!isNaN(val) && val > 0) {
+                        setQuantity(val);
+                      }
+                    }}
+                    className="w-16 px-2 py-1 text-center border-0 focus:outline-none focus:ring-0"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setQuantity(quantity + 1)}
+                    className="px-2 py-1 text-gray-600 hover:bg-gray-100 transition-colors"
+                    aria-label="Increase quantity"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-2">
                 <Button
                   size="sm"
                   className="flex-1 bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
@@ -185,19 +254,19 @@ export function DriveUnitCard({ driveUnitString, label, description }: DriveUnit
                     fill={isSaved ? 'currentColor' : 'none'}
                   />
                 </button>
-              </>
-            ) : (
-              <Link href={`/collection/${parsed.collection || 'concert'}`}>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="w-full"
-                >
-                  View Collection
-                </Button>
-              </Link>
-            )}
-          </div>
+              </div>
+            </div>
+          ) : (
+            <Link href={`/collection/${parsed.collection || 'concert'}`}>
+              <Button
+                size="sm"
+                variant="outline"
+                className="w-full"
+              >
+                View Collection
+              </Button>
+            </Link>
+          )}
         </div>
       </div>
     </div>
