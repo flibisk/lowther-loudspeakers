@@ -8,8 +8,9 @@ import { Button } from '@/components/ui/button';
 import { useCart } from '@/contexts/cart-context';
 import { useWishlist } from '@/contexts/wishlist-context';
 import { useShopifyCollection } from '@/hooks/use-shopify-collection';
+import { useCurrency } from '@/contexts/currency-context';
 import { parseDriveUnitString, getCollectionHandle, type ParsedDriveUnit } from '@/lib/utils/parse-drive-unit';
-import { formatPrice } from '@/lib/shopify-storefront';
+import { formatPrice, getProduct } from '@/lib/shopify-storefront';
 import type { ShopifyProduct } from '@/lib/shopify-storefront';
 
 interface DriveUnitCardProps {
@@ -23,6 +24,7 @@ export function DriveUnitCard({ driveUnitString, label, description }: DriveUnit
   const [loading, setLoading] = useState(true);
   const { addItem: addToCart, isLoading: cartLoading } = useCart();
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlist();
+  const { currency, region } = useCurrency();
   const [addingToCart, setAddingToCart] = useState(false);
   const [quantity, setQuantity] = useState(1);
 
@@ -40,12 +42,18 @@ export function DriveUnitCard({ driveUnitString, label, description }: DriveUnit
 
   // Find the product in the collection
   useEffect(() => {
-    if (!parsed || collectionLoading) {
+    if (!parsed) {
+      setLoading(false);
+      return;
+    }
+
+    // Wait for collection to finish loading
+    if (collectionLoading) {
       setLoading(true);
       return;
     }
 
-    // Try multiple handle variations to find the product
+    // Try multiple handle variations to find the product in collection
     let foundProduct = null;
     const handleVariations = [
       parsed.handle, // Original parsed handle
@@ -55,7 +63,7 @@ export function DriveUnitCard({ driveUnitString, label, description }: DriveUnit
       parsed.handle.replace(/^lowther-/, '').replace(/-concert$/, '-concert'), // Ensure correct suffix
     ];
 
-    // Try each variation
+    // Try each variation in the productMap
     for (const handle of handleVariations) {
       foundProduct = productMap.get(handle);
       if (foundProduct) break;
@@ -73,25 +81,56 @@ export function DriveUnitCard({ driveUnitString, label, description }: DriveUnit
       }
     }
 
-    // Debug logging
-    if (!foundProduct) {
-      console.log('DriveUnitCard: Product not found', {
-        parsedHandle: parsed.handle,
-        collectionHandle,
-        availableHandles: Array.from(productMap.keys()).slice(0, 10),
-        driveUnitString,
-        triedVariations: handleVariations,
-      });
-    }
+    // If not found in collection and collection is empty or product not found, try fetching directly by handle
+    if (!foundProduct && parsed) {
+      const directFetchHandles = [
+        parsed.handle,
+        parsed.handle.replace(/^lowther-/, ''),
+        `lowther-${parsed.handle}`,
+      ];
 
-    setProduct(foundProduct || null);
-    setLoading(false);
+      // Try fetching each handle variation directly
+      const fetchProductDirectly = async () => {
+        for (const handle of directFetchHandles) {
+          try {
+            const directProduct = await getProduct(handle, currency, region);
+            if (directProduct) {
+              foundProduct = directProduct;
+              console.log('DriveUnitCard: Found product via direct fetch', { handle, product: directProduct.title });
+              break;
+            }
+          } catch (error) {
+            // Continue to next variation
+            continue;
+          }
+        }
+        
+        if (!foundProduct) {
+          console.log('DriveUnitCard: Product not found in collection or direct fetch', {
+            parsedHandle: parsed.handle,
+            collectionHandle,
+            availableHandles: Array.from(productMap.keys()).slice(0, 10),
+            driveUnitString,
+            triedVariations: handleVariations,
+            triedDirectHandles: directFetchHandles,
+          });
+        }
+        
+        setProduct(foundProduct || null);
+        setLoading(false);
+      };
+
+      fetchProductDirectly();
+    } else {
+      setProduct(foundProduct || null);
+      setLoading(false);
+    }
     
     // Set initial quantity from parsed string
     if (parsed && parsed.quantity > 1) {
       setQuantity(parsed.quantity);
     }
-  }, [parsed, productMap, collectionLoading, collectionHandle, driveUnitString]);
+  }, [parsed, productMap, collectionLoading, collectionHandle, driveUnitString, currency, region]);
 
   const handleAddToCart = async () => {
     if (!product || !product.variants || product.variants.length === 0) return;
