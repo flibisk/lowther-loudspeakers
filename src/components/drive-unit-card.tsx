@@ -180,7 +180,7 @@ export function DriveUnitCard({ driveUnitString, label, description }: DriveUnit
 
   if (loading || !parsed) {
     return (
-      <div className="bg-gray-50 rounded-lg border-2 border-[#c59862] p-4 animate-pulse">
+      <div className="bg-white rounded-lg border border-gray-300 p-4 animate-pulse">
         <div className="flex gap-4">
           <div className="w-24 h-24 bg-gray-200 rounded"></div>
           <div className="flex-1">
@@ -194,7 +194,7 @@ export function DriveUnitCard({ driveUnitString, label, description }: DriveUnit
   }
 
   return (
-    <div className="bg-gray-50 rounded-lg border-2 border-[#c59862] p-4 hover:shadow-md transition-shadow">
+    <div className="bg-white rounded-lg border border-gray-300 p-4 hover:shadow-md transition-shadow">
       <div className="flex gap-4">
         {/* Image */}
         <div className="relative w-24 h-24 flex-shrink-0 bg-gray-100 rounded overflow-hidden">

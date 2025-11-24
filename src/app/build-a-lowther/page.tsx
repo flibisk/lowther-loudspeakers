@@ -462,7 +462,7 @@ export default function BuildALowtherPage() {
                   </div>
 
                   {/* Drive Unit Requirements */}
-                  <div className="mb-8 p-6 bg-[#c59862]/10 border-2 border-[#c59862] rounded-lg">
+                  <div className="mb-8 p-6 bg-gray-100 rounded-lg">
                     <h3 className="font-display text-2xl mb-4" style={{ color: '#c59862' }}>
                       Required Drive Units
                     </h3>
