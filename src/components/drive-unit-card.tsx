@@ -65,7 +65,7 @@ export function DriveUnitCard({ driveUnitString, label, description }: DriveUnit
 
     // Try each variation in the productMap
     for (const handle of handleVariations) {
-      foundProduct = productMap.get(handle);
+      foundProduct = productMap.get(handle) || null;
       if (foundProduct) break;
     }
 
@@ -74,7 +74,7 @@ export function DriveUnitCard({ driveUnitString, label, description }: DriveUnit
       const searchHandle = parsed.handle.toLowerCase().replace(/^lowther-/, '');
       for (const [handle, product] of productMap.entries()) {
         const normalizedHandle = handle.toLowerCase().replace(/^lowther-/, '');
-        if (normalizedHandle === searchHandle) {
+        if (normalizedHandle === searchHandle && product) {
           foundProduct = product;
           break;
         }
