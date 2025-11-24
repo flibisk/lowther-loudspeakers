@@ -7,6 +7,7 @@ import { ScrollReveal } from '@/components/scroll-reveal';
 import { LowtherForLifeSection } from '@/components/lowther-for-life-section';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { Button } from '@/components/ui/button';
+import { DriveUnitCard } from '@/components/drive-unit-card';
 
 interface CabinetPlan {
   id: string;
@@ -467,29 +468,20 @@ export default function BuildALowtherPage() {
                     </h3>
                     <div className="space-y-3">
                       {selectedPlan.driveUnitOptions.recommended && (
-                        <Link href="/collection/sinfonia" target="_blank" rel="noopener noreferrer" className="block">
-                          <div className="p-4 bg-white rounded-md border-l-4 border-[#c59862] hover:shadow-md transition-shadow cursor-pointer">
-                            <p className="text-sm font-semibold text-gray-900 mb-1">✨ Recommended</p>
-                            <p className="text-lg text-gray-800">{selectedPlan.driveUnitOptions.recommended}</p>
-                            <p className="text-xs text-[#c59862] mt-2">Click to shop →</p>
-                          </div>
-                        </Link>
+                        <DriveUnitCard
+                          driveUnitString={selectedPlan.driveUnitOptions.recommended}
+                          label="Recommended"
+                        />
                       )}
-                      <Link href="/collection/concert" target="_blank" rel="noopener noreferrer" className="block">
-                        <div className="p-4 bg-white rounded-md hover:shadow-md transition-shadow cursor-pointer">
-                          <p className="text-sm font-semibold text-gray-900 mb-1">Standard Option</p>
-                          <p className="text-lg text-gray-800">{selectedPlan.driveUnitOptions.standard}</p>
-                          <p className="text-xs text-[#c59862] mt-2">Click to shop →</p>
-                        </div>
-                      </Link>
+                      <DriveUnitCard
+                        driveUnitString={selectedPlan.driveUnitOptions.standard}
+                        label="Standard"
+                      />
                       {selectedPlan.driveUnitOptions.sealed && (
-                        <Link href="/collection/concert" target="_blank" rel="noopener noreferrer" className="block">
-                          <div className="p-4 bg-white rounded-md hover:shadow-md transition-shadow cursor-pointer">
-                            <p className="text-sm font-semibold text-gray-900 mb-1">If worried about sealing</p>
-                            <p className="text-lg text-gray-800">{selectedPlan.driveUnitOptions.sealed}</p>
-                            <p className="text-xs text-[#c59862] mt-2">Click to shop →</p>
-                          </div>
-                        </Link>
+                        <DriveUnitCard
+                          driveUnitString={selectedPlan.driveUnitOptions.sealed}
+                          label="Sealed"
+                        />
                       )}
                     </div>
                   </div>
