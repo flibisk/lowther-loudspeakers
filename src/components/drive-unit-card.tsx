@@ -54,7 +54,7 @@ export function DriveUnitCard({ driveUnitString, label, description }: DriveUnit
     }
 
     // Try multiple handle variations to find the product in collection
-    let foundProduct = null;
+    let foundProduct: ShopifyProduct | null = null;
     const handleVariations = [
       parsed.handle, // Original parsed handle
       parsed.handle.replace(/^lowther-/, ''), // Without lowther- prefix
