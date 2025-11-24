@@ -273,7 +273,7 @@ export default function RefurbishmentsUpgradesPage() {
                   className="object-contain w-full h-auto rounded-sm"
                 />
               </div>
-              <h4 className="font-display text-xl mb-3">Send your old drive units</h4>
+              <h4 className="font-display text-xl mb-3">Send your old drive units (UK only)</h4>
               <p className="text-gray-700 font-light leading-relaxed">
                 Use the same packaging and prepaid return label to send your old units back to our Norfolk workshop.
               </p>
