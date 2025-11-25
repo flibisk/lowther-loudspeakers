@@ -530,7 +530,7 @@ export const speakerPageConfigs: { [key: string]: SpeakerPageConfig } = {
     ],
     pressReviews: [
       {
-        logo: '/images/speakers/almira/details/Hi-fi+ Logo.webp',
+        logo: '/images/speakers/hegeman/details/Hi-fi+ Logo.webp',
         quote: 'The Hegeman always shows you more of what\'s right with your recordings, rather than what\'s wrong with them.',
         author: 'Jimmy Hughes',
         publication: 'HiFi+',
