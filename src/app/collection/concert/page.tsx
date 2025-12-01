@@ -426,11 +426,9 @@ export default function ConcertCollectionPage() {
     };
     const filename = pdfMap[productTitle];
     if (!filename) return null;
-    // Construct the full path and encode it properly
-    const basePath = '/images/drive-units/concert-collection/technical/';
-    const fullPath = basePath + filename;
-    // Use encodeURI to properly encode spaces and other special characters
-    return encodeURI(fullPath);
+    // Replace spaces with %20 for proper URL encoding
+    const encodedFilename = filename.replace(/ /g, '%20');
+    return `/images/drive-units/concert-collection/technical/${encodedFilename}`;
   };
 
   return (
