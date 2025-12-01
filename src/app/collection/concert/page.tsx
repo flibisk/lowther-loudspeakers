@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { LowtherForLifeSection } from '@/components/lowther-for-life-section';
 import { Breadcrumbs } from '@/components/breadcrumbs';
-import { X } from 'lucide-react';
+import { X, FileText } from 'lucide-react';
 import { ProductActionButtons } from '@/components/product-action-buttons';
 import { CartOverlay } from '@/components/cart-overlay';
 import { DiscountPopup } from '@/components/discount-popup';
@@ -408,6 +408,25 @@ export default function ConcertCollectionPage() {
     return selectedProduct?.price ?? '';
   };
 
+  const getTechnicalPdfPath = (productTitle: string): string | null => {
+    // Map product titles to their PDF filenames
+    const pdfMap: { [key: string]: string } = {
+      'PM2A Concert': '/images/drive-units/concert-collection/technical/PM2A Concert.pdf',
+      'PM3A Concert': '/images/drive-units/concert-collection/technical/PM3A Concert.pdf',
+      'PM4A Concert': '/images/drive-units/concert-collection/technical/PM4A Concert.pdf',
+      'PM5A Concert': '/images/drive-units/concert-collection/technical/PM5A Concert.pdf',
+      'PM6A Concert': '/images/drive-units/concert-collection/technical/PM6A Concert.pdf',
+      'PM7A Concert': '/images/drive-units/concert-collection/technical/PM7A Concert.pdf',
+      'DX2 Concert': '/images/drive-units/concert-collection/technical/DX2 Concert.pdf',
+      'DX3 Concert': '/images/drive-units/concert-collection/technical/DX3 Concert.pdf',
+      'DX4 Concert': '/images/drive-units/concert-collection/technical/DX4 Concert.pdf',
+      'EX2 Concert': '/images/drive-units/concert-collection/technical/EX2 Concert.pdf',
+      'EX3 Concert': '/images/drive-units/concert-collection/technical/EX3 Concert.pdf',
+      'EX4 Concert': '/images/drive-units/concert-collection/technical/EX4 Concert.pdf',
+    };
+    return pdfMap[productTitle] || null;
+  };
+
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Sentinel for Nav */}
@@ -780,6 +799,20 @@ export default function ConcertCollectionPage() {
                       </div>
                     ))}
                   </div>
+                  {/* Technical PDF Link */}
+                  {getTechnicalPdfPath(selectedProduct.title) && (
+                    <div className="mt-6 pt-6 border-t border-gray-200">
+                      <a
+                        href={getTechnicalPdfPath(selectedProduct.title)!}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-sm text-gray-700 hover:text-[#c59862] transition-colors"
+                      >
+                        <FileText className="w-4 h-4" />
+                        <span>View Technical Graphs</span>
+                      </a>
+                    </div>
+                  )}
                 </div>
 
                 {/* Product Options */}
