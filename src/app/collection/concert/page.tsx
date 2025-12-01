@@ -411,20 +411,26 @@ export default function ConcertCollectionPage() {
   const getTechnicalPdfPath = (productTitle: string): string | null => {
     // Map product titles to their PDF filenames
     const pdfMap: { [key: string]: string } = {
-      'PM2A Concert': '/images/drive-units/concert-collection/technical/PM2A Concert.pdf',
-      'PM3A Concert': '/images/drive-units/concert-collection/technical/PM3A Concert.pdf',
-      'PM4A Concert': '/images/drive-units/concert-collection/technical/PM4A Concert.pdf',
-      'PM5A Concert': '/images/drive-units/concert-collection/technical/PM5A Concert.pdf',
-      'PM6A Concert': '/images/drive-units/concert-collection/technical/PM6A Concert.pdf',
-      'PM7A Concert': '/images/drive-units/concert-collection/technical/PM7A Concert.pdf',
-      'DX2 Concert': '/images/drive-units/concert-collection/technical/DX2 Concert.pdf',
-      'DX3 Concert': '/images/drive-units/concert-collection/technical/DX3 Concert.pdf',
-      'DX4 Concert': '/images/drive-units/concert-collection/technical/DX4 Concert.pdf',
-      'EX2 Concert': '/images/drive-units/concert-collection/technical/EX2 Concert.pdf',
-      'EX3 Concert': '/images/drive-units/concert-collection/technical/EX3 Concert.pdf',
-      'EX4 Concert': '/images/drive-units/concert-collection/technical/EX4 Concert.pdf',
+      'PM2A Concert': 'PM2A Concert.pdf',
+      'PM3A Concert': 'PM3A Concert.pdf',
+      'PM4A Concert': 'PM4A Concert.pdf',
+      'PM5A Concert': 'PM5A Concert.pdf',
+      'PM6A Concert': 'PM6A Concert.pdf',
+      'PM7A Concert': 'PM7A Concert.pdf',
+      'DX2 Concert': 'DX2 Concert.pdf',
+      'DX3 Concert': 'DX3 Concert.pdf',
+      'DX4 Concert': 'DX4 Concert.pdf',
+      'EX2 Concert': 'EX2 Concert.pdf',
+      'EX3 Concert': 'EX3 Concert.pdf',
+      'EX4 Concert': 'EX4 Concert.pdf',
     };
-    return pdfMap[productTitle] || null;
+    const filename = pdfMap[productTitle];
+    if (!filename) return null;
+    // Construct the full path and encode it properly
+    const basePath = '/images/drive-units/concert-collection/technical/';
+    const fullPath = basePath + filename;
+    // Use encodeURI to properly encode spaces and other special characters
+    return encodeURI(fullPath);
   };
 
   return (
