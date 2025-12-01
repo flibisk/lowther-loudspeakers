@@ -426,10 +426,12 @@ export default function ConcertCollectionPage() {
     };
     const filename = pdfMap[productTitle];
     if (!filename) return null;
-    // Build the path - Next.js public folder files are served from root
-    // Encode only spaces, keep the rest of the filename intact
-    const encodedFilename = filename.replace(/\s/g, '%20');
-    return `/images/drive-units/concert-collection/technical/${encodedFilename}`;
+    // Build the full path - Next.js public folder files are served from root
+    // Use encodeURI to properly encode the entire path including spaces
+    const basePath = '/images/drive-units/concert-collection/technical/';
+    const fullPath = basePath + filename;
+    // encodeURI will encode spaces as %20 while preserving the path structure
+    return encodeURI(fullPath);
   };
 
   return (
