@@ -416,6 +416,7 @@ export default function ConcertCollectionPage() {
       'PM4A Concert': 'PM4A Concert.pdf',
       'PM5A Concert': 'PM5A Concert.pdf',
       'PM6A Concert': 'PM6A Concert.pdf',
+      'PM6C Concert': 'PM6C Concert.pdf',
       'PM7A Concert': 'PM7A Concert.pdf',
       'DX2 Concert': 'DX2 Concert.pdf',
       'DX3 Concert': 'DX3 Concert.pdf',
