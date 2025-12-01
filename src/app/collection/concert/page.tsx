@@ -426,8 +426,9 @@ export default function ConcertCollectionPage() {
     };
     const filename = pdfMap[productTitle];
     if (!filename) return null;
-    // Replace spaces with %20 for proper URL encoding
-    const encodedFilename = filename.replace(/ /g, '%20');
+    // Build the path - Next.js public folder files are served from root
+    // Encode only spaces, keep the rest of the filename intact
+    const encodedFilename = filename.replace(/\s/g, '%20');
     return `/images/drive-units/concert-collection/technical/${encodedFilename}`;
   };
 
@@ -804,19 +805,23 @@ export default function ConcertCollectionPage() {
                     ))}
                   </div>
                   {/* Technical PDF Link */}
-                  {getTechnicalPdfPath(selectedProduct.title) && (
-                    <div className="mt-6 pt-6 border-t border-gray-200">
-                      <a
-                        href={getTechnicalPdfPath(selectedProduct.title)!}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-sm text-gray-700 hover:text-[#c59862] transition-colors"
-                      >
-                        <FileText className="w-4 h-4" />
-                        <span>View Technical Graphs</span>
-                      </a>
-                    </div>
-                  )}
+                  {(() => {
+                    const pdfPath = getTechnicalPdfPath(selectedProduct.title);
+                    if (!pdfPath) return null;
+                    return (
+                      <div className="mt-6 pt-6 border-t border-gray-200">
+                        <a
+                          href={pdfPath}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 text-sm text-gray-700 hover:text-[#c59862] transition-colors"
+                        >
+                          <FileText className="w-4 h-4" />
+                          <span>View Technical Graphs</span>
+                        </a>
+                      </div>
+                    );
+                  })()}
                 </div>
 
                 {/* Product Options */}
