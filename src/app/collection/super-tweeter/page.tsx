@@ -486,7 +486,7 @@ export default function SuperTweeterPage() {
               <div className="divide-y divide-gray-200">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6">
                   <div className="font-medium text-gray-900">Voice coil:</div>
-                  <div className="text-gray-700">Silver, 8 Ω</div>
+                  <div className="text-gray-700">Aluminum, 8 Ω</div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6">
                   <div className="font-medium text-gray-900">Magnet:</div>
