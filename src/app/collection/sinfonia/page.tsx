@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { ScrollReveal } from '@/components/scroll-reveal';
@@ -441,6 +442,14 @@ export default function SinfoniaPage() {
                 </p>
                 <p>
                   These instruments integrate seamlessly into custom designs, providing a significant leap in performance - from crystal clear transient response to precise sound-stage imaging. Experience the warmth of natural materials, the precision of hand-wound voice coils, and the enduring legacy of Lowther.
+                </p>
+                <p className="pt-4">
+                  <Link 
+                    href="/collection/decoding-lowther-driver-data" 
+                    className="text-[#c59862] hover:text-[#a07b4d] underline transition-colors"
+                  >
+                    Learn more about our measurement methodology and how we interpret driver data
+                  </Link>
                 </p>
               </div>
             </div>

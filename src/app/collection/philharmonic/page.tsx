@@ -394,6 +394,14 @@ export default function PhilharmonicCollectionPage() {
                 <p>
                   Distinctive, superior engineered metalwork with nickel chrome finishing elevates these instruments to objects of both acoustic and visual beauty. Our Philharmonic drive units combine aesthetic elegance with functional excellence.
                 </p>
+                <p className="pt-4">
+                  <Link 
+                    href="/collection/decoding-lowther-driver-data" 
+                    className="text-[#c59862] hover:text-[#a07b4d] underline transition-colors"
+                  >
+                    Learn more about our measurement methodology and how we interpret driver data
+                  </Link>
+                </p>
               </div>
             </div>
           </ScrollReveal>

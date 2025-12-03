@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ScrollReveal } from '@/components/scroll-reveal';
@@ -270,6 +271,14 @@ export default function GrandOperaCollectionPage() {
                 </p>
                 <p>
                   This is the ultimate expression of the Lowther acoustic masterpiece for those who accept no compromise in their pursuit of musical truth.
+                </p>
+                <p className="pt-4">
+                  <Link 
+                    href="/collection/decoding-lowther-driver-data" 
+                    className="text-[#c59862] hover:text-[#a07b4d] underline transition-colors"
+                  >
+                    Learn more about our measurement methodology and how we interpret driver data
+                  </Link>
                 </p>
               </div>
             </div>

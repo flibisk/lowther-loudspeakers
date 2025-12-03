@@ -71,7 +71,7 @@ export default function LowtherBadgesPage() {
     if (selectedShopifyProduct) {
       return formatPrice(
         selectedShopifyProduct.priceRange.minVariantPrice.amount,
-        selectedShopifyProduct.priceRange.minVariantPrice.currencyCode,
+        selectedShopifyProduct.priceRange.minVariantPrice.currencyCode,i
       );
     }
     return '£60.00';
