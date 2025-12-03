@@ -76,7 +76,7 @@ export default function DecodingLowtherDriverDataPage() {
           </h1>
           
           <p className="hidden 930:block text-xl leading-relaxed">
-            How We Measure, Compare and Listen
+            How we measure, compare and listen.
           </p>
         </div>
       </section>
