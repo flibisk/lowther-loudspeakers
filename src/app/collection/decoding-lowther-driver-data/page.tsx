@@ -1,11 +1,54 @@
 'use client';
 
 import Image from 'next/image';
+import { useState } from 'react';
+import { X } from 'lucide-react';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { LowtherForLifeSection } from '@/components/lowther-for-life-section';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 
+// All images for the gallery overlay
+const technicalImages = [
+  { src: '/images/decoding-lowther-driver-data/table-1.jpg', alt: 'REW measurement settings screenshot' },
+  { src: '/images/decoding-lowther-driver-data/table-2.jpg', alt: 'REW measurement preferences screenshot' },
+  { src: '/images/decoding-lowther-driver-data/table-3.jpg', alt: 'PM6A Concert calibration example' },
+  { src: '/images/decoding-lowther-driver-data/table-4.jpg', alt: 'PM6A 8 Ω baseline comparison at 1V and 2.8V' },
+  { src: '/images/decoding-lowther-driver-data/table-5.jpg', alt: 'PM6A impulse response measurement' },
+  { src: '/images/decoding-lowther-driver-data/table-6.jpg', alt: 'T/S parameters and impedance phase graphs' },
+  { src: '/images/decoding-lowther-driver-data/table-7.jpg', alt: 'Whole-system cabinet response graphs' },
+  { src: '/images/decoding-lowther-driver-data/table-8.jpg', alt: 'PM6 and PM7 Concert vs Sinfonia comparison graphs' },
+  { src: '/images/decoding-lowther-driver-data/table-9.jpg', alt: 'Impedance and frequency response comparison' },
+  { src: '/images/decoding-lowther-driver-data/table-10.jpg', alt: 'Concert units comparative responses' },
+  { src: '/images/decoding-lowther-driver-data/table-11.jpg', alt: 'Frequency response settling in period comparison' },
+];
+
 export default function DecodingLowtherDriverDataPage() {
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<number | null>(null);
+
+  const openGallery = (index: number) => {
+    setSelectedImage(index);
+    setIsGalleryOpen(true);
+  };
+
+  const closeGallery = () => {
+    setIsGalleryOpen(false);
+    setSelectedImage(null);
+  };
+
+  const navigateGallery = (direction: 'prev' | 'next') => {
+    if (selectedImage === null) return;
+    if (direction === 'prev') {
+      setSelectedImage(selectedImage === 0 ? technicalImages.length - 1 : selectedImage - 1);
+    } else {
+      setSelectedImage((selectedImage + 1) % technicalImages.length);
+    }
+  };
+
+  // Helper function to get image index by src
+  const getImageIndex = (src: string): number => {
+    return technicalImages.findIndex(img => img.src === src);
+  };
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Sentinel for Nav */}
@@ -75,22 +118,30 @@ export default function DecodingLowtherDriverDataPage() {
                 Preferences and measurement settings are shown in the REW screenshots.
               </p>
               
-              <div className="space-y-8 mb-16">
-                <div className="relative w-full aspect-[4/3]">
+              <div className="space-y-8 mb-16 -mx-6 sm:-mx-8">
+                <div 
+                  className="relative w-full aspect-[4/3] cursor-pointer group"
+                  onClick={() => openGallery(getImageIndex('/images/decoding-lowther-driver-data/table-1.jpg'))}
+                >
                   <Image
                     src="/images/decoding-lowther-driver-data/table-1.jpg"
                     alt="REW measurement settings screenshot"
                     fill
-                    className="object-contain"
+                    className="object-contain group-hover:opacity-90 transition-opacity"
                   />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
                 </div>
-                <div className="relative w-full aspect-[4/3]">
+                <div 
+                  className="relative w-full aspect-[4/3] cursor-pointer group"
+                  onClick={() => openGallery(getImageIndex('/images/decoding-lowther-driver-data/table-2.jpg'))}
+                >
                   <Image
                     src="/images/decoding-lowther-driver-data/table-2.jpg"
                     alt="REW measurement preferences screenshot"
                     fill
-                    className="object-contain"
+                    className="object-contain group-hover:opacity-90 transition-opacity"
                   />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
                 </div>
               </div>
               
@@ -106,13 +157,17 @@ export default function DecodingLowtherDriverDataPage() {
                 In the example below, the application output is set at 1.17 V for pink noise. The actual amplifier reading at the meter is 1 V, so this PM6A Concert driver on test is quoted at 95.7 dBA at 1 V between 500 Hz and 2000 Hz.
               </p>
               
-              <div className="relative w-full aspect-[4/3] mb-16">
+              <div 
+                className="relative w-full aspect-[4/3] mb-16 cursor-pointer group -mx-6 sm:-mx-8"
+                onClick={() => openGallery(getImageIndex('/images/decoding-lowther-driver-data/table-3.jpg'))}
+              >
                 <Image
                   src="/images/decoding-lowther-driver-data/table-3.jpg"
                   alt="PM6A Concert calibration example"
                   fill
-                  className="object-contain"
+                  className="object-contain group-hover:opacity-90 transition-opacity"
                 />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
               </div>
               
               <p className="text-xl leading-relaxed text-gray-800 mb-8">
@@ -123,13 +178,17 @@ export default function DecodingLowtherDriverDataPage() {
                 To give a baseline comparison, the PM6A 8 Ω aluminium coil unit is shown tested at both 1 V and 2.8 V, which gives a nominal 8 dB offset.
               </p>
               
-              <div className="relative w-full aspect-[4/3] mb-16">
+              <div 
+                className="relative w-full aspect-[4/3] mb-16 cursor-pointer group -mx-6 sm:-mx-8"
+                onClick={() => openGallery(getImageIndex('/images/decoding-lowther-driver-data/table-4.jpg'))}
+              >
                 <Image
                   src="/images/decoding-lowther-driver-data/table-4.jpg"
                   alt="PM6A 8 Ω baseline comparison at 1V and 2.8V"
                   fill
-                  className="object-contain"
+                  className="object-contain group-hover:opacity-90 transition-opacity"
                 />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
               </div>
               
               <h2 className="font-display text-4xl leading-tight mb-8" style={{ color: '#c59862' }}>
@@ -148,13 +207,17 @@ export default function DecodingLowtherDriverDataPage() {
                 Because the plots are so similar, publishing each variant is unnecessary. Individual impulse response plots can be generated from the database and supplied on request for specific drivers. For most customers the data has limited value. It simply confirms that all Lowther units are very responsive by design.
               </p>
               
-              <div className="relative w-full aspect-[4/3] mb-16">
+              <div 
+                className="relative w-full aspect-[4/3] mb-16 cursor-pointer group -mx-6 sm:-mx-8"
+                onClick={() => openGallery(getImageIndex('/images/decoding-lowther-driver-data/table-5.jpg'))}
+              >
                 <Image
                   src="/images/decoding-lowther-driver-data/table-5.jpg"
                   alt="PM6A impulse response measurement"
                   fill
-                  className="object-contain"
+                  className="object-contain group-hover:opacity-90 transition-opacity"
                 />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
               </div>
               
               <h3 className="font-display text-3xl leading-tight mb-6" style={{ color: '#c59862' }}>
@@ -165,13 +228,17 @@ export default function DecodingLowtherDriverDataPage() {
                 T/S parameters and impedance / phase graphs are generated from Dayton DATS v3 under the same mounted conditions as the SPL and frequency response measurements.
               </p>
               
-              <div className="relative w-full aspect-[4/3] mb-16">
+              <div 
+                className="relative w-full aspect-[4/3] mb-16 cursor-pointer group -mx-6 sm:-mx-8"
+                onClick={() => openGallery(getImageIndex('/images/decoding-lowther-driver-data/table-6.jpg'))}
+              >
                 <Image
                   src="/images/decoding-lowther-driver-data/table-6.jpg"
                   alt="T/S parameters and impedance phase graphs"
                   fill
-                  className="object-contain"
+                  className="object-contain group-hover:opacity-90 transition-opacity"
                 />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
               </div>
               
               <h2 className="font-display text-4xl leading-tight mb-8" style={{ color: '#c59862' }}>
@@ -182,13 +249,17 @@ export default function DecodingLowtherDriverDataPage() {
                 Response graphs are also generated for completed handmade to order bespoke cabinets, so that left and right speakers can be matched.
               </p>
               
-              <div className="relative w-full aspect-[4/3] mb-16">
+              <div 
+                className="relative w-full aspect-[4/3] mb-16 cursor-pointer group -mx-6 sm:-mx-8"
+                onClick={() => openGallery(getImageIndex('/images/decoding-lowther-driver-data/table-7.jpg'))}
+              >
                 <Image
                   src="/images/decoding-lowther-driver-data/table-7.jpg"
                   alt="Whole-system cabinet response graphs"
                   fill
-                  className="object-contain"
+                  className="object-contain group-hover:opacity-90 transition-opacity"
                 />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
               </div>
               
               <h2 className="font-display text-4xl leading-tight mb-8" style={{ color: '#c59862' }}>
@@ -203,22 +274,30 @@ export default function DecodingLowtherDriverDataPage() {
                 For example, the low-frequency resonance (Fs) of the Sinfonia appears higher in the impedance plot. Taken in isolation this could suggest less bass output. In practice this does not correlate with the SPL frequency graph. The narrowness of the resonance peak is far more important to the quality of the bass response when the driver is correctly horn loaded.
               </p>
               
-              <div className="space-y-8 mb-16">
-                <div className="relative w-full aspect-[4/3]">
+              <div className="space-y-8 mb-16 -mx-6 sm:-mx-8">
+                <div 
+                  className="relative w-full aspect-[4/3] cursor-pointer group"
+                  onClick={() => openGallery(getImageIndex('/images/decoding-lowther-driver-data/table-8.jpg'))}
+                >
                   <Image
                     src="/images/decoding-lowther-driver-data/table-8.jpg"
                     alt="PM6 and PM7 Concert vs Sinfonia comparison graphs"
                     fill
-                    className="object-contain"
+                    className="object-contain group-hover:opacity-90 transition-opacity"
                   />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
                 </div>
-                <div className="relative w-full aspect-[4/3]">
+                <div 
+                  className="relative w-full aspect-[4/3] cursor-pointer group"
+                  onClick={() => openGallery(getImageIndex('/images/decoding-lowther-driver-data/table-9.jpg'))}
+                >
                   <Image
                     src="/images/decoding-lowther-driver-data/table-9.jpg"
                     alt="Impedance and frequency response comparison"
                     fill
-                    className="object-contain"
+                    className="object-contain group-hover:opacity-90 transition-opacity"
                   />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
                 </div>
               </div>
               
@@ -256,13 +335,17 @@ export default function DecodingLowtherDriverDataPage() {
                 Note that 15 Ω units are generally 3 to 4 dB less efficient than the equivalent 8 Ω versions.
               </p>
               
-              <div className="relative w-full aspect-[4/3] mb-16">
+              <div 
+                className="relative w-full aspect-[4/3] mb-16 cursor-pointer group -mx-6 sm:-mx-8"
+                onClick={() => openGallery(getImageIndex('/images/decoding-lowther-driver-data/table-10.jpg'))}
+              >
                 <Image
                   src="/images/decoding-lowther-driver-data/table-10.jpg"
                   alt="Concert units comparative responses"
                   fill
-                  className="object-contain"
+                  className="object-contain group-hover:opacity-90 transition-opacity"
                 />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
               </div>
               
               <h2 className="font-display text-4xl leading-tight mb-8" style={{ color: '#c59862' }}>
@@ -285,13 +368,17 @@ export default function DecodingLowtherDriverDataPage() {
                 Further comparative SPL plots for the Philharmonic and Concert ranges demonstrate the close similarity in measured response and the small refinements introduced by the premium constructions.
               </p>
               
-              <div className="relative w-full aspect-[4/3] mb-16">
+              <div 
+                className="relative w-full aspect-[4/3] mb-16 cursor-pointer group -mx-6 sm:-mx-8"
+                onClick={() => openGallery(getImageIndex('/images/decoding-lowther-driver-data/table-11.jpg'))}
+              >
                 <Image
                   src="/images/decoding-lowther-driver-data/table-11.jpg"
                   alt="Frequency response settling in period comparison"
                   fill
-                  className="object-contain"
+                  className="object-contain group-hover:opacity-90 transition-opacity"
                 />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
               </div>
               
               <h2 className="font-display text-4xl leading-tight mb-8" style={{ color: '#c59862' }}>
@@ -389,6 +476,54 @@ export default function DecodingLowtherDriverDataPage() {
           </ScrollReveal>
         </div>
       </article>
+
+      {/* Gallery Overlay */}
+      {isGalleryOpen && selectedImage !== null && (
+        <div 
+          className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center"
+          onClick={closeGallery}
+        >
+          <button
+            onClick={closeGallery}
+            className="absolute top-8 right-8 text-white/80 hover:text-white transition-colors z-10"
+            aria-label="Close gallery"
+          >
+            <X className="w-8 h-8" />
+          </button>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              navigateGallery('prev');
+            }}
+            className="absolute left-8 text-white/80 hover:text-white transition-colors text-6xl font-light z-10"
+            aria-label="Previous image"
+          >
+            ‹
+          </button>
+
+          <div className="relative w-[90vw] h-[90vh]" onClick={(e) => e.stopPropagation()}>
+            <Image
+              src={technicalImages[selectedImage].src}
+              alt={technicalImages[selectedImage].alt}
+              fill
+              className="object-contain"
+              priority
+            />
+          </div>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              navigateGallery('next');
+            }}
+            className="absolute right-8 text-white/80 hover:text-white transition-colors text-6xl font-light z-10"
+            aria-label="Next image"
+          >
+            ›
+          </button>
+        </div>
+      )}
 
       {/* Lowther for Life Video Section */}
       <LowtherForLifeSection backgroundColor="bg-[#fafaf8]" />
