@@ -103,8 +103,11 @@ export default function DecodingLowtherDriverDataPage() {
               <ul className="text-xl leading-relaxed text-gray-800 mb-8 space-y-2 list-disc list-inside">
                 <li>Frequency SPL (dB) graphs generated from REW</li>
                 <li>Impedance, phase and T/S parameters from Dayton DATS v3</li>
-                <li>REW parameters</li>
               </ul>
+              
+              <h3 className="font-display text-3xl leading-tight mb-6" style={{ color: '#c59862' }}>
+                REW parameters
+              </h3>
               
               <p className="text-xl leading-relaxed text-gray-800 mb-8">
                 We use a swept tone from 20 Hz to 20 kHz. Each driver is mounted on a free-air baffle, facing into a dead chamber, with a miniDSP UMIK-1 microphone at 1 m on axis.
@@ -241,9 +244,9 @@ export default function DecodingLowtherDriverDataPage() {
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
               </div>
               
-              <h2 className="font-display text-4xl leading-tight mb-8" style={{ color: '#c59862' }}>
+              <h3 className="font-display text-3xl leading-tight mb-6" style={{ color: '#c59862' }}>
                 Whole-system cabinet measurements
-              </h2>
+              </h3>
               
               <p className="text-xl leading-relaxed text-gray-800 mb-16">
                 Response graphs are also generated for completed handmade to order bespoke cabinets, so that left and right speakers can be matched.
@@ -348,9 +351,9 @@ export default function DecodingLowtherDriverDataPage() {
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
               </div>
               
-              <h2 className="font-display text-4xl leading-tight mb-8" style={{ color: '#c59862' }}>
+              <h3 className="font-display text-3xl leading-tight mb-6" style={{ color: '#c59862' }}>
                 Settling in and diaphragm behaviour
-              </h2>
+              </h3>
               
               <p className="text-xl leading-relaxed text-gray-800 mb-8">
                 The next graph shows how the frequency response smooths out after a settling in period.
@@ -382,7 +385,7 @@ export default function DecodingLowtherDriverDataPage() {
               </div>
               
               <h2 className="font-display text-4xl leading-tight mb-8" style={{ color: '#c59862' }}>
-                Why the Philharmonic exists when the curves look the same
+                Why the Philharmonic exists when the curves look the same?
               </h2>
               
               <h3 className="font-display text-3xl leading-tight mb-6" style={{ color: '#c59862' }}>
@@ -409,9 +412,9 @@ export default function DecodingLowtherDriverDataPage() {
                 The T/S parameters derived from the impedance test are practically identical to the Sinfonia. The audible result is different. Micro detail and soundstage realism are improved. Only listening will reveal the difference.
               </p>
               
-              <h2 className="font-display text-4xl leading-tight mb-8" style={{ color: '#c59862' }}>
+              <h3 className="font-display text-3xl leading-tight mb-6" style={{ color: '#c59862' }}>
                 Coil wire and nominal impedance choices
-              </h2>
+              </h3>
               
               <p className="text-xl leading-relaxed text-gray-800 mb-8">
                 Variants of voice coil construction will produce subtle differences in presentation. As noted above, the usual published data is very limited in predicting how a unit actually sounds.
@@ -425,28 +428,28 @@ export default function DecodingLowtherDriverDataPage() {
                 Most customers who visit our showroom can make a decision based on comparative listening.
               </p>
               
-              <h3 className="font-display text-3xl leading-tight mb-6" style={{ color: '#c59862' }}>
-                Aluminium 8 Ω (7.4 Ω DCR)
-              </h3>
+              <h4 className="font-display text-2xl leading-tight mb-4" style={{ color: '#c59862' }}>
+                Aluminium 8Ω
+              </h4>
               
               <p className="text-xl leading-relaxed text-gray-800 mb-16">
-                Low mass and fast high-frequency detail. Closest to Voigt's original coil and diaphragm ratio.
+                7.4 DCR. Low mass, fast h/f detail; closest to Voigt's original ideal coil/diaphragm ratio.
               </p>
               
-              <h3 className="font-display text-3xl leading-tight mb-6" style={{ color: '#c59862' }}>
-                Silver 8 Ω (6.1 Ω DCR)
-              </h3>
+              <h4 className="font-display text-2xl leading-tight mb-4" style={{ color: '#c59862' }}>
+                Silver 8Ω
+              </h4>
               
               <p className="text-xl leading-relaxed text-gray-800 mb-16">
-                Slightly softer high frequencies and a generally smoother presentation. Uses tougher, heavier wire, so the coil is less delicate than aluminium at the same resistance. A good match with supertweeters.
+                6.1 DCR. 'Softer' high frequencies, generally smoother presentation. Tougher, heavier wire, so not as delicate coil as aluminium for same resistance. Good match with supertweeters.
               </p>
               
-              <h3 className="font-display text-3xl leading-tight mb-6" style={{ color: '#c59862' }}>
-                15 Ω silver / aluminium (13 Ω DCR)
-              </h3>
+              <h4 className="font-display text-2xl leading-tight mb-4" style={{ color: '#c59862' }}>
+                15Ω sil/alu
+              </h4>
               
               <p className="text-xl leading-relaxed text-gray-800 mb-16">
-                More turns and thinner wire to reduce mass, so the coil is more delicate. Suits fussy, usually older valve amplifiers. In twin driver systems two 8 Ω units in parallel present 4 Ω.
+                13 DCR. More turns = thinner wire to reduce mass, so more delicate coil. Matches 'fussy', usually older valve amps. Twin-driver systems present 8ohm as parallel wired (4Ω for 2x 8Ω).
               </p>
               
               <h2 className="font-display text-4xl leading-tight mb-8" style={{ color: '#c59862' }}>
