@@ -56,13 +56,15 @@ export default function DecodingLowtherDriverDataPage() {
 
       {/* Hero Banner */}
       <section data-surface="dark" className="relative min-h-[100vh] overflow-hidden">
-        <Image
-          src="/images/decoding-lowther-driver-data/driver-data-banner.jpg"
-          alt="Decoding Lowther Driver Data"
-          fill
-          className="absolute inset-0 h-full w-full object-cover"
-          priority
-        />
+        <div className="absolute inset-0">
+          <Image
+            src="/images/decoding-lowther-driver-data/driver-data-banner.jpg"
+            alt="Decoding Lowther Driver Data"
+            fill
+            className="object-cover"
+            priority
+          />
+        </div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
         
         <div className="absolute bottom-20 930:bottom-20 left-6 930:left-16 z-10 text-white max-w-xs sm:max-w-md 930:max-w-2xl">
