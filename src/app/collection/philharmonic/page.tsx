@@ -722,6 +722,14 @@ export default function PhilharmonicCollectionPage() {
                     {cartLoading ? 'ADDING...' : 'ADD TO BAG'}
                   </Button>
                 </div>
+                <div className="mt-4 text-center">
+                  <Link 
+                    href="/collection/decoding-lowther-driver-data"
+                    className="text-sm text-gray-600 hover:text-[#c59862] underline transition-colors"
+                  >
+                    Learn more about our measurement methodology
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
