@@ -277,7 +277,7 @@ export default function GrandOperaCollectionPage() {
                     href="/collection/decoding-lowther-driver-data" 
                     className="text-[#c59862] hover:text-[#a07b4d] underline transition-colors"
                   >
-                    Learn more about our measurement methodology and how we interpret driver data
+                    Learn more about our measurement methodology
                   </Link>
                 </p>
               </div>
