@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { LowtherForLifeSection } from '@/components/lowther-for-life-section';
@@ -36,6 +36,19 @@ export default function DecodingLowtherDriverDataPage() {
     setSelectedImage(null);
   };
 
+  // Prevent body scroll when gallery is open
+  useEffect(() => {
+    if (isGalleryOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isGalleryOpen]);
+
   const navigateGallery = (direction: 'prev' | 'next') => {
     if (selectedImage === null) return;
     if (direction === 'prev') {
@@ -44,6 +57,19 @@ export default function DecodingLowtherDriverDataPage() {
       setSelectedImage((selectedImage + 1) % technicalImages.length);
     }
   };
+
+  // Prevent body scroll when gallery is open
+  useEffect(() => {
+    if (isGalleryOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isGalleryOpen]);
 
   // Helper function to get image index by src
   const getImageIndex = (src: string): number => {
@@ -128,7 +154,7 @@ export default function DecodingLowtherDriverDataPage() {
                 Preferences and measurement settings are shown in the REW screenshots.
               </p>
               
-              <div className="space-y-8 mb-16 -mx-6 sm:-mx-8">
+              <div className="space-y-8 mb-16 -mx-6 sm:-mx-8 flex flex-col items-center">
                 <div 
                   className="relative w-full aspect-[4/3] cursor-pointer group"
                   onClick={() => openGallery(getImageIndex('/images/decoding-lowther-driver-data/table-1.jpg'))}
@@ -284,7 +310,7 @@ export default function DecodingLowtherDriverDataPage() {
                 For example, the low-frequency resonance (Fs) of the Sinfonia appears higher in the impedance plot. Taken in isolation this could suggest less bass output. In practice this does not correlate with the SPL frequency graph. The narrowness of the resonance peak is far more important to the quality of the bass response when the driver is correctly horn loaded.
               </p>
               
-              <div className="space-y-8 mb-16 -mx-6 sm:-mx-8">
+              <div className="space-y-8 mb-16 -mx-6 sm:-mx-8 flex flex-col items-center">
                 <div 
                   className="relative w-full aspect-[4/3] cursor-pointer group"
                   onClick={() => openGallery(getImageIndex('/images/decoding-lowther-driver-data/table-8.jpg'))}
