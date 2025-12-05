@@ -1,6 +1,6 @@
 export function HomepageFAQ() {
   return (
-    <section aria-labelledby="faq-heading" className="py-32 bg-white">
+    <section aria-labelledby="faq-heading" className="py-32 bg-gray-50">
       <div className="max-w-4xl mx-auto px-6 sm:px-8 lg:px-12">
         <h2 id="faq-heading" className="font-display text-4xl lg:text-5xl mb-12 text-center" style={{ color: '#c59862' }}>
           Frequently asked questions
