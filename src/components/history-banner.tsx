@@ -9,7 +9,7 @@ export function HistoryBanner() {
       <div className="absolute inset-0">
         <Image
           src="/images/hero/History-banner.jpg"
-          alt="Lowther History - From the 1930s to the 2020s, nearly 90 years of sound excellence"
+          alt="Lowther History - From the 1930s to the 2020s, over 90 years of experience in sound excellence"
           fill
           className="object-cover"
           priority
@@ -36,7 +36,7 @@ export function HistoryBanner() {
             
             {/* Description */}
             <p className="hidden 930:block text-lg leading-relaxed mb-8">
-              For nearly 90 years, Lowther has been dedicated to the art of sound, developing a range of speaker cabinets and cultivating a passionate community of DIY enthusiasts. Our commitment to handmade excellence means that every speaker is crafted in Great Britain, using techniques honed over decades.
+              With over 90 years of experience, Lowther has been dedicated to the art of sound, developing a range of speaker cabinets and cultivating a passionate community of DIY enthusiasts. Our commitment to handmade excellence means that every speaker is crafted in Great Britain, using techniques honed over decades.
             </p>
             
             {/* Call to Action Button */}

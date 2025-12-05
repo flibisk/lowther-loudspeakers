@@ -10,7 +10,8 @@ import { BlogSection } from "@/components/blog-section";
 import { BuildALowtherBanner } from "@/components/build-a-lowther-banner";
 import { ReviewsSection } from "@/components/reviews-section";
 import { HistoryBanner } from "@/components/history-banner";
-import { generateSEOMetadata } from "@/lib/seo";
+import { HomepageFAQ } from "@/components/homepage-faq";
+import { generateSEOMetadata, generateStructuredData } from "@/lib/seo";
 import { getPageMetadata } from "@/lib/metadata-config";
 
 const pageMetadata = getPageMetadata("home");
@@ -106,8 +107,36 @@ export default async function HomePage() {
       ? heroVariant.title
       : "Lowther Loudspeakers hero background";
 
+  // Generate FAQ schema for homepage
+  const faqSchema = generateStructuredData('FAQPage', {
+    faqs: [
+      {
+        question: 'What is a Lowther Masterpiece?',
+        answer: 'Lowther Masterpieces are our handcrafted folded-horn loudspeakers, built to order in the veneers and style that suit your home.',
+      },
+      {
+        question: 'What makes horn loaded loudspeakers different?',
+        answer: 'Horn loaded designs use carefully shaped enclosures to control how sound leaves the driver, giving higher efficiency, scale, and realism from a single full-range unit.',
+      },
+      {
+        question: 'Who are Lowther loudspeakers for?',
+        answer: 'They are for listeners who value natural, lifelike reproduction and are willing to invest in carefully placed, handmade loudspeakers rather than mass-market systems.',
+      },
+      {
+        question: 'Can I build my own Lowther speakers?',
+        answer: 'Yes. Our "Build your Lowther" plans and drive units are designed for home builders who want to create their own horn loaded loudspeakers using our designs.',
+      },
+    ],
+  });
+
   return (
     <>
+      {/* FAQ Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+
       {/* HERO - Dark video section */}
       <section data-surface="dark" className="relative min-h-[100vh] overflow-hidden">
         {isVideo ? (
@@ -219,6 +248,9 @@ export default async function HomePage() {
 
       {/* CATALOGUE ORDER - Dark atmospheric banner */}
       <CatalogueOrder />
+
+      {/* FAQ SECTION - Frequently asked questions */}
+      <HomepageFAQ />
 
       {/* BLOG SECTION - From Our Blog */}
       <BlogSection />

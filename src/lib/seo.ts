@@ -191,7 +191,7 @@ export function generateStructuredData(type: "Product" | "Article" | "Organizati
         "https://www.youtube.com/channel/UCUqlMnLunZJClcUQSqsz1LQ",
         "https://x.com/LowtherOfficial",
       ],
-      description: "Lowther Loudspeakers — Handcrafted British high-fidelity loudspeakers built over nearly 100 years, combining heritage craftsmanship with modern loudspeaker design.",
+      description: "Lowther Loudspeakers — Handcrafted British high-fidelity loudspeakers built with over 90 years of experience, combining heritage craftsmanship with modern loudspeaker design.",
     };
   }
 

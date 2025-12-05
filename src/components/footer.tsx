@@ -133,7 +133,7 @@ export function Footer() {
               OUR BRAND
             </h3>
             <p className="text-white leading-relaxed">
-              For nearly 90 years, Lowther has been dedicated to the art of sound, developing a range of speaker cabinets and cultivating a passionate community of DIY enthusiasts. Our commitment to handmade excellence means that every speaker is crafted in Great Britain, using techniques honed over decades.
+              With over 90 years of experience, Lowther has been dedicated to the art of sound, developing a range of speaker cabinets and cultivating a passionate community of DIY enthusiasts. Our commitment to handmade excellence means that every speaker is crafted in Great Britain, using techniques honed over decades.
             </p>
             <div className="flex items-center space-x-4">
               <div className="w-8 h-px" style={{ backgroundColor: '#ffffff1a' }}></div>
