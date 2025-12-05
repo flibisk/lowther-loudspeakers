@@ -55,7 +55,7 @@ export default function PaulVoigtEraPage() {
           <ScrollReveal animation="fade-up">
             <div className="prose prose-lg prose-gray max-w-none">
               <p className="text-2xl leading-relaxed text-gray-900 font-light mb-16">
-                The story of Lowther, and in many ways the story of hi‑fi itself, begins with Paul Gustavus Alexander Helm Voigt. Born in 1901, Voigt was educated at Dulwich College and later University College, London, where he earned his degree in electrical engineering in 1922. Even as a student he was restless with ideas. His very first article, published in Wireless World in 1920, described how a bright-emitter vacuum tube could be used in a reflex circuit to amplify both radio-frequency and audio signals — an innovation at a time when wireless itself was barely established.
+                The story of Lowther, and in many ways the story of hi‑fi itself, begins with Paul Gustavus Alexander Helm Voigt. Born in 1901, Voigt was educated at Dulwich College and later University College, London, where he earned his degree in electrical engineering in 1922. Even as a student he was restless with ideas. His very first article, published in Wireless World in 1920, described how a bright-emitter vacuum tube could be used in a reflex circuit to amplify both radio-frequency and audio signals, an innovation at a time when wireless itself was barely established.
               </p>
               
               <h2 className="font-display text-4xl leading-tight mb-8" style={{ color: '#c59862' }}>
@@ -67,7 +67,7 @@ export default function PaulVoigtEraPage() {
               </p>
               
               <p className="text-xl leading-relaxed text-gray-800 mb-8">
-                To achieve this, Voigt designed every link in the audio chain: microphones, cutters, transformers, amplifiers, pickups, and loudspeakers. By agreement with Edison Bell, the patents remained his — nineteen in total during his time there. Among them was British Patent 238,310 for a moving-coil loudspeaker. Though the filing date narrowly followed the work of Rice and Kellogg in the United States, Voigt's design stood on its own merits, marking him as one of the first true pioneers of high-efficiency moving-coil loudspeakers.
+                To achieve this, Voigt designed every link in the audio chain: microphones, cutters, transformers, amplifiers, pickups, and loudspeakers. By agreement with Edison Bell, the patents remained his, nineteen in total during his time there. Among them was British Patent 238,310 for a moving-coil loudspeaker. Though the filing date narrowly followed the work of Rice and Kellogg in the United States, Voigt's design stood on its own merits, marking him as one of the first true pioneers of high-efficiency moving-coil loudspeakers.
               </p>
               
               <p className="text-xl leading-relaxed text-gray-800 mb-16">
@@ -99,7 +99,7 @@ export default function PaulVoigtEraPage() {
               </p>
               
               <p className="text-xl leading-relaxed text-gray-800 mb-16">
-                When entrepreneur O.P. Lowther sought a superior loudspeaker for his luxury radiograms, it was Voigt he turned to. The partnership, formalised in 1934 as Lowther-Voigt Radio, produced the Lowther-Voigt Radiogram — a combination of Lowther's electronics and Voigt's loudspeaker designs. This was the true genesis of the Lowther name in audio.
+                When entrepreneur O.P. Lowther sought a superior loudspeaker for his luxury radiograms, it was Voigt he turned to. The partnership, formalised in 1934 as Lowther-Voigt Radio, produced the Lowther-Voigt Radiogram, a combination of Lowther's electronics and Voigt's loudspeaker designs. This was the true genesis of the Lowther name in audio.
               </p>
               
               <h2 className="font-display text-4xl leading-tight mb-8" style={{ color: '#c59862' }}>
