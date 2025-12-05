@@ -168,31 +168,15 @@ export function generateStructuredData(type: "Product" | "Article" | "Organizati
       "@context": "https://schema.org",
       "@type": "Organization",
       name: "Lowther Loudspeakers",
-      alternateName: "Lowther",
-      url: baseUrl,
-      logo: `${baseUrl}/images/logo.png`,
-      description: "Premium handcrafted loudspeakers and drive units. Trusted by audiophiles worldwide for over 90 years.",
-      foundingDate: "1932",
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: "1 Foundry Street",
-        addressLocality: "Northampton",
-        postalCode: "NN1 1PN",
-        addressCountry: "GB",
-      },
-      contactPoint: {
-        "@type": "ContactPoint",
-        telephone: "+44-20-8300-9166",
-        contactType: "Customer Service",
-        email: "hello@lowtherloudspeakers.com",
-        availableLanguage: ["English"],
-      },
+      url: "https://www.lowtherloudspeakers.com/",
+      logo: "https://www.lowtherloudspeakers.com/images/Lowther-logo.svg",
       sameAs: [
-        "https://www.facebook.com/lowtherloudspeakers",
         "https://www.instagram.com/lowtherloudspeakers",
-        "https://www.youtube.com/@lowtherloudspeakers",
-        "https://twitter.com/lowtherspeakers",
+        "https://www.facebook.com/lowtherloudspeakers",
+        "https://www.youtube.com/channel/UCUqlMnLunZJClcUQSqsz1LQ",
+        "https://x.com/LowtherOfficial",
       ],
+      description: "Lowther Loudspeakers — Handcrafted British high-fidelity loudspeakers built over nearly 100 years, combining heritage craftsmanship with modern loudspeaker design.",
     };
   }
 
