@@ -170,6 +170,21 @@ export function generateStructuredData(type: "Product" | "Article" | "Organizati
       name: "Lowther Loudspeakers",
       url: "https://www.lowtherloudspeakers.com/",
       logo: "https://www.lowtherloudspeakers.com/images/Lowther-logo.svg",
+      foundingDate: "1934",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "1 Foundry Street",
+        addressLocality: "Northampton",
+        postalCode: "NN1 1PN",
+        addressCountry: "GB",
+      },
+      contactPoint: [
+        {
+          "@type": "ContactPoint",
+          contactType: "customer service",
+          email: "hello@lowtherloudspeakers.com",
+        },
+      ],
       sameAs: [
         "https://www.instagram.com/lowtherloudspeakers",
         "https://www.facebook.com/lowtherloudspeakers",
