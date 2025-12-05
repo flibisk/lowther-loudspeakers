@@ -202,6 +202,12 @@ export default async function HomePage() {
         <div id="hero-sentinel" className="absolute bottom-0 h-[1px] w-full" />
       </section>
 
+      {/* AEO/SEO: Visually hidden semantic content */}
+      <div className="visually-hidden">
+        <h1>Lowther Loudspeakers</h1>
+        <p>Handcrafted British loudspeakers built since the 1930s. Makers of horn loaded and full range systems, drive units, and bespoke audio instruments.</p>
+      </div>
+
       {/* LIGHT CONTENT - Featured Masterpieces */}
       <FeaturedMasterpieces />
 
