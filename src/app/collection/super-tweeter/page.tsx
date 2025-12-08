@@ -540,7 +540,19 @@ export default function SuperTweeterPage() {
           },
           {
             question: 'Will my room and equipment affect the results?',
-            answer: 'Yes. High-frequency behaviour varies with room acoustics, cabinet model, driver type, and impedance. For this reason, we provide several recommended capacitor and inductor options. If unsure, specifications 1 or 4 are the safest starting points for most systems.',
+            answer: (
+              <>
+                <p className="mb-4">
+                  Yes. High-frequency behaviour varies with room acoustics, cabinet model, driver type, and impedance. For this reason, we provide several recommended capacitor and inductor options. If unsure, specifications 1 or 4 are the safest starting points for most systems.
+                </p>
+                <ol className="list-decimal list-inside space-y-2 ml-2">
+                  <li>8Ω DXT with 0.66uF 1st.order slopes &lt; from 30kHz @6dB/oct, i.e. 12dB down @7.5kHz (DEFAULT)</li>
+                  <li>8Ω DXT with 1.00uF 1st.order slopes &lt; from 20kHz @6dB/oct, i.e. 12dB down @5kHz</li>
+                  <li>15Ω DXT with 0.50uF 1st.order slopes &lt; from 20kHz @6dB/oct, i.e. 12dB down @5kHz</li>
+                  <li>8Ω DXT with 1.00uF/0.13mH 2nd.order (Butterworth) slopes &lt; from 14kHz @12dB/oct, i.e. 12dB down @7kHz (optimum setting for Almira & Edilia).</li>
+                </ol>
+              </>
+            ),
           },
           {
             question: 'What are the default recommended settings?',
