@@ -11,6 +11,7 @@ import { ScrollReveal } from "@/components/scroll-reveal";
 import { Button } from "@/components/ui/button";
 import { CartOverlay } from "@/components/cart-overlay";
 import { CustomOrderForm } from "@/components/forms/custom-order-form";
+import { FAQAccordion } from "@/components/faq-accordion";
 import { useCart } from "@/contexts/cart-context";
 import { useCurrency } from "@/contexts/currency-context";
 import { useShopifyCollection } from "@/hooks/use-shopify-collection";
@@ -517,6 +518,88 @@ export default function SuperTweeterPage() {
           </ScrollReveal>
         </div>
       </section>
+
+      {/* FAQ Section */}
+      <FAQAccordion
+        items={[
+          {
+            question: 'What does the Lowther DXT Super Tweeter do?',
+            answer: 'All Lowther 8 inch full-range drivers are capable of exceptional musical reproduction, yet they naturally drop in output above roughly 10kHz. The DXT Super Tweeter fills in this final octave and beyond. It adds detail, air, and stereo imaging that modern digital sources and top phono systems can reproduce, even if the listener cannot consciously hear those highest frequencies.',
+          },
+          {
+            question: 'Why would I want a super tweeter if I cannot hear above 10–12kHz?',
+            answer: 'Listening tests in our studio show that even people with measurable hearing loss above 10kHz still perceive the improvement. What you notice is not "more treble" but better spatial placement, clarity, and realism. Younger listeners with extension to 14–15kHz report the same benefits.',
+          },
+          {
+            question: 'Does the DXT interfere with the purity of the full-range driver?',
+            answer: 'No. The super tweeter uses a simple 1st order capacitor that slopes gently into the main unit\'s natural roll-off. There is no crossover placed in front of the full-range driver, so the clarity and immediacy of the Lowther sound remain untouched.',
+          },
+          {
+            question: 'Which Lowther speakers does it work with?',
+            answer: 'It is designed for Almira and Edilia but is also available as a free-standing pair for any Lowther cabinet using an 8 inch full-range driver. No installation work is needed. You simply plug it into the cabinet\'s binding posts.',
+          },
+          {
+            question: 'Will my room and equipment affect the results?',
+            answer: 'Yes. High-frequency behaviour varies with room acoustics, cabinet model, driver type, and impedance. For this reason, we provide several recommended capacitor and inductor options. If unsure, specifications 1 or 4 are the safest starting points for most systems.',
+          },
+          {
+            question: 'What are the default recommended settings?',
+            answer: 'The standard configuration is an 8Ω DXT with a 0.66uF 1st-order capacitor. This begins its gentle roll-in from around 30kHz and is suitable for most Lowther systems.',
+          },
+          {
+            question: 'What do the different specification options change?',
+            answer: (
+              <>
+                <p className="mb-4">They alter how early and how steeply the super tweeter comes into effect.</p>
+                <p className="mb-2">A brief summary:</p>
+                <ol className="list-decimal list-inside space-y-2 ml-2">
+                  <li>8Ω DXT with 0.66uF 1st.order slopes &lt; from 30kHz @6dB/oct, i.e. 12dB down @7.5kHz (DEFAULT)</li>
+                  <li>8Ω DXT with 1.00uF 1st.order slopes &lt; from 20kHz @6dB/oct, i.e. 12dB down @5kHz</li>
+                  <li>15Ω DXT with 0.50uF 1st.order slopes &lt; from 20kHz @6dB/oct, i.e. 12dB down @5kHz</li>
+                  <li>8Ω DXT with 1.00uF/0.13mH 2nd.order (Butterworth) slopes &lt; from 14kHz @12dB/oct, i.e. 12dB down @7kHz (optimum setting for Almira & Edilia).</li>
+                </ol>
+              </>
+            ),
+          },
+          {
+            question: 'Should I choose 8 ohm or 15 ohm?',
+            answer: 'In almost all cases, 8 ohm is the better choice. It is more reliable long term and offers better efficiency with the same slope. 15 ohm versions should only be selected for very particular system requirements.',
+          },
+          {
+            question: 'Does the magnet choice make a difference?',
+            answer: 'Yes. The DX3 magnet is the most efficient option for this application. The PM6 alnico is not always more efficient than the DX2 neodymium, so magnet selection depends on the cabinet and driver combination.',
+          },
+          {
+            question: 'Can I customise the Super Tweeter?',
+            answer: (
+              <>
+                <p className="mb-4">Yes. We offer a range of bespoke options:</p>
+                <ul className="list-disc list-inside space-y-2 ml-2 mb-4">
+                  <li>Silver 15Ω voice coils</li>
+                  <li>DX3 or PM6 magnet systems</li>
+                  <li>Stands matched to your cabinet veneer</li>
+                  <li>Special wiring or terminals</li>
+                  <li>Brackets for 2ft and 4ft Voigt horns</li>
+                </ul>
+                <p>
+                  Please{' '}
+                  <button
+                    onClick={() => setIsCustomOrderFormOpen(true)}
+                    className="text-[#c59862] hover:text-[#a67c52] underline font-medium transition-colors"
+                  >
+                    contact us
+                  </button>
+                  {' '}for specific requirements.
+                </p>
+              </>
+            ),
+          },
+          {
+            question: 'Do I need technical knowledge to adjust it?',
+            answer: 'Only if you want to experiment with the capacitor or inductor values. Basic competency is assumed for manual adjustment. If you prefer not to change anything, the default configuration works exceptionally well for most listeners.',
+          },
+        ]}
+      />
 
       {/* Handcrafted */}
       <section data-surface="light" className="py-24 bg-white">
