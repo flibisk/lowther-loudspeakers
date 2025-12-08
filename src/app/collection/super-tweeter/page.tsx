@@ -547,11 +547,12 @@ export default function SuperTweeterPage() {
             answer: 'The standard configuration is an 8Ω DXT with a 0.66uF 1st-order capacitor. This begins its gentle roll-in from around 30kHz and is suitable for most Lowther systems.',
           },
           {
-            question: 'What do the different specification options change?',
+            question: 'Should I choose 8 ohm or 15 ohm?',
             answer: (
               <>
-                <p className="mb-4">They alter how early and how steeply the super tweeter comes into effect.</p>
-                <p className="mb-2">A brief summary:</p>
+                <p className="mb-4">
+                  In almost all cases, 8 ohm is the better choice. 8ohm windings will prove more reliable over the long term and yield better efficiency with the same 6dB/oct slope. For example:
+                </p>
                 <ol className="list-decimal list-inside space-y-2 ml-2">
                   <li>8Ω DXT with 0.66uF 1st.order slopes &lt; from 30kHz @6dB/oct, i.e. 12dB down @7.5kHz (DEFAULT)</li>
                   <li>8Ω DXT with 1.00uF 1st.order slopes &lt; from 20kHz @6dB/oct, i.e. 12dB down @5kHz</li>
@@ -560,10 +561,6 @@ export default function SuperTweeterPage() {
                 </ol>
               </>
             ),
-          },
-          {
-            question: 'Should I choose 8 ohm or 15 ohm?',
-            answer: 'In almost all cases, 8 ohm is the better choice. It is more reliable long term and offers better efficiency with the same slope. 15 ohm versions should only be selected for very particular system requirements.',
           },
           {
             question: 'Does the magnet choice make a difference?',
