@@ -563,10 +563,6 @@ export default function SuperTweeterPage() {
             ),
           },
           {
-            question: 'Does the magnet choice make a difference?',
-            answer: 'Yes. The DX3 magnet is the most efficient option for this application. The PM6 alnico is not always more efficient than the DX2 neodymium, so magnet selection depends on the cabinet and driver combination.',
-          },
-          {
             question: 'Can I customise the Super Tweeter?',
             answer: (
               <>
