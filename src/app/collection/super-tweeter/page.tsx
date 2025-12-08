@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { X } from "lucide-react";
+import { X, FileText } from "lucide-react";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { LowtherForLifeSection } from "@/components/lowther-for-life-section";
@@ -588,6 +588,25 @@ export default function SuperTweeterPage() {
             ),
           },
           {
+            question: 'Do you have any technical graphs?',
+            answer: (
+              <>
+                <p className="mb-4">
+                  Yes. You can view the technical graphs for the DXT Super Tweeter:
+                </p>
+                <a
+                  href="/images/drive-units/super-tweeter/technical/DXT - Technical Graphs.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-[#c59862] hover:text-[#a67c52] underline font-medium transition-colors"
+                >
+                  <FileText className="w-4 h-4" />
+                  <span>DXT - Technical Graphs (PDF)</span>
+                </a>
+              </>
+            ),
+          },
+          {
             question: 'Do I need technical knowledge to adjust it?',
             answer: 'Only if you want to experiment with the capacitor or inductor values. Basic competency is assumed for manual adjustment. If you prefer not to change anything, the default configuration works exceptionally well for most listeners.',
           },
@@ -783,6 +802,19 @@ export default function SuperTweeterPage() {
                       className="w-full py-3 px-4 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black"
                     />
                   </div>
+                </div>
+
+                {/* Technical PDF Link */}
+                <div className="mb-12 pt-6 border-t border-gray-200">
+                  <a
+                    href="/images/drive-units/super-tweeter/technical/DXT - Technical Graphs.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-sm text-gray-700 hover:text-[#c59862] transition-colors"
+                  >
+                    <FileText className="w-4 h-4" />
+                    <span>View Technical Graphs</span>
+                  </a>
                 </div>
 
                 <div className="space-y-4">
