@@ -17,39 +17,39 @@ import { useCart } from '@/contexts/cart-context';
 const phasePlugProducts = [
   {
     id: 'standard-dome',
+    handle: 'standard-dome', // Try multiple variations: standard-dome, lowther-standard-dome
     title: 'Standard Dome',
     price: '£60* per pair',
     priceNote: '*',
     image: '/images/ensemble/phase-equalisers/gallery/Lowther-standard-dome-transparent.webp',
     description: 'The Dome is the core of Lowther\'s sound excellence. It\'s expertly crafted to manage sound waves from the heart of the speaker driver, enhancing sound dispersion and reducing internal reflections. This phase plug ensures a smoother high-frequency response, crucial for clear and refined audio output.',
-    shopifyHandle: 'standard-dome',
   },
   {
     id: 'phase-equaliser',
+    handle: 'phase-equalizer', // Note: redirect uses 'phase-equalizer' not 'phase-equaliser'
     title: 'Phase Equaliser',
     price: '£110* per pair',
     priceNote: '*',
     image: '/images/ensemble/phase-equalisers/gallery/Lowther-phase-equaliser-transparent.webp',
     description: 'Lovingly referred to as "the Pepper Pot", this is our innovative approach to superior sound quality. Our Phase Equaliser not only enhances traditional phase plug capabilities but also acts as an effective diffuser. It\'s engineered to guide sound waves optimally, significantly improving high-frequency and mid-range responses. The result? A sound that\'s cleaner, clearer, and impeccably balanced.',
-    shopifyHandle: 'phase-equaliser',
   },
   {
     id: 'sound-diffuser',
+    handle: 'sound-diffuser',
     title: 'Sound Diffuser',
     price: '£240* per pair',
     priceNote: '*',
     image: '/images/ensemble/phase-equalisers/gallery/Lowther-Sound-diffuser-transparent.webp',
     description: 'We call it "the Door Knob" and its very familiar shape works well in our larger drive units. The Sound Diffuser provides a more even and natural sound experience. It\'s designed to minimise resonances and ensure a harmonious listening experience.',
-    shopifyHandle: 'sound-diffuser',
   },
   {
     id: 'complete-set',
+    handle: 'complete-phase-plug-set', // Try: complete-phase-plug-set, phase-plug-set, lowther-phase-plug-set
     title: 'Complete Phase Plug Set',
     price: '£350* for all 3 Pairs',
     priceNote: '*',
     image: '/images/ensemble/phase-equalisers/gallery/Lowther-phase-plugset-trasparent.webp',
     description: 'Get all three phase plug types in one comprehensive set. This complete collection allows you to experiment and find the perfect sonic signature for your system. Includes Standard Dome, Phase Equaliser, and Sound Diffuser - all the tools you need to tailor your Lowther experience.',
-    shopifyHandle: 'complete-phase-plug-set',
   },
 ];
 
@@ -61,10 +61,32 @@ export default function PhasePlugsPage() {
   const [quantity, setQuantity] = useState<number>(1);
   const [selectedShopifyProduct, setSelectedShopifyProduct] = useState<ShopifyProduct | null>(null);
 
-  const { productMap } = useShopifyCollection('accessories');
+  const { productMap, products, loading, error } = useShopifyCollection('accessories');
+
+  // Debug: Log available products to console (remove in production)
+  useEffect(() => {
+    if (products.length > 0) {
+      console.log('Available Shopify products in accessories collection:', products.map(p => p.handle));
+    }
+    if (error) {
+      console.error('Error loading Shopify collection:', error);
+    }
+  }, [products, error]);
 
   const getDisplayPrice = (product: typeof phasePlugProducts[number]) => {
-    const shopifyMatch = productMap.get(product.shopifyHandle ?? product.id);
+    // Try multiple handle variations
+    const handleVariations = [
+      product.handle,
+      `lowther-${product.handle}`,
+      product.id,
+    ];
+    
+    let shopifyMatch = null;
+    for (const handle of handleVariations) {
+      shopifyMatch = productMap.get(handle);
+      if (shopifyMatch) break;
+    }
+    
     if (shopifyMatch) {
       return formatPrice(
         shopifyMatch.priceRange.minVariantPrice.amount,
@@ -93,12 +115,23 @@ export default function PhasePlugsPage() {
   const handleAddToBag = async () => {
     if (!selectedProduct) return;
 
-    const match = productMap.get(selectedProduct.shopifyHandle ?? selectedProduct.id);
+    // Try multiple handle variations
+    const handleVariations = [
+      selectedProduct.handle,
+      `lowther-${selectedProduct.handle}`,
+      selectedProduct.id,
+    ];
+    
+    let match = null;
+    for (const handle of handleVariations) {
+      match = productMap.get(handle);
+      if (match) break;
+    }
     
     if (!match || !match.variants || match.variants.length === 0) {
       // Fallback: redirect to Shopify product page
       const shopUrl = process.env.NEXT_PUBLIC_SHOP_URL ?? 'https://shop.lowtherloudspeakers.com';
-      window.open(`${shopUrl}/products/${selectedProduct.shopifyHandle}`, '_blank');
+      window.open(`${shopUrl}/products/${selectedProduct.handle}`, '_blank');
       return;
     }
 
@@ -119,7 +152,19 @@ export default function PhasePlugsPage() {
 
   useEffect(() => {
     if (selectedProduct) {
-      const match = productMap.get(selectedProduct.shopifyHandle ?? selectedProduct.id) ?? null;
+      // Try multiple handle variations
+      const handleVariations = [
+        selectedProduct.handle,
+        `lowther-${selectedProduct.handle}`,
+        selectedProduct.id,
+      ];
+      
+      let match: ShopifyProduct | null = null;
+      for (const handle of handleVariations) {
+        match = productMap.get(handle) ?? null;
+        if (match) break;
+      }
+      
       setSelectedShopifyProduct(match);
     }
   }, [productMap, selectedProduct]);
