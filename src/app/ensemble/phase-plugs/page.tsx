@@ -1,13 +1,17 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { LowtherForLifeSection } from '@/components/lowther-for-life-section';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { DiscountPopup } from '@/components/discount-popup';
+import { CartOverlay } from '@/components/cart-overlay';
 import { X } from 'lucide-react';
+import { useShopifyCollection } from '@/hooks/use-shopify-collection';
+import { formatPrice, type ShopifyProduct } from '@/lib/shopify-storefront';
+import { useCart } from '@/contexts/cart-context';
 
 // Product data for Phase Plugs
 const phasePlugProducts = [
@@ -15,36 +19,60 @@ const phasePlugProducts = [
     id: 'standard-dome',
     title: 'Standard Dome',
     price: '£60* per pair',
+    priceNote: '*',
     image: '/images/ensemble/phase-equalisers/gallery/Lowther-standard-dome-transparent.webp',
     description: 'The Dome is the core of Lowther\'s sound excellence. It\'s expertly crafted to manage sound waves from the heart of the speaker driver, enhancing sound dispersion and reducing internal reflections. This phase plug ensures a smoother high-frequency response, crucial for clear and refined audio output.',
+    shopifyHandle: 'standard-dome',
   },
   {
     id: 'phase-equaliser',
     title: 'Phase Equaliser',
     price: '£110* per pair',
+    priceNote: '*',
     image: '/images/ensemble/phase-equalisers/gallery/Lowther-phase-equaliser-transparent.webp',
     description: 'Lovingly referred to as "the Pepper Pot", this is our innovative approach to superior sound quality. Our Phase Equaliser not only enhances traditional phase plug capabilities but also acts as an effective diffuser. It\'s engineered to guide sound waves optimally, significantly improving high-frequency and mid-range responses. The result? A sound that\'s cleaner, clearer, and impeccably balanced.',
+    shopifyHandle: 'phase-equaliser',
   },
   {
     id: 'sound-diffuser',
     title: 'Sound Diffuser',
     price: '£240* per pair',
+    priceNote: '*',
     image: '/images/ensemble/phase-equalisers/gallery/Lowther-Sound-diffuser-transparent.webp',
     description: 'We call it "the Door Knob" and its very familiar shape works well in our larger drive units. The Sound Diffuser provides a more even and natural sound experience. It\'s designed to minimise resonances and ensure a harmonious listening experience.',
+    shopifyHandle: 'sound-diffuser',
   },
   {
     id: 'complete-set',
     title: 'Complete Phase Plug Set',
     price: '£350* for all 3 Pairs',
+    priceNote: '*',
     image: '/images/ensemble/phase-equalisers/gallery/Lowther-phase-plugset-trasparent.webp',
     description: 'Get all three phase plug types in one comprehensive set. This complete collection allows you to experiment and find the perfect sonic signature for your system. Includes Standard Dome, Phase Equaliser, and Sound Diffuser - all the tools you need to tailor your Lowther experience.',
+    shopifyHandle: 'complete-phase-plug-set',
   },
 ];
 
 export default function PhasePlugsPage() {
+  const { addItem, isLoading: cartLoading } = useCart();
   const [selectedProduct, setSelectedProduct] = useState<typeof phasePlugProducts[0] | null>(null);
   const [isProductOpen, setIsProductOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
   const [quantity, setQuantity] = useState<number>(1);
+  const [selectedShopifyProduct, setSelectedShopifyProduct] = useState<ShopifyProduct | null>(null);
+
+  const { productMap } = useShopifyCollection('accessories');
+
+  const getDisplayPrice = (product: typeof phasePlugProducts[number]) => {
+    const shopifyMatch = productMap.get(product.shopifyHandle ?? product.id);
+    if (shopifyMatch) {
+      return formatPrice(
+        shopifyMatch.priceRange.minVariantPrice.amount,
+        shopifyMatch.priceRange.minVariantPrice.currencyCode,
+      );
+    }
+    return `${product.price}${product.priceNote ?? ''}`;
+  };
 
   const openProductDetail = (product: typeof phasePlugProducts[0]) => {
     setSelectedProduct(product);
@@ -61,6 +89,40 @@ export default function PhasePlugsPage() {
       setQuantity(value);
     }
   };
+
+  const handleAddToBag = async () => {
+    if (!selectedProduct) return;
+
+    const match = productMap.get(selectedProduct.shopifyHandle ?? selectedProduct.id);
+    
+    if (!match || !match.variants || match.variants.length === 0) {
+      // Fallback: redirect to Shopify product page
+      const shopUrl = process.env.NEXT_PUBLIC_SHOP_URL ?? 'https://shop.lowtherloudspeakers.com';
+      window.open(`${shopUrl}/products/${selectedProduct.shopifyHandle}`, '_blank');
+      return;
+    }
+
+    const variant = match.variants[0];
+    
+    if (!variant.availableForSale) {
+      alert('This product is currently unavailable');
+      return;
+    }
+
+    await addItem(variant.id, quantity);
+    closeProductDetail();
+    // Open cart overlay after product overlay closes (600ms transition + small buffer)
+    setTimeout(() => {
+      setCartOpen(true);
+    }, 650);
+  };
+
+  useEffect(() => {
+    if (selectedProduct) {
+      const match = productMap.get(selectedProduct.shopifyHandle ?? selectedProduct.id) ?? null;
+      setSelectedShopifyProduct(match);
+    }
+  }, [productMap, selectedProduct]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -222,7 +284,7 @@ export default function PhasePlugsPage() {
                       {product.title}
                     </h3>
                     <p className="text-lg text-gray-600 mb-6">
-                      {product.price}
+                      {getDisplayPrice(product)}
                     </p>
                     <div className="flex flex-col gap-3 w-full mt-auto">
                       <Button 
@@ -287,7 +349,7 @@ export default function PhasePlugsPage() {
                     {selectedProduct.title}
                   </h2>
                   <p className="text-xl text-gray-900 mb-8">
-                    {selectedProduct.price}
+                    {getDisplayPrice(selectedProduct)}
                   </p>
                   <div className="space-y-4 text-gray-700 leading-relaxed">
                     <p>{selectedProduct.description}</p>
@@ -330,8 +392,10 @@ export default function PhasePlugsPage() {
                   <Button
                     size="lg"
                     className="w-full bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
+                    onClick={handleAddToBag}
+                    disabled={cartLoading || !selectedShopifyProduct}
                   >
-                    ADD TO BAG
+                    {cartLoading ? 'ADDING...' : 'ADD TO BAG'}
                   </Button>
                   <Button
                     size="lg"
@@ -349,6 +413,7 @@ export default function PhasePlugsPage() {
           </div>
         </div>
       )}
+      <CartOverlay isOpen={cartOpen} onClose={() => setCartOpen(false)} />
       <DiscountPopup />
     </div>
   );
