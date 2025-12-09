@@ -17,7 +17,7 @@ import { useCart } from '@/contexts/cart-context';
 const phasePlugProducts = [
   {
     id: 'standard-dome',
-    handle: 'lowther-standard-dome-pairs', // Try: lowther-standard-dome-pairs, standard-dome, lowther-standard-dome
+    handle: 'lowther-standard-dome', // Confirmed working: lowther-standard-dome (without -pairs)
     title: 'Standard Dome',
     price: '£60* per pair',
     priceNote: '*',
@@ -26,7 +26,7 @@ const phasePlugProducts = [
   },
   {
     id: 'phase-equaliser',
-    handle: 'lowther-phase-equaliser-pairs', // Shopify: "Lowther Phase Equaliser (Pairs)"
+    handle: 'lowther-phase-equaliser', // Confirmed working: lowther-phase-equaliser (without -pairs)
     title: 'Phase Equaliser',
     price: '£110* per pair',
     priceNote: '*',
@@ -35,7 +35,7 @@ const phasePlugProducts = [
   },
   {
     id: 'sound-diffuser',
-    handle: 'lowther-sound-diffuser-pairs', // Shopify: "Lowther Sound Diffuser (Pairs)"
+    handle: 'lowther-sound-diffuser', // Try: lowther-sound-diffuser (without -pairs, matching pattern)
     title: 'Sound Diffuser',
     price: '£240* per pair',
     priceNote: '*',
@@ -44,7 +44,7 @@ const phasePlugProducts = [
   },
   {
     id: 'complete-set',
-    handle: 'lowther-phase-plug-bundle-pairs', // Shopify: "Lowther Phase Plug Bundle (Pairs)"
+    handle: 'lowther-phase-plug-bundle', // Try: lowther-phase-plug-bundle (without -pairs, matching pattern)
     title: 'Complete Phase Plug Set',
     price: '£350* for all 3 Pairs',
     priceNote: '*',
@@ -66,7 +66,9 @@ export default function PhasePlugsPage() {
   // Debug: Log available products to console (remove in production)
   useEffect(() => {
     if (products.length > 0) {
-      console.log('Available Shopify products in accessories collection:', products.map(p => p.handle));
+      const handles = products.map(p => p.handle);
+      console.log('Available Shopify products in accessories collection:', handles);
+      console.log('Product handles list:', handles.join(', '));
     }
     if (error) {
       console.error('Error loading Shopify collection:', error);
