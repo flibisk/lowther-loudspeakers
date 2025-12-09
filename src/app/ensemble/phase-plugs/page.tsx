@@ -77,7 +77,8 @@ export default function PhasePlugsPage() {
     // Try multiple handle variations
     const handleVariations = [
       product.handle,
-      `lowther-${product.handle}`,
+      product.handle.replace('-pairs', ''), // Try without -pairs suffix
+      product.handle.replace('lowther-', ''), // Try without lowther- prefix
       product.id,
     ];
     
@@ -118,7 +119,8 @@ export default function PhasePlugsPage() {
     // Try multiple handle variations
     const handleVariations = [
       selectedProduct.handle,
-      `lowther-${selectedProduct.handle}`,
+      selectedProduct.handle.replace('-pairs', ''), // Try without -pairs suffix
+      selectedProduct.handle.replace('lowther-', ''), // Try without lowther- prefix
       selectedProduct.id,
     ];
     
@@ -155,7 +157,8 @@ export default function PhasePlugsPage() {
       // Try multiple handle variations
       const handleVariations = [
         selectedProduct.handle,
-        `lowther-${selectedProduct.handle}`,
+        selectedProduct.handle.replace('-pairs', ''), // Try without -pairs suffix
+        selectedProduct.handle.replace('lowther-', ''), // Try without lowther- prefix
         selectedProduct.id,
       ];
       
