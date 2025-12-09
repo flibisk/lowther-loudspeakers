@@ -17,7 +17,7 @@ import { useCart } from '@/contexts/cart-context';
 const phasePlugProducts = [
   {
     id: 'standard-dome',
-    handle: 'standard-dome', // Try multiple variations: standard-dome, lowther-standard-dome
+    handle: 'lowther-standard-dome-pairs', // Try: lowther-standard-dome-pairs, standard-dome, lowther-standard-dome
     title: 'Standard Dome',
     price: '£60* per pair',
     priceNote: '*',
@@ -74,18 +74,34 @@ export default function PhasePlugsPage() {
   }, [products, error]);
 
   const getDisplayPrice = (product: typeof phasePlugProducts[number]) => {
-    // Try multiple handle variations
+    // Try multiple handle variations systematically
+    const baseHandle = product.handle;
+    const hasLowther = baseHandle.startsWith('lowther-');
+    const hasPairs = baseHandle.endsWith('-pairs');
+    const cleanHandle = baseHandle.replace(/^lowther-/, '').replace(/-pairs$/, '');
+    
     const handleVariations = [
-      product.handle,
-      product.handle.replace('-pairs', ''), // Try without -pairs suffix
-      product.handle.replace('lowther-', ''), // Try without lowther- prefix
-      product.id,
-    ];
+      baseHandle, // Exact match
+      hasPairs ? baseHandle.replace('-pairs', '') : null, // Without -pairs
+      hasLowther ? baseHandle.replace('lowther-', '') : null, // Without lowther- prefix
+      hasLowther && hasPairs ? cleanHandle : null, // Without both
+      !hasLowther ? `lowther-${baseHandle}` : null, // Add lowther- if not present
+      !hasPairs ? `${baseHandle}-pairs` : null, // Add -pairs if not present
+      !hasLowther && !hasPairs ? `lowther-${baseHandle}-pairs` : null, // Add both if neither present
+      product.id, // Fallback to product ID
+      `lowther-${product.id}`, // Product ID with lowther-
+      `lowther-${product.id}-pairs`, // Product ID with lowther- and -pairs
+    ].filter((h): h is string => h !== null && h !== undefined); // Remove nulls and duplicates
     
     let shopifyMatch = null;
     for (const handle of handleVariations) {
       shopifyMatch = productMap.get(handle);
-      if (shopifyMatch) break;
+      if (shopifyMatch) {
+        if (typeof window !== 'undefined') {
+          console.log(`Found match for ${product.title} with handle: ${handle}`);
+        }
+        break;
+      }
     }
     
     if (shopifyMatch) {
@@ -93,6 +109,9 @@ export default function PhasePlugsPage() {
         shopifyMatch.priceRange.minVariantPrice.amount,
         shopifyMatch.priceRange.minVariantPrice.currencyCode,
       );
+    }
+    if (typeof window !== 'undefined') {
+      console.warn(`No Shopify match found for ${product.title}, tried:`, handleVariations);
     }
     return `${product.price}${product.priceNote ?? ''}`;
   };
@@ -116,18 +135,34 @@ export default function PhasePlugsPage() {
   const handleAddToBag = async () => {
     if (!selectedProduct) return;
 
-    // Try multiple handle variations
+    // Try multiple handle variations systematically
+    const baseHandle = selectedProduct.handle;
+    const hasLowther = baseHandle.startsWith('lowther-');
+    const hasPairs = baseHandle.endsWith('-pairs');
+    const cleanHandle = baseHandle.replace(/^lowther-/, '').replace(/-pairs$/, '');
+    
     const handleVariations = [
-      selectedProduct.handle,
-      selectedProduct.handle.replace('-pairs', ''), // Try without -pairs suffix
-      selectedProduct.handle.replace('lowther-', ''), // Try without lowther- prefix
-      selectedProduct.id,
-    ];
+      baseHandle, // Exact match
+      hasPairs ? baseHandle.replace('-pairs', '') : null, // Without -pairs
+      hasLowther ? baseHandle.replace('lowther-', '') : null, // Without lowther- prefix
+      hasLowther && hasPairs ? cleanHandle : null, // Without both
+      !hasLowther ? `lowther-${baseHandle}` : null, // Add lowther- if not present
+      !hasPairs ? `${baseHandle}-pairs` : null, // Add -pairs if not present
+      !hasLowther && !hasPairs ? `lowther-${baseHandle}-pairs` : null, // Add both if neither present
+      selectedProduct.id, // Fallback to product ID
+      `lowther-${selectedProduct.id}`, // Product ID with lowther-
+      `lowther-${selectedProduct.id}-pairs`, // Product ID with lowther- and -pairs
+    ].filter((h): h is string => h !== null && h !== undefined); // Remove nulls and duplicates
     
     let match = null;
     for (const handle of handleVariations) {
       match = productMap.get(handle);
-      if (match) break;
+      if (match) {
+        if (typeof window !== 'undefined') {
+          console.log(`Found match for ${selectedProduct.title} with handle: ${handle}`);
+        }
+        break;
+      }
     }
     
     if (!match || !match.variants || match.variants.length === 0) {
@@ -154,18 +189,34 @@ export default function PhasePlugsPage() {
 
   useEffect(() => {
     if (selectedProduct) {
-      // Try multiple handle variations
+      // Try multiple handle variations systematically
+      const baseHandle = selectedProduct.handle;
+      const hasLowther = baseHandle.startsWith('lowther-');
+      const hasPairs = baseHandle.endsWith('-pairs');
+      const cleanHandle = baseHandle.replace(/^lowther-/, '').replace(/-pairs$/, '');
+      
       const handleVariations = [
-        selectedProduct.handle,
-        selectedProduct.handle.replace('-pairs', ''), // Try without -pairs suffix
-        selectedProduct.handle.replace('lowther-', ''), // Try without lowther- prefix
-        selectedProduct.id,
-      ];
+        baseHandle, // Exact match
+        hasPairs ? baseHandle.replace('-pairs', '') : null, // Without -pairs
+        hasLowther ? baseHandle.replace('lowther-', '') : null, // Without lowther- prefix
+        hasLowther && hasPairs ? cleanHandle : null, // Without both
+        !hasLowther ? `lowther-${baseHandle}` : null, // Add lowther- if not present
+        !hasPairs ? `${baseHandle}-pairs` : null, // Add -pairs if not present
+        !hasLowther && !hasPairs ? `lowther-${baseHandle}-pairs` : null, // Add both if neither present
+        selectedProduct.id, // Fallback to product ID
+        `lowther-${selectedProduct.id}`, // Product ID with lowther-
+        `lowther-${selectedProduct.id}-pairs`, // Product ID with lowther- and -pairs
+      ].filter((h): h is string => h !== null && h !== undefined); // Remove nulls and duplicates
       
       let match: ShopifyProduct | null = null;
       for (const handle of handleVariations) {
         match = productMap.get(handle) ?? null;
-        if (match) break;
+        if (match) {
+          if (typeof window !== 'undefined') {
+            console.log(`Found match for ${selectedProduct.title} with handle: ${handle}`);
+          }
+          break;
+        }
       }
       
       setSelectedShopifyProduct(match);
