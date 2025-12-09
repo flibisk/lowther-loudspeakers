@@ -35,7 +35,7 @@ const phasePlugProducts = [
   },
   {
     id: 'sound-diffuser',
-    handle: 'lowther-sound-diffuser', // Try: lowther-sound-diffuser (without -pairs, matching pattern)
+    handle: 'lowther-sound-diffuser-1', // Shopify handle: lowther-sound-diffuser-1 (with -1 suffix)
     title: 'Sound Diffuser',
     price: '£240* per pair',
     priceNote: '*',
@@ -44,7 +44,7 @@ const phasePlugProducts = [
   },
   {
     id: 'complete-set',
-    handle: 'lowther-phase-plug-bundle', // Try: lowther-phase-plug-bundle (without -pairs, matching pattern)
+    handle: 'lowther-phaseplug-bundle', // Shopify handle: lowther-phaseplug-bundle (no hyphen between phase and plug)
     title: 'Complete Phase Plug Set',
     price: '£350* for all 3 Pairs',
     priceNote: '*',
