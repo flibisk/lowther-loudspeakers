@@ -26,7 +26,7 @@ const phasePlugProducts = [
   },
   {
     id: 'phase-equaliser',
-    handle: 'phase-equalizer', // Note: redirect uses 'phase-equalizer' not 'phase-equaliser'
+    handle: 'lowther-phase-equaliser-pairs', // Shopify: "Lowther Phase Equaliser (Pairs)"
     title: 'Phase Equaliser',
     price: '£110* per pair',
     priceNote: '*',
@@ -35,7 +35,7 @@ const phasePlugProducts = [
   },
   {
     id: 'sound-diffuser',
-    handle: 'sound-diffuser',
+    handle: 'lowther-sound-diffuser-pairs', // Shopify: "Lowther Sound Diffuser (Pairs)"
     title: 'Sound Diffuser',
     price: '£240* per pair',
     priceNote: '*',
@@ -44,7 +44,7 @@ const phasePlugProducts = [
   },
   {
     id: 'complete-set',
-    handle: 'complete-phase-plug-set', // Try: complete-phase-plug-set, phase-plug-set, lowther-phase-plug-set
+    handle: 'lowther-phase-plug-bundle-pairs', // Shopify: "Lowther Phase Plug Bundle (Pairs)"
     title: 'Complete Phase Plug Set',
     price: '£350* for all 3 Pairs',
     priceNote: '*',
