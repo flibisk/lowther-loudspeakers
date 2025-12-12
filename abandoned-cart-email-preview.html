@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        font-family: 'Arial', sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background: #f0f0f0;
+      }
+      .email-container {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      }
+      .header {
+        background: linear-gradient(135deg, #c59862 0%, #b0874f 100%);
+        color: white;
+        padding: 40px;
+        text-align: center;
+        border-radius: 10px 10px 0 0;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 28px;
+        font-weight: bold;
+      }
+      .header p {
+        font-size: 18px;
+        margin-top: 10px;
+        margin-bottom: 0;
+      }
+      .content {
+        background: #f9f9f9;
+        padding: 40px;
+        border-radius: 0 0 10px 10px;
+      }
+      table {
+        width: 100%;
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 20px 0;
+        border-collapse: collapse;
+      }
+      th {
+        background: #f5f5f5;
+        padding: 15px;
+        text-align: left;
+        font-weight: bold;
+        border-bottom: 2px solid #eee;
+      }
+      th:last-child {
+        text-align: right;
+      }
+      td {
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+      }
+      td:last-child {
+        text-align: right;
+      }
+      .product-image {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 4px;
+        background: #f0f0f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #999;
+        font-size: 12px;
+      }
+      .button {
+        display: inline-block;
+        background: #000;
+        color: white;
+        padding: 15px 40px;
+        text-decoration: none;
+        border-radius: 4px;
+        margin: 20px 0;
+        font-weight: bold;
+      }
+      .total {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: right;
+        margin-top: 20px;
+      }
+      .total strong {
+        font-size: 20px;
+      }
+      .footer {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #ddd;
+        font-size: 12px;
+        color: #666;
+        text-align: center;
+      }
+      .help-section {
+        margin-top: 30px;
+        font-size: 14px;
+        color: #666;
+      }
+      .help-section a {
+        color: #c59862;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="email-container">
+      <div class="header">
+        <h1>You left items in your cart</h1>
+        <p>Complete your purchase now</p>
+      </div>
+      <div class="content">
+        <p>Hi there,</p>
+        <p>We noticed you added some items to your cart but didn't complete your purchase. Don't worry - your items are still waiting for you!</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Product</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="product-image">Image</div>
+              </td>
+              <td>
+                <strong>PM6A Concert</strong>
+                <br>
+                <span style="color: #666; font-size: 14px;">Quantity: 1</span>
+              </td>
+              <td>£1,200.00</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="product-image">Image</div>
+              </td>
+              <td>
+                <strong>Lowther Standard Dome</strong>
+                <br>
+                <span style="color: #666; font-size: 14px;">Quantity: 1</span>
+              </td>
+              <td>£60.00</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="total">
+          <strong>Total: £1,260.00</strong>
+        </div>
+
+        <div style="text-align: center;">
+          <a href="#" class="button">Complete Your Purchase</a>
+        </div>
+
+        <div class="help-section">
+          <p>
+            <strong>Need help?</strong><br>
+            If you have any questions about your order, please don't hesitate to contact us at 
+            <a href="mailto:hello@lowtherloudspeakers.com">hello@lowtherloudspeakers.com</a>
+          </p>
+        </div>
+
+        <div class="footer">
+          <p>Lowther Loudspeakers<br>
+          <a href="https://www.lowtherloudspeakers.com" style="color: #c59862;">www.lowtherloudspeakers.com</a></p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
+

@@ -8,8 +8,8 @@ export default function TestEmail3Page() {
   const [sending, setSending] = useState(false);
   const [result, setResult] = useState<{ success: boolean; message: string } | null>(null);
 
-  // Sample cart items for testing
-  const testCartItems: CartItem[] = [
+  // Customizable cart items
+  const [cartItems, setCartItems] = useState<CartItem[]>([
     {
       title: 'PM6A Concert',
       quantity: 1,
@@ -20,7 +20,7 @@ export default function TestEmail3Page() {
       quantity: 1,
       price: '£60.00',
     },
-  ];
+  ]);
 
   const siteUrl = typeof window !== 'undefined' 
     ? window.location.origin 
@@ -28,7 +28,7 @@ export default function TestEmail3Page() {
   const cartUrl = `${siteUrl}/products`;
 
   // Generate email HTML
-  const emailHtml = buildFinalCallEmail(cartUrl, testCartItems);
+  const emailHtml = buildFinalCallEmail(cartUrl, cartItems);
 
   const handleSendTest = async () => {
     if (!email || !email.includes('@')) {
@@ -45,7 +45,7 @@ export default function TestEmail3Page() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, cartItems }),
       });
 
       const data = await response.json();
@@ -100,17 +100,69 @@ export default function TestEmail3Page() {
             </div>
           )}
 
-          <div className="mb-4">
-            <p className="text-sm text-gray-600 mb-2">
-              <strong>Test Cart Items:</strong>
-            </p>
-            <ul className="list-disc list-inside text-sm text-gray-600">
-              {testCartItems.map((item, index) => (
-                <li key={index}>
-                  {item.quantity} × {item.title} - {item.price}
-                </li>
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-3">
+              <label className="block text-sm font-medium text-gray-700">
+                <strong>Test Cart Items (Customize to test different products):</strong>
+              </label>
+              <button
+                onClick={() => setCartItems([...cartItems, { title: '', quantity: 1, price: '' }])}
+                className="px-3 py-1 text-sm bg-gray-200 hover:bg-gray-300 rounded-md"
+              >
+                + Add Item
+              </button>
+            </div>
+            
+            <div className="space-y-3">
+              {cartItems.map((item, index) => (
+                <div key={index} className="flex gap-2 items-start p-3 border border-gray-200 rounded-md">
+                  <div className="flex-1 grid grid-cols-3 gap-2">
+                    <input
+                      type="text"
+                      value={item.title}
+                      onChange={(e) => {
+                        const updated = [...cartItems];
+                        updated[index] = { ...updated[index], title: e.target.value };
+                        setCartItems(updated);
+                      }}
+                      placeholder="Product name"
+                      className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-[#c59862] focus:border-transparent"
+                    />
+                    <input
+                      type="number"
+                      value={item.quantity}
+                      onChange={(e) => {
+                        const updated = [...cartItems];
+                        updated[index] = { ...updated[index], quantity: parseInt(e.target.value) || 1 };
+                        setCartItems(updated);
+                      }}
+                      placeholder="Quantity"
+                      min="1"
+                      className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-[#c59862] focus:border-transparent"
+                    />
+                    <input
+                      type="text"
+                      value={item.price || ''}
+                      onChange={(e) => {
+                        const updated = [...cartItems];
+                        updated[index] = { ...updated[index], price: e.target.value };
+                        setCartItems(updated);
+                      }}
+                      placeholder="Price (e.g., £1,200.00)"
+                      className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-[#c59862] focus:border-transparent"
+                    />
+                  </div>
+                  {cartItems.length > 1 && (
+                    <button
+                      onClick={() => setCartItems(cartItems.filter((_, i) => i !== index))}
+                      className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-md"
+                    >
+                      ×
+                    </button>
+                  )}
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
 
           <div className="mb-4">

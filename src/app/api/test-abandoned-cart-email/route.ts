@@ -25,8 +25,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Sample cart items for testing
-    const testCartItems: CartItem[] = [
+    // Use cart items from request body if provided, otherwise use defaults
+    const testCartItems: CartItem[] = body.cartItems || [
       {
         title: 'PM6A Concert',
         quantity: 1,
@@ -99,8 +99,9 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Sample cart items for testing
-    const testCartItems: CartItem[] = [
+    // Use cart items from query params if provided, otherwise use defaults
+    const cartItemsParam = searchParams.get('cartItems');
+    let testCartItems: CartItem[] = [
       {
         title: 'PM6A Concert',
         quantity: 1,
@@ -112,6 +113,14 @@ export async function GET(request: NextRequest) {
         price: '£60.00',
       },
     ];
+    
+    if (cartItemsParam) {
+      try {
+        testCartItems = JSON.parse(cartItemsParam);
+      } catch (e) {
+        // If parsing fails, use defaults
+      }
+    }
 
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.lowtherloudspeakers.com';
     const cartUrl = `${siteUrl}/products`;
