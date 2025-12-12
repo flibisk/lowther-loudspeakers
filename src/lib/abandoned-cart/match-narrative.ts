@@ -52,24 +52,46 @@ export function getNarrativesForCartItems(
       match = PRODUCT_NARRATIVES.find((n: ProductNarrative) => {
         const narrativeNameNormalized = normalizeProductName(n.name);
         
-        // Exact match
+        // Exact match (should catch "pm6a concert" === "pm6a concert")
         if (itemTitleNormalized === narrativeNameNormalized) {
           return true;
         }
         
-        // Check if item title contains narrative name (e.g., "DX2 Concert" contains "DX2")
+        // Check if item title contains narrative name or vice versa
         if (itemTitleNormalized.includes(narrativeNameNormalized) || 
             narrativeNameNormalized.includes(itemTitleNormalized)) {
           return true;
         }
         
-        // Check if narrative name contains key parts (e.g., "DX2" in "DX2 Concert")
-        const narrativeParts = narrativeNameNormalized.split(' ');
-        const itemParts = itemTitleNormalized.split(' ');
+        // Extract product identifier (e.g., "dx2", "pm6a", "pm4a") from both
+        // This handles cases like "PM6A Concert" matching "PM6A Concert"
+        const extractIdentifier = (name: string): string => {
+          // Match patterns like "dx2", "pm6a", "ex3", "pm4a", etc.
+          const match = name.match(/([a-z]{1,3}\d+[a-z]?)/i);
+          return match ? match[1].toLowerCase() : '';
+        };
         
-        // Match if key identifier matches (e.g., "dx2", "pm6a")
-        for (const part of narrativeParts) {
-          if (part.length >= 2 && itemParts.some(itemPart => itemPart.includes(part) || part.includes(itemPart))) {
+        const itemIdentifier = extractIdentifier(itemTitleNormalized);
+        const narrativeIdentifier = extractIdentifier(narrativeNameNormalized);
+        
+        // If we found identifiers and they match, it's a match
+        if (itemIdentifier && narrativeIdentifier && itemIdentifier === narrativeIdentifier) {
+          return true;
+        }
+        
+        // Fallback: Check word-by-word matching
+        // Split and check if key words match (e.g., "pm6a" in both)
+        const narrativeWords = narrativeNameNormalized.split(/\s+/);
+        const itemWords = itemTitleNormalized.split(/\s+/);
+        
+        // Check if any significant word from narrative appears in item title
+        for (const narrativeWord of narrativeWords) {
+          // Skip common words
+          if (narrativeWord.length < 2 || ['concert', 'sinfonia', 'philharmonic'].includes(narrativeWord)) {
+            continue;
+          }
+          // If narrative word appears in item title, it's likely a match
+          if (itemWords.some(itemWord => itemWord === narrativeWord || itemWord.includes(narrativeWord) || narrativeWord.includes(itemWord))) {
             return true;
           }
         }
