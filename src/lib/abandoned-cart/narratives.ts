@@ -351,7 +351,7 @@ export const PRODUCT_NARRATIVES: ProductNarrative[] = [
     soundCharacter:
       'It spreads and smooths the output from the inner cone, helping to minimise resonances and giving a more even, natural sound that many listeners find especially comfortable over long sessions.',
     cabinetMatches:
-      'A strong option for larger Lowther drivers in horns and wall loaded cabinets where you want to soften any tendency to shout and aim for a calmer, more diffuse top end.'
+      'A strong option for larger Lowther drivers in horns and wall loaded cabinets where you want to soften and aim for a calmer, more diffuse top end.'
   }
 ];
 

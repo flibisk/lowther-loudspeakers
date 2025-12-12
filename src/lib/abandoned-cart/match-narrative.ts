@@ -57,14 +57,7 @@ export function getNarrativesForCartItems(
           return true;
         }
         
-        // Check if item title contains narrative name or vice versa
-        if (itemTitleNormalized.includes(narrativeNameNormalized) || 
-            narrativeNameNormalized.includes(itemTitleNormalized)) {
-          return true;
-        }
-        
         // Extract product identifier (e.g., "dx2", "pm6a", "pm4a") from both
-        // This handles cases like "PM6A Concert" matching "PM6A Concert"
         const extractIdentifier = (name: string): string => {
           // Match patterns like "dx2", "pm6a", "ex3", "pm4a", etc.
           const match = name.match(/([a-z]{1,3}\d+[a-z]?)/i);
@@ -74,26 +67,74 @@ export function getNarrativesForCartItems(
         const itemIdentifier = extractIdentifier(itemTitleNormalized);
         const narrativeIdentifier = extractIdentifier(narrativeNameNormalized);
         
-        // If we found identifiers and they match, it's a match
+        // Extract collection name if present
+        const extractCollection = (name: string): string | null => {
+          const collections = ['concert', 'sinfonia', 'philharmonic'];
+          for (const collection of collections) {
+            if (name.includes(collection)) {
+              return collection;
+            }
+          }
+          return null;
+        };
+        
+        const itemCollection = extractCollection(itemTitleNormalized);
+        const narrativeCollection = extractCollection(narrativeNameNormalized);
+        
+        // If identifiers match, check collection compatibility
         if (itemIdentifier && narrativeIdentifier && itemIdentifier === narrativeIdentifier) {
+          // If both have collections, they must match
+          if (itemCollection && narrativeCollection) {
+            return itemCollection === narrativeCollection;
+          }
+          // If only one has a collection, it's still a match (for backwards compatibility)
+          // But prefer exact collection matches
           return true;
         }
         
-        // Fallback: Check word-by-word matching
-        // Split and check if key words match (e.g., "pm6a" in both)
+        // Check if item title contains narrative name or vice versa (but only if collections match or both are missing)
+        if (itemTitleNormalized.includes(narrativeNameNormalized) || 
+            narrativeNameNormalized.includes(itemTitleNormalized)) {
+          // If both have collections, they must match
+          if (itemCollection && narrativeCollection) {
+            return itemCollection === narrativeCollection;
+          }
+          return true;
+        }
+        
+        // Fallback: Check word-by-word matching, but respect collection names
         const narrativeWords = narrativeNameNormalized.split(/\s+/);
         const itemWords = itemTitleNormalized.split(/\s+/);
         
         // Check if any significant word from narrative appears in item title
+        let hasMatchingIdentifier = false;
         for (const narrativeWord of narrativeWords) {
-          // Skip common words
-          if (narrativeWord.length < 2 || ['concert', 'sinfonia', 'philharmonic'].includes(narrativeWord)) {
+          // Skip common words, but keep collection names for matching
+          if (narrativeWord.length < 2) {
             continue;
           }
-          // If narrative word appears in item title, it's likely a match
-          if (itemWords.some(itemWord => itemWord === narrativeWord || itemWord.includes(narrativeWord) || narrativeWord.includes(itemWord))) {
-            return true;
+          
+          // If this is a collection name, check if it matches
+          if (['concert', 'sinfonia', 'philharmonic'].includes(narrativeWord)) {
+            if (!itemWords.includes(narrativeWord)) {
+              return false; // Collection mismatch
+            }
+            continue;
           }
+          
+          // Check if identifier word matches
+          if (itemWords.some(itemWord => itemWord === narrativeWord || itemWord.includes(narrativeWord) || narrativeWord.includes(itemWord))) {
+            hasMatchingIdentifier = true;
+          }
+        }
+        
+        // If we found a matching identifier and collections are compatible, it's a match
+        if (hasMatchingIdentifier) {
+          // If both have collections, they must match
+          if (itemCollection && narrativeCollection) {
+            return itemCollection === narrativeCollection;
+          }
+          return true;
         }
         
         return false;
