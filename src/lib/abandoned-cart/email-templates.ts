@@ -274,30 +274,20 @@ export function buildNarrativeEmail(
 
   const narrativeSections = narratives.map(narrative => `
     <div style="margin: 30px 0; padding: 20px; background-color: #f9f9f9; border-radius: 8px; border-left: 4px solid #c59862;">
-      <h3 style="margin: 0 0 15px 0; font-size: 20px; color: #333;">${cartItems.find(item => 
-        item.title.toLowerCase().includes(narrative.rangePosition?.toLowerCase() || '') ||
-        item.handle === narrative.handle
-      )?.title || 'Your Selection'}</h3>
+      <h3 style="margin: 0 0 15px 0; font-size: 20px; color: #333;">${narrative.name}</h3>
       <p style="margin: 10px 0; color: #666; line-height: 1.8;">
-        <strong style="color: #333;">In our range:</strong> ${narrative.rangePosition}
+        <strong style="color: #333;">Where it sits in the range:</strong><br>
+        ${narrative.rangePosition}
       </p>
       <p style="margin: 10px 0; color: #666; line-height: 1.8;">
-        <strong style="color: #333;">Sound character:</strong> ${narrative.soundCharacter}
+        <strong style="color: #333;">What it brings to the music:</strong><br>
+        ${narrative.soundCharacter}
       </p>
       <p style="margin: 10px 0; color: #666; line-height: 1.8;">
-        <strong style="color: #333;">Cabinet matches:</strong> ${narrative.cabinetMatches}
+        <strong style="color: #333;">Where it performs best:</strong><br>
+        ${narrative.cabinetMatches}
       </p>
     </div>
-  `).join('');
-
-  const cartItemsHtml = cartItems.map(item => `
-    <tr>
-      <td style="padding: 15px; border-bottom: 1px solid #eee;">
-        <strong style="font-size: 16px; color: #333;">${item.title}</strong>
-        <br>
-        <span style="color: #666; font-size: 14px;">Quantity: ${item.quantity}</span>
-      </td>
-    </tr>
   `).join('');
 
   return `
@@ -366,6 +356,21 @@ export function buildNarrativeEmail(
         font-weight: bold;
         font-size: 16px;
       }
+      .cart-link-text {
+        text-align: center;
+        margin: 20px 0;
+      }
+      .cart-link-text a {
+        color: #c59862;
+        text-decoration: underline;
+        font-size: 16px;
+      }
+      .body-text {
+        font-size: 16px;
+        line-height: 1.8;
+        color: #333;
+        margin: 20px 0;
+      }
       .build-queue-reminder {
         background-color: #fff8e1;
         border-left: 4px solid #c59862;
@@ -378,6 +383,12 @@ export function buildNarrativeEmail(
         color: #666;
         font-size: 15px;
         line-height: 1.6;
+      }
+      .link-url {
+        word-break: break-all;
+        font-size: 14px;
+        color: #666;
+        margin-top: 10px;
       }
       table {
         width: 100%;
@@ -465,51 +476,33 @@ export function buildNarrativeEmail(
         <img src="${logoUrl}" alt="Lowther Loudspeakers" />
       </div>
       <div class="header">
-        <h1>The Story Behind Your Selection</h1>
-        <p>Why we make what we make</p>
+        <h1>A little more about your chosen Lowther instruments</h1>
       </div>
       <div class="content">
         <div class="cart-link-top">
-          <a href="${cartUrl}">View Your Cart →</a>
+          <a href="${cartUrl}">Return to your cart here</a>
         </div>
 
-        <p>Hi there,</p>
-        
-        <p>We wanted to share a bit more about the instruments you've selected and why we make them the way we do.</p>
+        <div class="body-text">
+          <p>Because you placed items in your cart, your place in our build queue is still reserved for seven days from when we first detected your abandoned cart. If you choose to return during this time, your instruments will be among the first in line to be handmade by our team.</p>
+
+          <p>Below is a short guide to the items you selected and why we make them.</p>
+        </div>
 
         ${narrativeSections}
 
-        <div class="build-queue-reminder">
-          <p><strong>Remember:</strong> Your place in our build queue is reserved for 7 days from when you first added items to your cart. Every Lowther instrument is handmade to order, so securing your slot ensures we can begin crafting yours.</p>
+        <div class="body-text">
+          <p>If any of these raise questions about matching to your room, cabinet or amplifier, feel free to contact us at <a href="mailto:hello@lowtherloudspeakers.com" style="color: #c59862; text-decoration: none;">hello@lowtherloudspeakers.com</a> and we will be happy to help.</p>
         </div>
-
-        <p>Your current selection:</p>
-
-        <table>
-          <thead>
-            <tr>
-              <th>Items in Your Cart</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${cartItemsHtml}
-          </tbody>
-        </table>
 
         <div class="button-container">
-          <a href="${cartUrl}" class="button">Complete Your Purchase</a>
+          <a href="${cartUrl}" class="button">Complete your order</a>
         </div>
 
-        <div class="help-section">
-          <p>
-            <strong>Questions?</strong><br>
-            We're here to help. Contact us at 
-            <a href="mailto:hello@lowtherloudspeakers.com">hello@lowtherloudspeakers.com</a>
-          </p>
-        </div>
-
-        <div class="cart-link-top" style="margin-top: 30px;">
-          <a href="${cartUrl}">View Your Cart →</a>
+        <div class="cart-link-text">
+          <p>You can return to your cart at any time and complete your order here:</p>
+          <p class="link-url">${cartUrl}</p>
+          <p style="margin-top: 10px;">Or paste this link into your browser: ${cartUrl}</p>
         </div>
 
         <div class="footer">
@@ -531,28 +524,11 @@ export function buildNarrativeEmail(
 export function buildFinalCallEmail(cartUrl: string, cartItems: CartItem[]): string {
   const logoUrl = getLogoUrl();
 
-  const cartItemsHtml = cartItems.map(item => `
-    <tr>
-      <td style="padding: 15px; border-bottom: 1px solid #eee; vertical-align: top;">
-        ${item.image ? `<img src="${item.image}" alt="${item.title}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 4px; display: block;">` : ''}
-      </td>
-      <td style="padding: 15px; border-bottom: 1px solid #eee;">
-        <strong style="font-size: 16px; color: #333;">${item.title}</strong>
-        <br>
-        <span style="color: #666; font-size: 14px;">Quantity: ${item.quantity}</span>
-        ${item.price ? `<br><span style="color: #333; font-size: 14px; font-weight: 500;">${item.price}</span>` : ''}
-      </td>
-    </tr>
+  const cartItemsList = cartItems.map(item => `
+    <p style="margin: 10px 0; padding: 10px 0; border-bottom: 1px solid #eee;">
+      <strong>${item.quantity} × ${item.title}</strong>
+    </p>
   `).join('');
-
-  const total = cartItems.reduce((sum, item) => {
-    if (item.price) {
-      const priceValue = parseFloat(item.price.replace(/[£,]/g, '')) || 0;
-      return sum + (priceValue * item.quantity);
-    }
-    return sum;
-  }, 0);
-  const totalFormatted = `£${total.toFixed(2)}`;
 
   return `
 <!DOCTYPE html>
@@ -620,70 +596,37 @@ export function buildFinalCallEmail(cartUrl: string, cartItems: CartItem[]): str
         font-weight: bold;
         font-size: 16px;
       }
-      .warning-notice {
-        background-color: #fff3cd;
-        border-left: 4px solid #c59862;
-        padding: 20px;
+      .cart-link-text {
+        text-align: center;
         margin: 20px 0;
-        border-radius: 4px;
       }
-      .warning-notice h2 {
-        margin: 0 0 10px 0;
-        font-size: 20px;
+      .cart-link-text a {
+        color: #c59862;
+        text-decoration: underline;
+        font-size: 16px;
+      }
+      .body-text {
+        font-size: 16px;
+        line-height: 1.8;
         color: #333;
-      }
-      .warning-notice p {
-        margin: 10px 0;
-        color: #666;
-        font-size: 15px;
-        line-height: 1.6;
-      }
-      .reassurance {
-        background-color: #e8f5e9;
-        border-left: 4px solid #4caf50;
-        padding: 20px;
         margin: 20px 0;
-        border-radius: 4px;
       }
-      .reassurance p {
-        margin: 0;
-        color: #666;
-        font-size: 15px;
-        line-height: 1.6;
-      }
-      table {
-        width: 100%;
-        background: white;
+      .cart-items {
+        background: #f9f9f9;
+        padding: 20px;
         border-radius: 8px;
-        overflow: hidden;
         margin: 30px 0;
-        border-collapse: collapse;
-        border: 1px solid #eee;
       }
-      th {
-        background: #f5f5f5;
-        padding: 15px;
-        text-align: left;
-        font-weight: bold;
+      .cart-items h3 {
+        margin: 0 0 15px 0;
+        font-size: 18px;
+        color: #333;
+      }
+      .link-url {
+        word-break: break-all;
         font-size: 14px;
-        color: #333;
-        border-bottom: 2px solid #eee;
-      }
-      td {
-        padding: 15px;
-        border-bottom: 1px solid #eee;
-      }
-      .total {
-        background: white;
-        padding: 20px;
-        border-radius: 8px;
-        text-align: right;
-        margin-top: 20px;
-        border: 1px solid #eee;
-      }
-      .total strong {
-        font-size: 24px;
-        color: #333;
+        color: #666;
+        margin-top: 10px;
       }
       .button-container {
         text-align: center;
@@ -755,57 +698,37 @@ export function buildFinalCallEmail(cartUrl: string, cartItems: CartItem[]): str
         <img src="${logoUrl}" alt="Lowther Loudspeakers" />
       </div>
       <div class="header">
-        <h1>Your Build Queue Slot Expires Tomorrow</h1>
-        <p>One last chance to secure your place</p>
+        <h1>We are holding your slot in our build queue</h1>
       </div>
       <div class="content">
         <div class="cart-link-top">
-          <a href="${cartUrl}">View Your Cart →</a>
+          <a href="${cartUrl}">Return to your cart here</a>
         </div>
 
-        <p>Hi there,</p>
-        
-        <div class="warning-notice">
-          <h2>We're Holding Your Slot</h2>
-          <p><strong>We handmake everything to order.</strong> Your reserved slot in our build queue will be released tomorrow if you don't complete your purchase.</p>
+        <div class="body-text">
+          <p>We handmake every Lowther instrument to order. Because you placed items in your cart, we have been holding a reserved slot for you in our build queue. This reservation will end tomorrow.</p>
+
+          <p>If you would like your loudspeaker or drive unit to be among the first in line, you can complete your order before the reservation expires. Once the slot is released, your place in the queue will return to a first come first serve basis.</p>
+
+          <p>Your cart will still be saved. You can come back to it at any time.</p>
         </div>
 
-        <div class="reassurance">
-          <p><strong>Don't worry:</strong> Your cart will still be waiting for you when you come back. We just won't be able to hold your place in the build queue any longer.</p>
+        <div class="cart-items">
+          <h3>Items currently in your cart:</h3>
+          ${cartItemsList}
         </div>
 
-        <p>Your items are still here:</p>
-
-        <table>
-          <thead>
-            <tr>
-              <th>Item</th>
-              <th>Details</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${cartItemsHtml}
-          </tbody>
-        </table>
-
-        <div class="total">
-          <strong>Total: ${totalFormatted}</strong>
+        <div class="body-text">
+          <p>If you need help choosing the right instrument or have questions about pairing your system, you can contact us at <a href="mailto:hello@lowtherloudspeakers.com" style="color: #c59862; text-decoration: none;">hello@lowtherloudspeakers.com</a> and we will be happy to help.</p>
         </div>
 
         <div class="button-container">
-          <a href="${cartUrl}" class="button">Complete Your Purchase Now</a>
+          <a href="${cartUrl}" class="button">Complete your order</a>
         </div>
 
-        <div class="help-section">
-          <p>
-            <strong>Need help?</strong><br>
-            If you have any questions or need assistance completing your purchase, please contact us at 
-            <a href="mailto:hello@lowtherloudspeakers.com">hello@lowtherloudspeakers.com</a>
-          </p>
-        </div>
-
-        <div class="cart-link-top" style="margin-top: 30px;">
-          <a href="${cartUrl}">View Your Cart →</a>
+        <div class="cart-link-text">
+          <p>Complete your order here: <a href="${cartUrl}" style="color: #c59862; text-decoration: underline;">${cartUrl}</a></p>
+          <p style="margin-top: 10px;">Or paste this link into your browser: ${cartUrl}</p>
         </div>
 
         <div class="footer">

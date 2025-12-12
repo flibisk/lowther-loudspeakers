@@ -254,7 +254,7 @@ export async function processAbandonedCheckouts(): Promise<{
           const html = buildNarrativeEmail(narratives, state.cartUrl, state.cartItems);
           const success = await sendEmail(
             state.email,
-            'The Story Behind Your Selection - Lowther Loudspeakers',
+            'A closer look at the instruments in your cart',
             html
           );
 
@@ -278,7 +278,7 @@ export async function processAbandonedCheckouts(): Promise<{
           const html = buildFinalCallEmail(state.cartUrl, state.cartItems);
           const success = await sendEmail(
             state.email,
-            'Your Build Queue Slot Expires Tomorrow - Final Call',
+            'Your reserved build queue slot expires tomorrow',
             html
           );
 
