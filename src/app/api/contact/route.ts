@@ -16,24 +16,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if Resend API key is configured
-    if (!process.env.RESEND_API_KEY) {
-      console.error('RESEND_API_KEY is not configured');
-      return NextResponse.json(
-        { success: false, message: 'Email service not configured. Please contact support.' },
-        { status: 500 }
-      );
-    }
-
-    // Use verified domain email
-    const fromEmail = process.env.RESEND_FROM_EMAIL || 'noreply@lowtherloudspeakers.com';
-    const contactEmail = process.env.CONTACT_EMAIL || 'social@lowtherloudspeakers.com';
-    const secondaryEmail = process.env.RESEND_SECONDARY_EMAIL || 'hello@lowtherloudspeakers.com';
-
     // Send email via Resend
     const { data, error } = await resend.emails.send({
-      from: `Lowther Website <${fromEmail}>`,
-      to: [contactEmail, secondaryEmail],
+      from: 'Lowther Website <noreply@lowtherloudspeakers.com>',
+      to: [process.env.CONTACT_EMAIL || 'contact@lowtherloudspeakers.com'],
       replyTo: email,
       subject: `${segment || 'Contact'} Form Submission from ${name}`,
       html: `
@@ -136,58 +122,10 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('Resend error:', error);
-      // Return more detailed error for debugging
-      const errorMessage = error.message || 'Failed to send email';
-      console.error('Full error details:', JSON.stringify(error, null, 2));
       return NextResponse.json(
-        { 
-          success: false, 
-          message: process.env.NODE_ENV === 'development' 
-            ? `Error: ${errorMessage}` 
-            : 'Failed to send email. Please try again or contact us directly.' 
-        },
+        { success: false, message: 'Failed to send email' },
         { status: 500 }
       );
-    }
-
-    // Add to Beehiiv subscriber list (optional, don't fail if it errors)
-    if (process.env.BEEHIIV_API_KEY && process.env.BEEHIIV_PUBLICATION_ID) {
-      try {
-        const beehiivResponse = await fetch(
-          `https://api.beehiiv.com/v2/publications/${process.env.BEEHIIV_PUBLICATION_ID}/subscriptions`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${process.env.BEEHIIV_API_KEY}`,
-            },
-            body: JSON.stringify({
-              email,
-              reactivate_existing: false,
-              send_welcome_email: false,
-              utm_source: 'website',
-              utm_medium: 'contact_form',
-              utm_campaign: segment || 'general_contact',
-              referring_site: 'lowtherloudspeakers.com',
-              custom_fields: [
-                { name: 'full_name', value: name },
-                { name: 'phone', value: phone || '' },
-                { name: 'location', value: location || '' },
-                { name: 'lead_type', value: segment || 'Contact Form' },
-              ],
-            }),
-          }
-        );
-
-        if (!beehiivResponse.ok) {
-          const beehiivError = await beehiivResponse.json();
-          console.error('Beehiiv API error (non-fatal):', beehiivError);
-        } else {
-          console.log('Successfully added to Beehiiv');
-        }
-      } catch (beehiivError) {
-        console.error('Beehiiv integration error (non-fatal):', beehiivError);
-      }
     }
 
     return NextResponse.json({
@@ -203,4 +141,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-
