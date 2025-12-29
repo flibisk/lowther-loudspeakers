@@ -62,7 +62,7 @@ export async function submitLead(payload: LeadSubmissionPayload): Promise<LeadSu
     ? notificationEmailsEnv.split(',').map(e => e.trim()).filter(Boolean)
     : ['social@lowtherloudspeakers.com', 'hello@lowtherloudspeakers.com']; // Safe fallback
 
-  const fromEmail = process.env.RESEND_FROM_EMAIL || 'noreply@lowtherloudspeakers.com';
+  const fromEmail = process.env.RESEND_FROM_EMAIL || 'mrbird@lowtherloudspeakers.com';
 
   // Build email HTML content
   const emailHtml = buildEmailHtml({
