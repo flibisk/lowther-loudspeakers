@@ -29,8 +29,9 @@ export interface LeadSubmissionResult {
  * 2. Sends email notification via Resend (PRIORITY - must succeed)
  * 3. Adds to Beehiiv (optional - can fail without breaking the submission)
  * 
- * Email is always sent to FORM_NOTIFICATION_EMAILS (comma-separated list)
- * Falls back to default emails if env var not set.
+ * Email is always sent to: peter@shinystudio.co.uk
+ * From: Lowther Website <mrbird@lowtherloudspeakers.com>
+ * No emails are sent to Microsoft-facing inboxes.
  */
 export async function submitLead(payload: LeadSubmissionPayload): Promise<LeadSubmissionResult> {
   const { name, email, message, phone, location, segment, speakerInterest, ...extraFields } = payload;
@@ -56,12 +57,8 @@ export async function submitLead(payload: LeadSubmissionPayload): Promise<LeadSu
     };
   }
 
-  // Get notification emails from env var (comma-separated)
-  const notificationEmailsEnv = process.env.FORM_NOTIFICATION_EMAILS;
-  const notificationEmails = notificationEmailsEnv
-    ? notificationEmailsEnv.split(',').map(e => e.trim()).filter(Boolean)
-    : ['social@lowtherloudspeakers.com', 'hello@lowtherloudspeakers.com']; // Safe fallback
-
+  // All form notifications go to external address only (no Microsoft-facing inboxes)
+  const notificationEmail = 'peter@shinystudio.co.uk';
   const fromEmail = process.env.RESEND_FROM_EMAIL || 'mrbird@lowtherloudspeakers.com';
 
   // Build email HTML content
@@ -94,17 +91,14 @@ export async function submitLead(payload: LeadSubmissionPayload): Promise<LeadSu
   let emailError: string | undefined;
 
   try {
-    console.log(`[LEAD SUBMISSION] Sending email for segment: ${segment}`, {
-      from: fromEmail,
-      to: notificationEmails,
-      replyTo: email,
-      segment,
+    console.log(`[FORM NOTIFICATION] Sending email for formType: ${segment}`, {
+      formType: segment,
       timestamp: new Date().toISOString(),
     });
 
     const { data, error } = await resend.emails.send({
       from: `Lowther Website <${fromEmail}>`,
-      to: notificationEmails,
+      to: [notificationEmail],
       replyTo: email,
       subject: `New ${segment} Enquiry${speakerInterest ? ` - ${speakerInterest}` : ''}`,
       html: emailHtml,
@@ -112,30 +106,31 @@ export async function submitLead(payload: LeadSubmissionPayload): Promise<LeadSu
     });
 
     if (error) {
-      console.error('[LEAD SUBMISSION] Resend API error:', {
+      console.error('[FORM NOTIFICATION] Resend API error:', {
+        formType: segment,
         error: error.message,
         statusCode: (error as any).statusCode,
-        segment,
       });
       emailError = error.message;
       emailOk = false;
     } else if (data?.id) {
-      console.log('[LEAD SUBMISSION] Email sent successfully:', {
+      console.log('[FORM NOTIFICATION] Email sent successfully:', {
+        formType: segment,
         resendId: data.id,
-        to: notificationEmails,
-        segment,
+        success: true,
       });
       emailOk = true;
       resendId = data.id;
     } else {
-      console.error('[LEAD SUBMISSION] Resend returned no data and no error');
+      console.error('[FORM NOTIFICATION] Resend returned no data and no error');
       emailError = 'Unknown error from Resend API';
       emailOk = false;
     }
   } catch (err: any) {
-    console.error('[LEAD SUBMISSION] Error sending email:', {
+    console.error('[FORM NOTIFICATION] Error sending email:', {
+      formType: segment,
       error: err.message,
-      segment,
+      failure: true,
     });
     emailError = err.message;
     emailOk = false;

@@ -9,26 +9,20 @@ export async function GET() {
   const checks = {
     resendConfigured: !!process.env.RESEND_API_KEY,
     beehiivConfigured: !!(process.env.BEEHIIV_API_KEY && process.env.BEEHIIV_PUBLICATION_ID),
-    notificationEmailsConfigured: !!process.env.FORM_NOTIFICATION_EMAILS,
     fromEmailConfigured: !!process.env.RESEND_FROM_EMAIL,
   };
 
-  // Parse notification emails count
-  const notificationEmailsEnv = process.env.FORM_NOTIFICATION_EMAILS;
-  const notificationEmailsCount = notificationEmailsEnv
-    ? notificationEmailsEnv.split(',').map(e => e.trim()).filter(Boolean).length
-    : 2; // Default fallback count
+  // Form notifications always go to peter@shinystudio.co.uk (hardcoded)
+  const notificationEmail = 'peter@shinystudio.co.uk';
 
-  const ok = checks.resendConfigured && notificationEmailsCount > 0;
+  const ok = checks.resendConfigured;
 
   return NextResponse.json({
     ok,
     resendConfigured: checks.resendConfigured,
     beehiivConfigured: checks.beehiivConfigured,
-    notificationEmailsCount,
-    notificationEmailsConfigured: checks.notificationEmailsConfigured,
+    notificationEmail,
     fromEmailConfigured: checks.fromEmailConfigured,
     timestamp: new Date().toISOString(),
   });
 }
-

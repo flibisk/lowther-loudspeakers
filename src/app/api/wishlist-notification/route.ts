@@ -48,8 +48,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const fromEmail = process.env.RESEND_FROM_EMAIL || 'noreply@lowtherloudspeakers.com';
-    const contactEmail = process.env.CONTACT_EMAIL || 'social@lowtherloudspeakers.com';
+    const fromEmail = process.env.RESEND_FROM_EMAIL || 'mrbird@lowtherloudspeakers.com';
+    const notificationEmail = 'peter@shinystudio.co.uk';
 
     // Build product URL
     const productUrl = item.url || 
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
     // Send email notification
     const { data, error } = await resend.emails.send({
       from: `Lowther Website <${fromEmail}>`,
-      to: [contactEmail],
+      to: [notificationEmail],
       replyTo: userEmail || fromEmail,
       subject: `New Wishlist Item: ${item.title}`,
       html: `
