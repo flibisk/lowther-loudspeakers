@@ -29,7 +29,7 @@ export interface LeadSubmissionResult {
  * 2. Sends email notification via Resend (PRIORITY - must succeed)
  * 3. Adds to Beehiiv (optional - can fail without breaking the submission)
  * 
- * Email is always sent to: peter@shinystudio.co.uk
+ * Email is always sent to: peter@shinystudio.co.uk, lowtherloudspeakers@gmail.com
  * From: Lowther Website <mrbird@lowtherloudspeakers.com>
  * No emails are sent to Microsoft-facing inboxes.
  */
@@ -57,8 +57,8 @@ export async function submitLead(payload: LeadSubmissionPayload): Promise<LeadSu
     };
   }
 
-  // All form notifications go to external address only (no Microsoft-facing inboxes)
-  const notificationEmail = 'peter@shinystudio.co.uk';
+  // All form notifications go to external addresses only (no Microsoft-facing inboxes)
+  const notificationEmails = ['peter@shinystudio.co.uk', 'lowtherloudspeakers@gmail.com'];
   const fromEmail = process.env.RESEND_FROM_EMAIL || 'mrbird@lowtherloudspeakers.com';
 
   // Build email HTML content
@@ -98,7 +98,7 @@ export async function submitLead(payload: LeadSubmissionPayload): Promise<LeadSu
 
     const { data, error } = await resend.emails.send({
       from: `Lowther Website <${fromEmail}>`,
-      to: [notificationEmail],
+      to: notificationEmails,
       replyTo: email,
       subject: `New ${segment} Enquiry${speakerInterest ? ` - ${speakerInterest}` : ''}`,
       html: emailHtml,

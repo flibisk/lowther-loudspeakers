@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
     }
 
     const fromEmail = process.env.RESEND_FROM_EMAIL || 'mrbird@lowtherloudspeakers.com';
-    const notificationEmail = 'peter@shinystudio.co.uk';
+    const notificationEmails = ['peter@shinystudio.co.uk', 'lowtherloudspeakers@gmail.com'];
 
     // Build product URL
     const productUrl = item.url || 
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
     // Send email notification
     const { data, error } = await resend.emails.send({
       from: `Lowther Website <${fromEmail}>`,
-      to: [notificationEmail],
+      to: notificationEmails,
       replyTo: userEmail || fromEmail,
       subject: `New Wishlist Item: ${item.title}`,
       html: `

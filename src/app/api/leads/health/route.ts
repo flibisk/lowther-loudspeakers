@@ -12,8 +12,8 @@ export async function GET() {
     fromEmailConfigured: !!process.env.RESEND_FROM_EMAIL,
   };
 
-  // Form notifications always go to peter@shinystudio.co.uk (hardcoded)
-  const notificationEmail = 'peter@shinystudio.co.uk';
+  // Form notifications always go to external addresses (hardcoded)
+  const notificationEmails = ['peter@shinystudio.co.uk', 'lowtherloudspeakers@gmail.com'];
 
   const ok = checks.resendConfigured;
 
@@ -21,7 +21,8 @@ export async function GET() {
     ok,
     resendConfigured: checks.resendConfigured,
     beehiivConfigured: checks.beehiivConfigured,
-    notificationEmail,
+    notificationEmails,
+    notificationEmailsCount: notificationEmails.length,
     fromEmailConfigured: checks.fromEmailConfigured,
     timestamp: new Date().toISOString(),
   });
