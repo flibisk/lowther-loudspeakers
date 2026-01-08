@@ -14,6 +14,13 @@ const nextConfig: NextConfig = {
         tls: false,
       };
     }
+    // Ensure Prisma Client resolves correctly
+    if (isServer) {
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        '.prisma/client/default': require.resolve('.prisma/client/default'),
+      };
+    }
     return config;
   },
   async redirects() {
