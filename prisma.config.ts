@@ -5,6 +5,12 @@ import { defineConfig } from "prisma/config";
 
 export default defineConfig({
   schema: "prisma/schema.prisma",
+  generator: {
+    client: {
+      provider: "prisma-client",
+      output: "../node_modules/.prisma/client",
+    },
+  },
   migrations: {
     path: "prisma/migrations",
   },
