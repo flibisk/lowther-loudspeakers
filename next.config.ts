@@ -16,13 +16,6 @@ const nextConfig: NextConfig = {
     }
     return config;
   },
-  experimental: {
-    turbo: {
-      resolveAlias: {
-        '@prisma/client': './node_modules/.prisma/client/client',
-      },
-    },
-  },
   async redirects() {
     return [
       // Explicit mappings provided

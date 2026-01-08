@@ -8,7 +8,12 @@ declare module '.prisma/client/default' {
   export * from '../../node_modules/.prisma/client/models';
 }
 
-// Re-export from @prisma/client
+// Re-export from @prisma/client to match the package's index.d.ts
 declare module '@prisma/client' {
   export * from '.prisma/client/default';
+  
+  // Explicitly export PrismaClient for TypeScript
+  import { PrismaClient as _PrismaClient } from '../../node_modules/.prisma/client/client';
+  export const PrismaClient: typeof _PrismaClient;
+  export type PrismaClient = _PrismaClient;
 }
