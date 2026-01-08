@@ -8,7 +8,6 @@
     ],
     "allowJs": true,
     "skipLibCheck": true,
-    "typeRoots": ["./node_modules/@types", "./node_modules/.prisma/client"],
     "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
@@ -26,11 +25,9 @@
     "paths": {
       "@/*": [
         "./src/*"
-      ],
-      "@prisma/client": [
-        "./node_modules/.prisma/client/client"
       ]
-    }
+    },
+    "types": ["node"]
   },
   "include": [
     "next-env.d.ts",
