@@ -1,3 +1,4 @@
+// @ts-ignore - TypeScript path alias resolves this
 import { PrismaClient } from '@prisma/client';
 
 const globalForPrisma = globalThis as unknown as {
