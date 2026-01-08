@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "build": "prisma generate && next build --turbopack",
     "start": "next start",
     "lint": "eslint",
     "seo-audit": "tsx scripts/seo-audit.ts",
@@ -12,6 +12,7 @@
     "test:shopify": "tsx src/lib/test-shopify-connection.ts",
     "test:admin": "tsx src/lib/test-admin-api.ts",
     "test:integration": "tsx src/lib/test-integration.ts",
+    "postinstall": "prisma generate",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",

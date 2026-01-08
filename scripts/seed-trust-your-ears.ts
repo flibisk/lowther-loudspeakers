@@ -3,7 +3,7 @@
  * Adds example albums and votes to the database
  */
 
-import { PrismaClient } from '../src/generated/prisma';
+import { PrismaClient } from '@prisma/client';
 import { createHash } from 'crypto';
 
 const prisma = new PrismaClient();
