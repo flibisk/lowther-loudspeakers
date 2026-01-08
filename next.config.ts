@@ -4,6 +4,25 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+  webpack: (config, { isServer }) => {
+    // Handle Prisma Client imports
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+      };
+    }
+    return config;
+  },
+  experimental: {
+    turbo: {
+      resolveAlias: {
+        '@prisma/client': './node_modules/.prisma/client/client',
+      },
+    },
+  },
   async redirects() {
     return [
       // Explicit mappings provided
