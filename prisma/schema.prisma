@@ -1,0 +1,41 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Album {
+  id            String   @id @default(uuid())
+  spotifyAlbumId String  @unique
+  title         String
+  artist        String
+  year          Int?
+  coverUrl      String
+  votesCount    Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  votes         Vote[]
+  
+  @@index([votesCount])
+  @@index([spotifyAlbumId])
+}
+
+model Vote {
+  id        String   @id @default(uuid())
+  albumId   String
+  voterHash String   // Hash of cookie ID + IP address
+  createdAt DateTime @default(now())
+  
+  album     Album    @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  
+  @@unique([albumId, voterHash])
+  @@index([albumId])
+  @@index([voterHash])
+}
