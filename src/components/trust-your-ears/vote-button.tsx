@@ -8,7 +8,7 @@ interface VoteButtonProps {
   onSuccess?: () => void;
 }
 
-export function VoteButton({ spotifyAlbumId, onSuccess }: VoteButtonProps) {
+export function VoteButton({ musicBrainzReleaseGroupId, onSuccess }: VoteButtonProps) {
   const [loading, setLoading] = useState(false);
   const [voted, setVoted] = useState(false);
   const [error, setError] = useState<string | null>(null);
