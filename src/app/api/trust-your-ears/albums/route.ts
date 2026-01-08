@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
       },
       select: {
         id: true,
-        spotifyAlbumId: true,
+        musicBrainzReleaseGroupId: true,
         title: true,
         artist: true,
         year: true,

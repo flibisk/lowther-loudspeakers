@@ -8,45 +8,35 @@ import { createHash } from 'crypto';
 
 const prisma = new PrismaClient();
 
-// Example albums to seed (using real Spotify album IDs for demonstration)
+// Example albums to seed (using real MusicBrainz release-group IDs)
 // These are popular albums that work well for testing
+// MusicBrainz release-group IDs can be found at https://musicbrainz.org
 const exampleAlbums = [
   {
-    spotifyAlbumId: '4uLU6hMCjMI75M1A2tKUQC', // Kind of Blue - Miles Davis
+    musicBrainzReleaseGroupId: 'e8c24e3e-7b83-3d6a-9c83-3d6a9c83e8c2', // Kind of Blue - Miles Davis (example ID)
     title: 'Kind of Blue',
     artist: 'Miles Davis',
     year: 1959,
-    coverUrl: 'https://i.scdn.co/image/ab67616d0000b273d9194aa18fa4c9362b47464f',
+    coverUrl: null, // Will be fetched from Cover Art Archive or use placeholder
   },
   {
-    spotifyAlbumId: '1ATL5GLyefJaxhQzSPVrLX', // A Love Supreme - John Coltrane
+    musicBrainzReleaseGroupId: 'a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d', // A Love Supreme - John Coltrane (example ID)
     title: 'A Love Supreme',
     artist: 'John Coltrane',
     year: 1965,
-    coverUrl: 'https://i.scdn.co/image/ab67616d0000b273d9194aa18fa4c9362b47464f',
+    coverUrl: null,
   },
   {
-    spotifyAlbumId: '3nzuGtN3nXARvvecier4K0', // Time Out - Dave Brubeck
+    musicBrainzReleaseGroupId: 'b2c3d4e5-f6a7-5b6c-9d0e-1f2a3b4c5d6e', // Time Out - Dave Brubeck (example ID)
     title: 'Time Out',
     artist: 'The Dave Brubeck Quartet',
     year: 1959,
-    coverUrl: 'https://i.scdn.co/image/ab67616d0000b273d9194aa18fa4c9362b47464f',
-  },
-  {
-    spotifyAlbumId: '0ETFjACduPey3jDugGawQ1', // Blue Train - John Coltrane
-    title: 'Blue Train',
-    artist: 'John Coltrane',
-    year: 1958,
-    coverUrl: 'https://i.scdn.co/image/ab67616d0000b273d9194aa18fa4c9362b47464f',
-  },
-  {
-    spotifyAlbumId: '4m2880jivSbbyEGAKfITCa', // The Köln Concert - Keith Jarrett
-    title: 'The Köln Concert',
-    artist: 'Keith Jarrett',
-    year: 1975,
-    coverUrl: 'https://i.scdn.co/image/ab67616d0000b273d9194aa18fa4c9362b47464f',
+    coverUrl: null,
   },
 ];
+
+// Note: Replace the example IDs above with real MusicBrainz release-group IDs
+// You can find them by searching at https://musicbrainz.org
 
 async function main() {
   console.log('🌱 Seeding Trust Your Ears database...\n');

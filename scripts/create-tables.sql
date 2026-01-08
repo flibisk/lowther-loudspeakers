@@ -4,11 +4,11 @@
 -- Create Album table
 CREATE TABLE IF NOT EXISTS "Album" (
     "id" TEXT NOT NULL,
-    "spotifyAlbumId" TEXT NOT NULL,
+    "musicBrainzReleaseGroupId" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "artist" TEXT NOT NULL,
     "year" INTEGER,
-    "coverUrl" TEXT NOT NULL,
+    "coverUrl" TEXT,
     "votesCount" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -26,12 +26,12 @@ CREATE TABLE IF NOT EXISTS "Vote" (
     CONSTRAINT "Vote_pkey" PRIMARY KEY ("id")
 );
 
--- Create unique constraint on spotifyAlbumId
-CREATE UNIQUE INDEX IF NOT EXISTS "Album_spotifyAlbumId_key" ON "Album"("spotifyAlbumId");
+-- Create unique constraint on musicBrainzReleaseGroupId
+CREATE UNIQUE INDEX IF NOT EXISTS "Album_musicBrainzReleaseGroupId_key" ON "Album"("musicBrainzReleaseGroupId");
 
 -- Create indexes for performance
 CREATE INDEX IF NOT EXISTS "Album_votesCount_idx" ON "Album"("votesCount");
-CREATE INDEX IF NOT EXISTS "Album_spotifyAlbumId_idx" ON "Album"("spotifyAlbumId");
+CREATE INDEX IF NOT EXISTS "Album_musicBrainzReleaseGroupId_idx" ON "Album"("musicBrainzReleaseGroupId");
 CREATE INDEX IF NOT EXISTS "Vote_albumId_idx" ON "Vote"("albumId");
 CREATE INDEX IF NOT EXISTS "Vote_voterHash_idx" ON "Vote"("voterHash");
 

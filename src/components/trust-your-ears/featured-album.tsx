@@ -3,11 +3,11 @@ import Image from 'next/image';
 
 interface Album {
   id: string;
-  spotifyAlbumId: string;
+  musicBrainzReleaseGroupId: string;
   title: string;
   artist: string;
   year: number | null;
-  coverUrl: string;
+  coverUrl: string | null;
   votesCount: number;
 }
 
@@ -66,7 +66,7 @@ export async function FeaturedAlbum() {
         <div className="flex flex-col gap-6 sm:flex-row">
           {/* Album Cover */}
           <div className="relative aspect-square w-full shrink-0 overflow-hidden rounded-lg bg-neutral-100 sm:w-48">
-            {album.coverUrl && (
+            {album.coverUrl ? (
               <Image
                 src={album.coverUrl}
                 alt={`${album.title} by ${album.artist}`}
@@ -74,6 +74,10 @@ export async function FeaturedAlbum() {
                 className="object-cover"
                 sizes="(max-width: 640px) 100vw, 192px"
               />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center bg-neutral-200 text-neutral-400">
+                <span className="font-sarabun text-sm">No Cover</span>
+              </div>
             )}
           </div>
 

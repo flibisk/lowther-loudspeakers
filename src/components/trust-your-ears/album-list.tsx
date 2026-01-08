@@ -8,11 +8,11 @@ import { VoteButton } from './vote-button';
 
 interface Album {
   id: string;
-  spotifyAlbumId: string;
+  musicBrainzReleaseGroupId: string;
   title: string;
   artist: string;
   year: number | null;
-  coverUrl: string;
+  coverUrl: string | null;
   votesCount: number;
 }
 
@@ -84,7 +84,7 @@ export function AlbumList() {
           <CardContent className="p-0">
             {/* Album Cover */}
             <div className="relative aspect-square w-full overflow-hidden rounded-t-lg bg-neutral-100">
-              {album.coverUrl && (
+              {album.coverUrl ? (
                 <Image
                   src={album.coverUrl}
                   alt={`${album.title} by ${album.artist}`}
@@ -92,6 +92,10 @@ export function AlbumList() {
                   className="object-cover"
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                 />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center bg-neutral-200 text-neutral-400">
+                  <span className="font-sarabun text-xs">No Cover</span>
+                </div>
               )}
             </div>
 
@@ -115,7 +119,7 @@ export function AlbumList() {
                   {album.votesCount === 1 ? 'vote' : 'votes'}
                 </p>
                 <VoteButton
-                  spotifyAlbumId={album.spotifyAlbumId}
+                  musicBrainzReleaseGroupId={album.musicBrainzReleaseGroupId}
                   onSuccess={handleVoteSuccess}
                 />
               </div>

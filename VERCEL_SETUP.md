@@ -11,22 +11,14 @@ Go to your Vercel project → Settings → Environment Variables and add:
    postgres://postgres.miwdktwuufjkdwvgzdgq:oCzo0tRd6JPb2o9S@aws-1-us-east-1.pooler.supabase.com:6543/postgres?sslmode=require&pgbouncer=true
    ```
 
-2. **SPOTIFY_CLIENT_ID** (get from Spotify Developer Dashboard)
-   ```
-   your_spotify_client_id
-   ```
-
-3. **SPOTIFY_CLIENT_SECRET** (get from Spotify Developer Dashboard)
-   ```
-   your_spotify_client_secret
-   ```
-
-4. **NEXT_PUBLIC_SITE_URL** (your production URL)
+2. **NEXT_PUBLIC_SITE_URL** (your production URL)
    ```
    https://www.lowtherloudspeakers.com
    ```
 
 **Important:** Set these for **Production**, **Preview**, and **Development** environments.
+
+**Note:** No Spotify API keys needed! MusicBrainz and Cover Art Archive are free and don't require authentication.
 
 ## Step 2: Create Database Tables
 

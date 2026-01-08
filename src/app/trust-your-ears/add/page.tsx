@@ -8,18 +8,18 @@ import Image from 'next/image';
 import { Search, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 
-interface SpotifyAlbum {
-  spotifyAlbumId: string;
+interface MusicBrainzAlbum {
+  musicBrainzReleaseGroupId: string;
   title: string;
   artist: string;
   year: number | null;
-  coverUrl: string;
+  coverUrl: string | null;
 }
 
 export default function AddAlbumPage() {
   const router = useRouter();
   const [query, setQuery] = useState('');
-  const [albums, setAlbums] = useState<SpotifyAlbum[]>([]);
+  const [albums, setAlbums] = useState<MusicBrainzAlbum[]>([]);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -48,7 +48,7 @@ export default function AddAlbumPage() {
     setAlbums([]);
 
     try {
-      const response = await fetch(`/api/spotify/search-albums?q=${encodeURIComponent(query)}`);
+      const response = await fetch(`/api/musicbrainz/search-albums?q=${encodeURIComponent(query)}`);
       
       if (!response.ok) {
         throw new Error('Failed to search albums');
@@ -67,8 +67,8 @@ export default function AddAlbumPage() {
     }
   };
 
-  const handleSelectAlbum = async (album: SpotifyAlbum) => {
-    setSubmitting(album.spotifyAlbumId);
+  const handleSelectAlbum = async (album: MusicBrainzAlbum) => {
+    setSubmitting(album.musicBrainzReleaseGroupId);
     setError(null);
     setSuccess(null);
 
@@ -81,7 +81,7 @@ export default function AddAlbumPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          spotifyAlbumId: album.spotifyAlbumId,
+          musicBrainzReleaseGroupId: album.musicBrainzReleaseGroupId,
           cookieId,
         }),
       });
@@ -184,14 +184,14 @@ export default function AddAlbumPage() {
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {albums.map((album) => (
                 <Card
-                  key={album.spotifyAlbumId}
+                  key={album.musicBrainzReleaseGroupId}
                   className="border-neutral-200 cursor-pointer transition-shadow hover:shadow-md"
                   onClick={() => handleSelectAlbum(album)}
                 >
                   <CardContent className="p-0">
                     {/* Album Cover */}
                     <div className="relative aspect-square w-full overflow-hidden rounded-t-lg bg-neutral-100">
-                      {album.coverUrl && (
+                      {album.coverUrl ? (
                         <Image
                           src={album.coverUrl}
                           alt={`${album.title} by ${album.artist}`}
@@ -199,6 +199,10 @@ export default function AddAlbumPage() {
                           className="object-cover"
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center bg-neutral-200 text-neutral-400">
+                          <span className="font-sarabun text-sm">No Cover</span>
+                        </div>
                       )}
                     </div>
 
@@ -219,14 +223,14 @@ export default function AddAlbumPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        disabled={submitting === album.spotifyAlbumId}
+                        disabled={submitting === album.musicBrainzReleaseGroupId}
                         className="w-full font-sarabun text-xs"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleSelectAlbum(album);
                         }}
                       >
-                        {submitting === album.spotifyAlbumId ? (
+                        {submitting === album.musicBrainzReleaseGroupId ? (
                           <>
                             <Loader2 className="mr-2 size-3 animate-spin" />
                             Adding...

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 
 interface VoteButtonProps {
-  spotifyAlbumId: string;
+  musicBrainzReleaseGroupId: string;
   onSuccess?: () => void;
 }
 
@@ -23,7 +23,7 @@ export function VoteButton({ spotifyAlbumId, onSuccess }: VoteButtonProps) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ spotifyAlbumId }),
+        body: JSON.stringify({ musicBrainzReleaseGroupId }),
       });
 
       const data = await response.json();

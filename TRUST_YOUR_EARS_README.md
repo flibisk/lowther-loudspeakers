@@ -9,10 +9,10 @@ The "Trust Your Ears" feature has been fully implemented and is ready for setup.
 1. **Set Environment Variables** (`.env`):
    ```bash
    DATABASE_URL="postgresql://user:password@localhost:5432/lowther_db"
-   SPOTIFY_CLIENT_ID="your_spotify_client_id"
-   SPOTIFY_CLIENT_SECRET="your_spotify_client_secret"
    NEXT_PUBLIC_SITE_URL="http://localhost:3000"
    ```
+   
+   **Note:** No API keys needed! MusicBrainz and Cover Art Archive are free and don't require authentication.
 
 2. **Setup Database**:
    ```bash
@@ -37,14 +37,15 @@ The "Trust Your Ears" feature has been fully implemented and is ready for setup.
 - `src/lib/db/prisma.ts` - Prisma client singleton
 - `scripts/seed-trust-your-ears.ts` - Seed script with example albums
 
-### Spotify Integration
-- `src/lib/spotify/client.ts` - Spotify API client (search, get album)
+### MusicBrainz Integration
+- `src/lib/musicbrainz/client.ts` - MusicBrainz API client (search, get album)
+- `src/lib/cover-art-archive/client.ts` - Cover Art Archive client (fetch artwork)
 
 ### Voting System
 - `src/lib/trust-your-ears/voting.ts` - Vote tracking utilities (cookie + IP hash)
 
 ### API Routes
-- `src/app/api/spotify/search-albums/route.ts` - Search Spotify albums
+- `src/app/api/musicbrainz/search-albums/route.ts` - Search MusicBrainz albums
 - `src/app/api/trust-your-ears/vote/route.ts` - Submit vote/create album
 - `src/app/api/trust-your-ears/albums/route.ts` - Get all albums
 - `src/app/api/trust-your-ears/featured/route.ts` - Get featured album
@@ -63,7 +64,7 @@ The "Trust Your Ears" feature has been fully implemented and is ready for setup.
 
 ## Key Features
 
-✅ **Album Search** - Search Spotify for albums (metadata only, no branding)  
+✅ **Album Search** - Search MusicBrainz for albums (metadata only, no branding)  
 ✅ **Voting System** - One vote per user per album (cookie + IP hash)  
 ✅ **Featured Album** - Automatically displays highest-voted album  
 ✅ **Duplicate Prevention** - Prevents multiple votes from same user  
@@ -75,8 +76,8 @@ The "Trust Your Ears" feature has been fully implemented and is ready for setup.
 
 ### Album
 - `id` (UUID)
-- `spotifyAlbumId` (unique)
-- `title`, `artist`, `year`, `coverUrl`
+- `musicBrainzReleaseGroupId` (unique)
+- `title`, `artist`, `year`, `coverUrl` (nullable)
 - `votesCount` (default: 0)
 - `createdAt`, `updatedAt`
 
@@ -91,7 +92,7 @@ The "Trust Your Ears" feature has been fully implemented and is ready for setup.
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/spotify/search-albums?q={query}` | Search Spotify albums |
+| GET | `/api/musicbrainz/search-albums?q={query}` | Search MusicBrainz albums |
 | POST | `/api/trust-your-ears/vote` | Vote on/create album |
 | GET | `/api/trust-your-ears/albums` | Get all albums |
 | GET | `/api/trust-your-ears/featured` | Get featured album |
@@ -100,19 +101,14 @@ The "Trust Your Ears" feature has been fully implemented and is ready for setup.
 
 ```bash
 DATABASE_URL              # PostgreSQL connection string
-SPOTIFY_CLIENT_ID         # Spotify API client ID
-SPOTIFY_CLIENT_SECRET     # Spotify API client secret
 NEXT_PUBLIC_SITE_URL      # Site URL for API calls
 ```
 
+**Note:** No API keys required! MusicBrainz and Cover Art Archive are free services.
+
 ## Next Steps
 
-1. **Get Spotify Credentials**:
-   - Go to https://developer.spotify.com/dashboard
-   - Create a new app
-   - Copy Client ID and Secret
-
-2. **Setup Database**:
+1. **Setup Database**:
    - Choose: Local PostgreSQL, Vercel Postgres, or Supabase
    - Add `DATABASE_URL` to `.env`
    - Run `npm run db:push`

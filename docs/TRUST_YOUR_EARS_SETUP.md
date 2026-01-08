@@ -6,7 +6,8 @@
 
 ## Features
 
-- **Album Search**: Search Spotify for albums (metadata only, no Spotify branding)
+- **Album Search**: Search MusicBrainz for albums (metadata only, no external branding)
+- **Cover Art**: Automatically fetches album artwork from Cover Art Archive
 - **Voting System**: One vote per user per album (tracked via cookie + IP hash)
 - **Featured Album**: Automatically displays the album with the highest vote count
 - **Community List**: Shows all albums sorted by vote count
@@ -15,7 +16,8 @@
 ## Tech Stack
 
 - **Database**: PostgreSQL with Prisma ORM
-- **Search**: Spotify Web API (Client Credentials flow)
+- **Search**: MusicBrainz API (no authentication required)
+- **Cover Art**: Cover Art Archive API
 - **Framework**: Next.js 14 App Router
 - **Styling**: Tailwind CSS with Lowther design system
 
@@ -27,20 +29,13 @@ Add these to your `.env` file:
 # Database
 DATABASE_URL="postgresql://user:password@localhost:5432/lowther_db?schema=public"
 
-# Spotify API (Client Credentials)
-SPOTIFY_CLIENT_ID="your_spotify_client_id"
-SPOTIFY_CLIENT_SECRET="your_spotify_client_secret"
-
 # Site URL (for API calls)
 NEXT_PUBLIC_SITE_URL="http://localhost:3000"  # or your production URL
 ```
 
-### Getting Spotify Credentials
+### No API Keys Required!
 
-1. Go to [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
-2. Create a new app
-3. Copy the Client ID and Client Secret
-4. Add `http://localhost:3000` (and your production URL) to Redirect URIs (required even for client credentials flow)
+MusicBrainz and Cover Art Archive are free, open-source services that don't require authentication. However, MusicBrainz requires a proper User-Agent header (already configured in the code).
 
 ## Database Setup
 
@@ -87,16 +82,16 @@ This will add example albums and votes for testing.
 ### Album Model
 ```prisma
 model Album {
-  id            String   @id @default(uuid())
-  spotifyAlbumId String  @unique
-  title         String
-  artist        String
-  year          Int?
-  coverUrl      String
-  votesCount    Int      @default(0)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  votes         Vote[]
+  id                        String   @id @default(uuid())
+  musicBrainzReleaseGroupId String   @unique
+  title                     String
+  artist                    String
+  year                      Int?
+  coverUrl                  String?
+  votesCount                Int      @default(0)
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
+  votes                     Vote[]
 }
 ```
 
@@ -115,19 +110,19 @@ model Vote {
 
 ## API Routes
 
-### `GET /api/spotify/search-albums?q={query}`
-Searches Spotify for albums matching the query.
+### `GET /api/musicbrainz/search-albums?q={query}`
+Searches MusicBrainz for albums matching the query.
 
 **Response:**
 ```json
 {
   "albums": [
     {
-      "spotifyAlbumId": "4uLU6hMCjMI75M1A2tKUQC",
+      "musicBrainzReleaseGroupId": "e8c24e3e-7b83-3d6a-9c83-3d6a9c83e8c2",
       "title": "Kind of Blue",
       "artist": "Miles Davis",
       "year": 1959,
-      "coverUrl": "https://..."
+      "coverUrl": "https://coverartarchive.org/..." // or placeholder URL
     }
   ]
 }
@@ -139,7 +134,7 @@ Submits a vote for an album. If the album doesn't exist, it creates it first.
 **Request:**
 ```json
 {
-  "spotifyAlbumId": "4uLU6hMCjMI75M1A2tKUQC",
+  "musicBrainzReleaseGroupId": "e8c24e3e-7b83-3d6a-9c83-3d6a9c83e8c2",
   "cookieId": "optional-client-cookie-id"
 }
 ```

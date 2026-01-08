@@ -2,17 +2,18 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { prisma } from '@/lib/db/prisma';
 import { generateVoterHash, getClientIp } from '@/lib/trust-your-ears/voting';
-import { getAlbumById } from '@/lib/spotify/client';
+import { getAlbumById } from '@/lib/musicbrainz/client';
+import { getCoverArtUrl, getPlaceholderImageUrl } from '@/lib/cover-art-archive/client';
 import { createHash } from 'crypto';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { spotifyAlbumId, cookieId } = body;
+    const { musicBrainzReleaseGroupId, cookieId } = body;
 
-    if (!spotifyAlbumId || typeof spotifyAlbumId !== 'string') {
+    if (!musicBrainzReleaseGroupId || typeof musicBrainzReleaseGroupId !== 'string') {
       return NextResponse.json(
-        { error: 'spotifyAlbumId is required' },
+        { error: 'musicBrainzReleaseGroupId is required' },
         { status: 400 }
       );
     }
@@ -34,32 +35,31 @@ export async function POST(request: NextRequest) {
 
     // Check if album exists in database
     let album = await prisma.album.findUnique({
-      where: { spotifyAlbumId },
+      where: { musicBrainzReleaseGroupId },
     });
 
     if (!album) {
-      // Fetch album metadata from Spotify
-      const spotifyAlbum = await getAlbumById(spotifyAlbumId);
+      // Fetch album metadata from MusicBrainz
+      const musicBrainzAlbum = await getAlbumById(musicBrainzReleaseGroupId);
       
-      if (!spotifyAlbum) {
+      if (!musicBrainzAlbum) {
         return NextResponse.json(
-          { error: 'Album not found on Spotify' },
+          { error: 'Album not found on MusicBrainz' },
           { status: 404 }
         );
       }
 
-      // Create new album
-      const year = spotifyAlbum.release_date
-        ? parseInt(spotifyAlbum.release_date.split('-')[0])
-        : null;
+      // Fetch cover art
+      const coverUrl = await getCoverArtUrl(musicBrainzReleaseGroupId);
 
+      // Create new album
       album = await prisma.album.create({
         data: {
-          spotifyAlbumId: spotifyAlbum.id,
-          title: spotifyAlbum.name,
-          artist: spotifyAlbum.artists.map((a) => a.name).join(', '),
-          year,
-          coverUrl: spotifyAlbum.images[0]?.url || spotifyAlbum.images[1]?.url || '',
+          musicBrainzReleaseGroupId: musicBrainzAlbum.musicBrainzReleaseGroupId,
+          title: musicBrainzAlbum.title,
+          artist: musicBrainzAlbum.artist,
+          year: musicBrainzAlbum.year,
+          coverUrl: coverUrl || getPlaceholderImageUrl(),
           votesCount: 0,
         },
       });

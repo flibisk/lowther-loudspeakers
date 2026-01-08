@@ -12,7 +12,7 @@ export async function GET() {
       ],
       select: {
         id: true,
-        spotifyAlbumId: true,
+        musicBrainzReleaseGroupId: true,
         title: true,
         artist: true,
         year: true,
