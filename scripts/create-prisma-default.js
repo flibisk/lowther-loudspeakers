@@ -17,15 +17,18 @@ if (!fs.existsSync(clientTsPath)) {
 }
 
 // Create default.js that exports PrismaClient
-// The key: @prisma/client/index.js exports from '.prisma/client/default'
-// So we need to export what @prisma/client would export
-// We'll use a simple re-export and let webpack's NormalModuleReplacementPlugin handle it
+// The key insight: @prisma/client/default.js does: module.exports = { ...require('.prisma/client/default') }
+// So we need to export an object that can be spread
+// Since @prisma/client/index.js exports from '.prisma/client/default', we can export from index.js instead
+// This breaks the circular dependency: index.js -> default -> index.js (no @prisma/client/default.js in the chain)
 const defaultJsContent = `// This file is auto-generated. Do not edit manually.
 // It provides a CommonJS entry point for @prisma/client/default.js
-// Webpack's NormalModuleReplacementPlugin will replace this module with @prisma/client
+// We export from @prisma/client/index.js to avoid circular dependency with @prisma/client/default.js
 
-// Direct export - webpack plugin handles the replacement
-module.exports = require('@prisma/client');
+// Export from index.js instead of the main entry point
+// This avoids the circular dependency because index.js doesn't require default.js
+const prismaIndex = require('@prisma/client/index.js');
+module.exports = prismaIndex;
 `;
 
 fs.writeFileSync(defaultJsPath, defaultJsContent);
