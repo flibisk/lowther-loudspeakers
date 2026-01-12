@@ -16,16 +16,45 @@ if (!fs.existsSync(clientTsPath)) {
   process.exit(1);
 }
 
-// Create default.js as a minimal stub
-// Webpack's NormalModuleReplacementPlugin will replace this entire file
-// So we just need a placeholder that won't cause errors if webpack doesn't replace it
+// Create default.js that exports PrismaClient
+// CRITICAL INSIGHT: Both @prisma/client/index.js and @prisma/client/default.js require '.prisma/client/default'
+// This creates: @prisma/client -> .prisma/client/default -> @prisma/client (circular!)
+//
+// SOLUTION: Export from @prisma/client but break the cycle by checking cache first
+// If @prisma/client is already loaded, use cached exports
+// Otherwise, temporarily remove this file from cache, require @prisma/client, restore
 const defaultJsContent = `// This file is auto-generated. Do not edit manually.
 // It provides a CommonJS entry point for @prisma/client/default.js
-// Webpack's NormalModuleReplacementPlugin should replace this module entirely
-// If replacement fails, this stub prevents errors
+// @prisma/client/default.js does: module.exports = { ...require('.prisma/client/default') }
 
-// Export empty object - webpack plugin should replace this
-module.exports = {};
+const prismaClientId = require.resolve('@prisma/client');
+const thisFileId = require.resolve('.prisma/client/default');
+
+// Strategy: Check if @prisma/client is already loaded in cache
+const cachedPrisma = require.cache[prismaClientId];
+if (cachedPrisma && cachedPrisma.exports && typeof cachedPrisma.exports.PrismaClient === 'function') {
+  // Already loaded and has PrismaClient - use cached version (breaks circular dependency)
+  module.exports = cachedPrisma.exports;
+} else {
+  // Not loaded yet - break circular dependency by removing this file from cache
+  const cachedThis = require.cache[thisFileId];
+  delete require.cache[thisFileId];
+  
+  try {
+    // Now require @prisma/client - it won't find us in cache, breaking the cycle
+    const prismaClient = require('@prisma/client');
+    module.exports = prismaClient;
+  } catch (e) {
+    // Fallback: export empty object (shouldn't happen)
+    console.error('Failed to load @prisma/client:', e.message);
+    module.exports = {};
+  } finally {
+    // Restore cache
+    if (cachedThis) {
+      require.cache[thisFileId] = cachedThis;
+    }
+  }
+}
 `;
 
 fs.writeFileSync(defaultJsPath, defaultJsContent);
