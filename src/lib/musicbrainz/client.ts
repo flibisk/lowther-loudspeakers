@@ -146,7 +146,7 @@ export async function searchAlbums(query: string, limit: number = 10): Promise<A
 export async function getAlbumById(releaseGroupId: string): Promise<AlbumSearchResult | null> {
   try {
     const response = await fetch(
-      `https://musicbrainz.org/ws/2/release-group/${releaseGroupId}?fmt=json`,
+      `https://musicbrainz.org/ws/2/release-group/${releaseGroupId}?fmt=json&inc=artist-credits`,
       {
         headers: {
           'User-Agent': USER_AGENT,
