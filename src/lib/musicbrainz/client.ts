@@ -59,18 +59,16 @@ export async function searchAlbums(query: string, limit: number = 10): Promise<A
     const searchQuery = query.trim();
     
     // Build a query that searches by artist name primarily, then by release title
-    // artist:"query" matches albums BY that artist
-    // release:"query" matches albums with that title
-    // Fetch more results than needed (3x limit) to ensure we get good matches after filtering to albums only
-    const luceneQuery = `artist:"${searchQuery}" OR release:"${searchQuery}"`;
+    // artistname:"query" matches albums BY that artist (exact phrase match)
+    // releasegroup:"query" matches albums with that title
+    // Fetch more results than needed (5x limit) to ensure we get good matches after filtering to albums only
+    const luceneQuery = `artistname:"${searchQuery}" OR releasegroup:"${searchQuery}"`;
     
-    const params = new URLSearchParams({
-      query: luceneQuery,
-      fmt: 'json',
-      limit: Math.min(limit * 3, 50).toString(), // Fetch more, filter later
-    });
+    // Build URL manually to preserve quotes in the query
+    const encodedQuery = encodeURIComponent(luceneQuery);
+    const url = `https://musicbrainz.org/ws/2/release-group?query=${encodedQuery}&fmt=json&limit=${Math.min(limit * 5, 100)}`;
 
-    const response = await fetch(`https://musicbrainz.org/ws/2/release-group?${params}`, {
+    const response = await fetch(url, {
       headers: {
         'User-Agent': USER_AGENT,
         Accept: 'application/json',
