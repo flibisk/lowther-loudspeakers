@@ -32,7 +32,7 @@ const nextConfig: NextConfig = {
       if (config.externals) {
         const externals = Array.isArray(config.externals) ? config.externals : [config.externals];
         config.externals = externals.filter(
-          (external) => typeof external !== 'string' || !external.includes('@prisma')
+          (external: any) => typeof external !== 'string' || !external.includes('@prisma')
         );
       }
     }
