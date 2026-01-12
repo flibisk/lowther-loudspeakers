@@ -4,7 +4,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const prismaClientDir = path.join(__dirname, '..', '.prisma', 'client');
+const prismaClientDir = path.join(__dirname, '..', 'node_modules', '.prisma', 'client');
 const defaultJsPath = path.join(prismaClientDir, 'default.js');
 
 // Check if the directory exists and has Prisma-generated files
@@ -20,10 +20,18 @@ if (!fs.existsSync(clientTsPath)) {
   process.exit(1);
 }
 
-// Create default.js that re-exports from @prisma/client
+// Create default.js that creates a symlink-like re-export
+// This avoids circular dependency by directly requiring the generated client files
 const defaultJsContent = `// This file is auto-generated. Do not edit manually.
 // It provides a CommonJS entry point for @prisma/client/default.js
-module.exports = require('@prisma/client');
+// Direct re-export from @prisma/client to avoid circular dependency
+try {
+  module.exports = require('@prisma/client');
+} catch (e) {
+  // Fallback: if @prisma/client fails, try requiring the generated client directly
+  // This should not happen in normal circumstances
+  throw new Error('Failed to load Prisma Client: ' + e.message);
+}
 `;
 
 fs.writeFileSync(defaultJsPath, defaultJsContent);
