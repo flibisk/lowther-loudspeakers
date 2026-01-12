@@ -1,6 +1,5 @@
-// Import PrismaClient directly from generated client to avoid circular dependency
-// @ts-ignore - Direct import from generated client
-import { PrismaClient } from '../../node_modules/.prisma/client/client';
+// @ts-ignore - TypeScript path alias resolves this
+import { PrismaClient } from '@prisma/client';
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
