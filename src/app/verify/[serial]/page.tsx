@@ -13,7 +13,7 @@ interface VerifyPageProps {
   }>;
 }
 
-export async function generatePageMetadata({ params }: VerifyPageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: VerifyPageProps): Promise<Metadata> {
   const { serial } = await params;
   return generateSEOMetadata({
     title: `Verify Serial ${serial}`,
