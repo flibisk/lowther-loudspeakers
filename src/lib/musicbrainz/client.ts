@@ -82,9 +82,10 @@ export async function searchAlbums(query: string, limit: number = 10): Promise<A
 
     // Strategy: Search by artist name first, then by album title if no results
     // This way "John Mayer" returns his albums, and "Born and Raised" finds that album
+    // Add status:official to filter out bootlegs and unofficial releases
     
-    // First: Search by artist name
-    const artistQuery = `artistname:"${searchQuery}"`;
+    // First: Search by artist name (official releases only)
+    const artistQuery = `artistname:"${searchQuery}" AND status:official`;
     let data = await fetchMusicBrainz(artistQuery);
     
     // Filter to studio albums only (exclude live, compilations, soundtracks, etc.)
@@ -95,7 +96,7 @@ export async function searchAlbums(query: string, limit: number = 10): Promise<A
     
     // If no albums found by artist, search by album title
     if (releaseGroups.length === 0) {
-      const titleQuery = `releasegroup:"${searchQuery}"`;
+      const titleQuery = `releasegroup:"${searchQuery}" AND status:official`;
       data = await fetchMusicBrainz(titleQuery);
       releaseGroups = (data['release-groups'] || []).filter(rg => 
         rg['primary-type'] === 'Album' && 
