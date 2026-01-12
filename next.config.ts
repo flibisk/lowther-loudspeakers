@@ -20,11 +20,17 @@ const nextConfig: NextConfig = {
     }
     
     // Fix circular dependency for Prisma Client
-    // Make sure .prisma/client/default resolves correctly
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '.prisma/client/default': require.resolve('@prisma/client'),
-    };
+    // Resolve .prisma/client/default to the actual @prisma/client module
+    // Use absolute path resolution to avoid circular dependency
+    if (isServer) {
+      const path = require('path');
+      const prismaClientPath = path.resolve(process.cwd(), 'node_modules', '@prisma', 'client');
+      
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        '.prisma/client/default': prismaClientPath,
+      };
+    }
     
     return config;
   },
