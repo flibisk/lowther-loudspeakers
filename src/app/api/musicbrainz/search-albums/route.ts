@@ -14,8 +14,8 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Search MusicBrainz for albums
-    const albums = await searchAlbums(query, 10);
+    // Search MusicBrainz for albums (show up to 20 results)
+    const albums = await searchAlbums(query, 20);
 
     if (albums.length === 0) {
       return NextResponse.json({ albums: [] });
