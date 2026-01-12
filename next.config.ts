@@ -20,29 +20,29 @@ const nextConfig: NextConfig = {
     }
     
     // Fix circular dependency for Prisma Client
-    // The issue: @prisma/client requires '.prisma/client/default' which requires @prisma/client
-    // Solution: Make webpack resolve '.prisma/client/default' to the generated client.ts file directly
+    // CRITICAL: @prisma/client requires '.prisma/client/default' which creates circular dependency
+    // Solution: Replace '.prisma/client/default' require with '@prisma/client' directly
+    // This breaks the cycle: @prisma/client -> .prisma/client/default -> @prisma/client (replaced)
     if (isServer) {
       const webpack = require('webpack');
-      const path = require('path');
       
       config.plugins = config.plugins || [];
       
-      // Replace .prisma/client/default with the generated client.ts
-      // This bypasses @prisma/client entirely and goes straight to the generated files
-      const generatedClientPath = path.resolve(process.cwd(), 'node_modules', '.prisma', 'client', 'client.ts');
+      // Replace any require('.prisma/client/default') with require('@prisma/client')
+      // This must happen BEFORE webpack tries to resolve the module
+      const prismaClientPath = require.resolve('@prisma/client');
       
       config.plugins.push(
         new webpack.NormalModuleReplacementPlugin(
-          /\.prisma\/client\/default$/,
-          generatedClientPath
+          /^\.prisma\/client\/default$/,
+          prismaClientPath
         )
       );
       
-      // Also add resolve alias pointing to generated client
+      // Also add resolve alias - this is the key!
       config.resolve.alias = {
         ...config.resolve.alias,
-        '.prisma/client/default': generatedClientPath,
+        '.prisma/client/default': prismaClientPath,
       };
     }
     
