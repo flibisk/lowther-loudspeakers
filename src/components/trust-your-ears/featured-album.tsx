@@ -20,6 +20,7 @@ interface FeaturedAlbumProps {
 
 export function FeaturedAlbum({ showComments = false }: FeaturedAlbumProps) {
   const [album, setAlbum] = useState<Album | null>(null);
+  const [daysRemaining, setDaysRemaining] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -29,6 +30,7 @@ export function FeaturedAlbum({ showComments = false }: FeaturedAlbumProps) {
         if (response.ok) {
           const data = await response.json();
           setAlbum(data.album);
+          setDaysRemaining(data.daysRemaining ?? null);
         }
       } catch (error) {
         console.error('Failed to fetch featured album:', error);
@@ -41,8 +43,8 @@ export function FeaturedAlbum({ showComments = false }: FeaturedAlbumProps) {
 
   if (loading) {
     return (
-      <div className="relative h-[420px] w-full bg-neutral-900">
-        <div className="absolute inset-0 flex items-center justify-center">
+      <div className="relative w-full bg-neutral-900 pt-20">
+        <div className="flex h-[380px] items-center justify-center">
           <div className="h-8 w-8 animate-spin rounded-full border-2 border-white/20 border-t-white/80" />
         </div>
       </div>
@@ -51,14 +53,14 @@ export function FeaturedAlbum({ showComments = false }: FeaturedAlbumProps) {
 
   if (!album) {
     return (
-      <div className="relative h-[420px] w-full overflow-hidden bg-gradient-to-br from-neutral-800 to-neutral-900">
+      <div className="relative w-full overflow-hidden bg-gradient-to-br from-neutral-800 to-neutral-900 pt-20">
         {/* Abstract pattern background */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute -left-20 -top-20 h-96 w-96 rounded-full bg-white/20 blur-3xl" />
           <div className="absolute -bottom-20 -right-20 h-96 w-96 rounded-full bg-white/10 blur-3xl" />
         </div>
         
-        <div className="relative flex h-full items-center justify-center px-4">
+        <div className="relative flex h-[380px] items-center justify-center px-4">
           <div className="text-center">
             <div className="mb-4 inline-flex h-24 w-24 items-center justify-center rounded-full bg-white/10">
               <svg className="h-12 w-12 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -79,8 +81,8 @@ export function FeaturedAlbum({ showComments = false }: FeaturedAlbumProps) {
 
   return (
     <div className="relative w-full">
-      {/* Full-width banner with blurred album art */}
-      <div className="relative h-[420px] w-full overflow-hidden bg-neutral-900">
+      {/* Full-width banner with blurred album art - pt-20 for navbar */}
+      <div className="relative w-full overflow-hidden bg-neutral-900 pt-20">
         {/* Blurred background image */}
         <div className="absolute inset-0 scale-110">
           <Image
@@ -97,11 +99,16 @@ export function FeaturedAlbum({ showComments = false }: FeaturedAlbumProps) {
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/40" />
         
         {/* "Current Listen" label */}
-        <div className="absolute left-0 right-0 top-8 text-center">
+        <div className="relative pt-6 text-center">
           <span className="inline-block rounded-full bg-white/10 px-4 py-1.5 font-sarabun text-xs uppercase tracking-widest text-white/80 backdrop-blur-sm">
-            Current Listen
+            {daysRemaining !== null && daysRemaining > 0 
+              ? `${daysRemaining} day${daysRemaining === 1 ? '' : 's'} remaining` 
+              : 'Current Discussion'}
           </span>
         </div>
+        
+        {/* Spacer for banner height */}
+        <div className="h-[280px]" />
       </div>
 
       {/* Album card - overlaps the banner */}

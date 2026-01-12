@@ -11,21 +11,23 @@ datasource db {
 }
 
 model Album {
-  id                        String   @id @default(uuid())
-  musicBrainzReleaseGroupId String   @unique
+  id                        String    @id @default(uuid())
+  musicBrainzReleaseGroupId String    @unique
   title                     String
   artist                    String
   year                      Int?
   coverUrl                  String?
-  votesCount                Int      @default(0)
-  createdAt                 DateTime @default(now())
-  updatedAt                 DateTime @updatedAt
+  votesCount                Int       @default(0)
+  featuredAt                DateTime? // When this album became the featured discussion (null = never featured)
+  createdAt                 DateTime  @default(now())
+  updatedAt                 DateTime  @updatedAt
   
   votes                     Vote[]
   comments                  Comment[]
   
   @@index([votesCount])
   @@index([musicBrainzReleaseGroupId])
+  @@index([featuredAt])
 }
 
 model Vote {
