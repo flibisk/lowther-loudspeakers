@@ -17,6 +17,7 @@ interface MusicBrainzReleaseGroup {
   'first-release-date'?: string;
   'artist-credit'?: MusicBrainzArtistCredit[];
   'primary-type'?: string;
+  'secondary-types'?: string[];
 }
 
 interface MusicBrainzSearchResponse {
@@ -86,14 +87,20 @@ export async function searchAlbums(query: string, limit: number = 10): Promise<A
     const artistQuery = `artistname:"${searchQuery}"`;
     let data = await fetchMusicBrainz(artistQuery);
     
-    // Filter to albums only
-    let releaseGroups = (data['release-groups'] || []).filter(rg => rg['primary-type'] === 'Album');
+    // Filter to studio albums only (exclude live, compilations, soundtracks, etc.)
+    let releaseGroups = (data['release-groups'] || []).filter(rg => 
+      rg['primary-type'] === 'Album' && 
+      (!rg['secondary-types'] || rg['secondary-types'].length === 0)
+    );
     
     // If no albums found by artist, search by album title
     if (releaseGroups.length === 0) {
       const titleQuery = `releasegroup:"${searchQuery}"`;
       data = await fetchMusicBrainz(titleQuery);
-      releaseGroups = (data['release-groups'] || []).filter(rg => rg['primary-type'] === 'Album');
+      releaseGroups = (data['release-groups'] || []).filter(rg => 
+        rg['primary-type'] === 'Album' && 
+        (!rg['secondary-types'] || rg['secondary-types'].length === 0)
+      );
     }
     
     if (releaseGroups.length === 0) {
