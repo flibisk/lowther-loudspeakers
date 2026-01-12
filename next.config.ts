@@ -36,7 +36,7 @@ const nextConfig: NextConfig = {
       config.plugins.push(
         new webpack.NormalModuleReplacementPlugin(
           /\.prisma\/client\/default$/,
-          (resource) => {
+          (resource: any) => {
             resource.request = prismaClientPath;
           }
         )
