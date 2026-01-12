@@ -18,32 +18,32 @@ if (!fs.existsSync(clientTsPath)) {
 
 // Create default.js that exports what @prisma/client/default.js expects
 // @prisma/client/default.js does: module.exports = { ...require('.prisma/client/default') }
-// So we need to export an object with PrismaClient and other exports
-// We'll require @prisma/client but break the circular dependency by checking if we're already loading
+// So we need to export the same structure that @prisma/client exports
+// We break the circular dependency by temporarily removing ourselves from cache
 const defaultJsContent = `// This file is auto-generated. Do not edit manually.
 // It provides a CommonJS entry point for @prisma/client/default.js
 
-// Check if we're in a circular require situation
-const isCircular = require.cache[require.resolve('@prisma/client')] !== undefined;
+// Break circular dependency: temporarily remove this file from require cache
+const defaultPath = require.resolve('.prisma/client/default');
+const cachedDefault = require.cache[defaultPath];
+delete require.cache[defaultPath];
 
-if (isCircular) {
-  // If circular, we need to export what @prisma/client would export
-  // But we can't require it, so we'll export an empty object and let webpack handle it
-  module.exports = {};
-} else {
-  // Normal case: require @prisma/client and export it
-  // Temporarily remove this file from cache to break circular dependency
-  const defaultCacheKey = require.resolve('.prisma/client/default');
-  const cachedDefault = require.cache[defaultCacheKey];
-  delete require.cache[defaultCacheKey];
-  
+try {
+  // Now require @prisma/client - it will find us but we're not in cache, so no circular dependency
+  const prismaClient = require('@prisma/client');
+  module.exports = prismaClient;
+} catch (e) {
+  // If that fails, try requiring the main @prisma/client entry point
   try {
-    module.exports = require('@prisma/client');
-  } finally {
-    // Restore cache
-    if (cachedDefault) {
-      require.cache[defaultCacheKey] = cachedDefault;
-    }
+    const mainClient = require('@prisma/client/index.js');
+    module.exports = mainClient;
+  } catch (e2) {
+    throw new Error('Failed to load Prisma Client: ' + e.message);
+  }
+} finally {
+  // Restore cache
+  if (cachedDefault) {
+    require.cache[defaultPath] = cachedDefault;
   }
 }
 `;
