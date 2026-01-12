@@ -16,7 +16,7 @@ interface MusicBrainzReleaseGroup {
   title: string;
   'first-release-date'?: string;
   'artist-credit'?: MusicBrainzArtistCredit[];
-  type?: string;
+  'primary-type'?: string;
 }
 
 interface MusicBrainzSearchResponse {
@@ -88,7 +88,7 @@ export async function searchAlbums(query: string, limit: number = 10): Promise<A
 
     // Filter to only albums and transform results
     const albums: AlbumSearchResult[] = data['release-groups']
-      .filter((rg) => rg.type === 'Album')
+      .filter((rg) => rg['primary-type'] === 'Album')
       .map((rg) => {
         // Extract artist name from artist-credit
         let artist = 'Unknown Artist';
@@ -164,7 +164,7 @@ export async function getAlbumById(releaseGroupId: string): Promise<AlbumSearchR
 
     const rg: MusicBrainzReleaseGroup = await response.json();
 
-    if (rg.type !== 'Album') {
+    if (rg['primary-type'] !== 'Album') {
       return null;
     }
 
