@@ -58,14 +58,16 @@ export async function searchAlbums(query: string, limit: number = 10): Promise<A
     // We search both fields so "John Mayer" finds albums BY John Mayer
     const searchQuery = query.trim();
     
-    // Build a query that searches both artist and release title
-    // This allows users to search by artist name OR album title
-    const luceneQuery = `artist:"${searchQuery}" OR release:"${searchQuery}" OR "${searchQuery}"`;
+    // Build a query that searches by artist name primarily, then by release title
+    // artist:"query" matches albums BY that artist
+    // release:"query" matches albums with that title
+    // Fetch more results than needed (3x limit) to ensure we get good matches after filtering to albums only
+    const luceneQuery = `artist:"${searchQuery}" OR release:"${searchQuery}"`;
     
     const params = new URLSearchParams({
       query: luceneQuery,
       fmt: 'json',
-      limit: limit.toString(),
+      limit: Math.min(limit * 3, 50).toString(), // Fetch more, filter later
     });
 
     const response = await fetch(`https://musicbrainz.org/ws/2/release-group?${params}`, {
@@ -90,9 +92,10 @@ export async function searchAlbums(query: string, limit: number = 10): Promise<A
       return [];
     }
 
-    // Filter to only albums and transform results
+    // Filter to only albums and transform results, then limit to requested amount
     const albums: AlbumSearchResult[] = data['release-groups']
       .filter((rg) => rg['primary-type'] === 'Album')
+      .slice(0, limit) // Limit to requested amount after filtering
       .map((rg) => {
         // Extract artist name from artist-credit
         let artist = 'Unknown Artist';
