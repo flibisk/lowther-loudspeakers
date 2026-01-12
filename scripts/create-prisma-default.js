@@ -31,4 +31,4 @@ try {
 `;
 
 fs.writeFileSync(defaultJsPath, defaultJsContent);
-console.log('Created .prisma/client/default.js');
+console.log('Created node_modules/.prisma/client/default.js');
