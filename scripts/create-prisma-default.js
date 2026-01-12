@@ -16,17 +16,35 @@ if (!fs.existsSync(clientTsPath)) {
   process.exit(1);
 }
 
-// Create default.js that creates a symlink-like re-export
-// This avoids circular dependency by directly requiring the generated client files
+// Create default.js that exports what @prisma/client/default.js expects
+// @prisma/client/default.js does: module.exports = { ...require('.prisma/client/default') }
+// So we need to export an object with PrismaClient and other exports
+// We'll require @prisma/client but break the circular dependency by checking if we're already loading
 const defaultJsContent = `// This file is auto-generated. Do not edit manually.
 // It provides a CommonJS entry point for @prisma/client/default.js
-// Direct re-export from @prisma/client to avoid circular dependency
-try {
-  module.exports = require('@prisma/client');
-} catch (e) {
-  // Fallback: if @prisma/client fails, try requiring the generated client directly
-  // This should not happen in normal circumstances
-  throw new Error('Failed to load Prisma Client: ' + e.message);
+
+// Check if we're in a circular require situation
+const isCircular = require.cache[require.resolve('@prisma/client')] !== undefined;
+
+if (isCircular) {
+  // If circular, we need to export what @prisma/client would export
+  // But we can't require it, so we'll export an empty object and let webpack handle it
+  module.exports = {};
+} else {
+  // Normal case: require @prisma/client and export it
+  // Temporarily remove this file from cache to break circular dependency
+  const defaultCacheKey = require.resolve('.prisma/client/default');
+  const cachedDefault = require.cache[defaultCacheKey];
+  delete require.cache[defaultCacheKey];
+  
+  try {
+    module.exports = require('@prisma/client');
+  } finally {
+    // Restore cache
+    if (cachedDefault) {
+      require.cache[defaultCacheKey] = cachedDefault;
+    }
+  }
 }
 `;
 
