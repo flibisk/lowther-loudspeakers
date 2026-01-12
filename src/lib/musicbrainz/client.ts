@@ -7,6 +7,7 @@
 interface MusicBrainzArtistCredit {
   name: string;
   artist: {
+    id: string;
     name: string;
   };
 }
@@ -18,6 +19,21 @@ interface MusicBrainzReleaseGroup {
   'artist-credit'?: MusicBrainzArtistCredit[];
   'primary-type'?: string;
   'secondary-types'?: string[];
+}
+
+interface MusicBrainzArtist {
+  id: string;
+  name: string;
+  score?: number;
+}
+
+interface MusicBrainzArtistSearchResponse {
+  artists?: MusicBrainzArtist[];
+}
+
+interface MusicBrainzReleaseGroupBrowseResponse {
+  'release-groups'?: MusicBrainzReleaseGroup[];
+  'release-group-count'?: number;
 }
 
 interface MusicBrainzSearchResponse {
@@ -39,7 +55,98 @@ const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 const USER_AGENT = 'LowtherTrustYourEars/1.0 (contact@lowtherloudspeakers.com)';
 
 /**
+ * Search for an artist by name and return their ID
+ */
+async function findArtistId(artistName: string): Promise<{ id: string; name: string } | null> {
+  try {
+    const encodedName = encodeURIComponent(artistName);
+    const url = `https://musicbrainz.org/ws/2/artist?query=${encodedName}&fmt=json&limit=1`;
+    
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': USER_AGENT,
+        Accept: 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const data: MusicBrainzArtistSearchResponse = await response.json();
+    if (data.artists && data.artists.length > 0 && data.artists[0].score && data.artists[0].score >= 90) {
+      return { id: data.artists[0].id, name: data.artists[0].name };
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Browse albums by artist ID - this gives us proper studio albums without bootlegs
+ */
+async function browseAlbumsByArtist(artistId: string, artistName: string, limit: number): Promise<AlbumSearchResult[]> {
+  try {
+    // Browse release-groups by artist, type=album filters to albums only
+    const url = `https://musicbrainz.org/ws/2/release-group?artist=${artistId}&type=album&limit=${limit}&fmt=json`;
+    
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': USER_AGENT,
+        Accept: 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      return [];
+    }
+
+    const data: MusicBrainzReleaseGroupBrowseResponse = await response.json();
+    
+    if (!data['release-groups'] || data['release-groups'].length === 0) {
+      return [];
+    }
+
+    // Filter to studio albums only (exclude live, compilations, soundtracks, remixes, etc.)
+    const studioAlbums = data['release-groups'].filter(rg => 
+      rg['primary-type'] === 'Album' && 
+      (!rg['secondary-types'] || rg['secondary-types'].length === 0)
+    );
+
+    // Sort by release date (oldest first = chronological discography)
+    studioAlbums.sort((a, b) => {
+      const dateA = a['first-release-date'] || '9999';
+      const dateB = b['first-release-date'] || '9999';
+      return dateA.localeCompare(dateB);
+    });
+
+    return studioAlbums.map(rg => {
+      let year: number | null = null;
+      if (rg['first-release-date']) {
+        const yearMatch = rg['first-release-date'].match(/^\d{4}/);
+        if (yearMatch) {
+          year = parseInt(yearMatch[0], 10);
+        }
+      }
+
+      return {
+        musicBrainzReleaseGroupId: rg.id,
+        title: rg.title,
+        artist: artistName,
+        year,
+      };
+    });
+  } catch {
+    return [];
+  }
+}
+
+/**
  * Search for albums on MusicBrainz
+ * Strategy: 
+ * 1. Try to find artist by name and browse their discography (best for "Pink Floyd", "John Mayer")
+ * 2. Fall back to album title search (best for "Dark Side of the Moon", "Born and Raised")
  */
 export async function searchAlbums(query: string, limit: number = 10): Promise<AlbumSearchResult[]> {
   if (!query.trim()) {
@@ -55,12 +162,19 @@ export async function searchAlbums(query: string, limit: number = 10): Promise<A
 
   try {
     const searchQuery = query.trim();
-    const fetchLimit = Math.min(limit * 5, 100);
-    
-    // Helper function to fetch from MusicBrainz
-    const fetchMusicBrainz = async (luceneQuery: string): Promise<MusicBrainzSearchResponse> => {
-      const encodedQuery = encodeURIComponent(luceneQuery);
-      const url = `https://musicbrainz.org/ws/2/release-group?query=${encodedQuery}&fmt=json&limit=${fetchLimit}`;
+    let albums: AlbumSearchResult[] = [];
+
+    // Strategy 1: Try to find artist and browse their albums
+    // This works great for "Pink Floyd", "The Beatles", "John Mayer", etc.
+    const artist = await findArtistId(searchQuery);
+    if (artist) {
+      albums = await browseAlbumsByArtist(artist.id, artist.name, limit);
+    }
+
+    // Strategy 2: If no artist match or no albums, search by album title
+    if (albums.length === 0) {
+      const encodedQuery = encodeURIComponent(`releasegroup:"${searchQuery}"`);
+      const url = `https://musicbrainz.org/ws/2/release-group?query=${encodedQuery}&fmt=json&limit=${limit * 3}`;
       
       const response = await fetch(url, {
         headers: {
@@ -69,74 +183,41 @@ export async function searchAlbums(query: string, limit: number = 10): Promise<A
         },
       });
 
-      if (!response.ok) {
-        if (response.status === 503) {
-          console.warn('MusicBrainz rate limited');
-          return { 'release-groups': [] };
-        }
-        throw new Error(`MusicBrainz search failed: ${response.status} ${response.statusText}`);
-      }
-
-      return response.json();
-    };
-
-    // Strategy: Search by artist name first, then by album title if no results
-    // This way "John Mayer" returns his albums, and "Born and Raised" finds that album
-    // Add status:official to filter out bootlegs and unofficial releases
-    
-    // First: Search by artist name (official releases only)
-    const artistQuery = `artistname:"${searchQuery}" AND status:official`;
-    let data = await fetchMusicBrainz(artistQuery);
-    
-    // Filter to studio albums only (exclude live, compilations, soundtracks, etc.)
-    let releaseGroups = (data['release-groups'] || []).filter(rg => 
-      rg['primary-type'] === 'Album' && 
-      (!rg['secondary-types'] || rg['secondary-types'].length === 0)
-    );
-    
-    // If no albums found by artist, search by album title
-    if (releaseGroups.length === 0) {
-      const titleQuery = `releasegroup:"${searchQuery}" AND status:official`;
-      data = await fetchMusicBrainz(titleQuery);
-      releaseGroups = (data['release-groups'] || []).filter(rg => 
-        rg['primary-type'] === 'Album' && 
-        (!rg['secondary-types'] || rg['secondary-types'].length === 0)
-      );
-    }
-    
-    if (releaseGroups.length === 0) {
-      return [];
-    }
-    
-    // Transform results and limit to requested amount
-    const albums: AlbumSearchResult[] = releaseGroups
-      .slice(0, limit)
-      .map((rg) => {
-        // Extract artist name from artist-credit
-        let artist = 'Unknown Artist';
-        if (rg['artist-credit'] && rg['artist-credit'].length > 0) {
-          artist = rg['artist-credit']
-            .map((ac) => ac.name || ac.artist?.name || '')
-            .filter(Boolean)
-            .join(', ');
-        }
-
-        // Extract year from first-release-date
-        let year: number | null = null;
-        if (rg['first-release-date']) {
-          const yearMatch = rg['first-release-date'].match(/^\d{4}/);
-          if (yearMatch) {
-            year = parseInt(yearMatch[0], 10);
+      if (response.ok) {
+        const data: MusicBrainzSearchResponse = await response.json();
+        
+        // Filter to studio albums only
+        const releaseGroups = (data['release-groups'] || []).filter(rg => 
+          rg['primary-type'] === 'Album' && 
+          (!rg['secondary-types'] || rg['secondary-types'].length === 0)
+        );
+        
+        albums = releaseGroups.slice(0, limit).map(rg => {
+          let artistName = 'Unknown Artist';
+          if (rg['artist-credit'] && rg['artist-credit'].length > 0) {
+            artistName = rg['artist-credit']
+              .map((ac) => ac.name || ac.artist?.name || '')
+              .filter(Boolean)
+              .join(', ');
           }
-        }
 
-        return {
-          musicBrainzReleaseGroupId: rg.id,
-          title: rg.title,
-          artist,
-          year,
-        };
-      });
+          let year: number | null = null;
+          if (rg['first-release-date']) {
+            const yearMatch = rg['first-release-date'].match(/^\d{4}/);
+            if (yearMatch) {
+              year = parseInt(yearMatch[0], 10);
+            }
+          }
+
+          return {
+            musicBrainzReleaseGroupId: rg.id,
+            title: rg.title,
+            artist: artistName,
+            year,
+          };
+        });
+      }
+    }
 
     // Cache results
     searchCache.set(cacheKey, {
@@ -144,7 +225,7 @@ export async function searchAlbums(query: string, limit: number = 10): Promise<A
       expires: Date.now() + CACHE_TTL,
     });
 
-    // Clean up expired cache entries (simple cleanup)
+    // Clean up expired cache entries
     if (searchCache.size > 100) {
       const now = Date.now();
       for (const [key, value] of searchCache.entries()) {
@@ -157,7 +238,6 @@ export async function searchAlbums(query: string, limit: number = 10): Promise<A
     return albums;
   } catch (error) {
     console.error('MusicBrainz search error:', error);
-    // Return cached data if available on error
     return cached?.data || [];
   }
 }
