@@ -11,9 +11,9 @@ const nodeModulesPrismaClientDir = path.join(__dirname, '..', 'node_modules', '.
 const defaultJsPath = path.join(nodeModulesPrismaClientDir, 'default.js');
 
 // Check if Prisma has generated the client
-const clientTsPath = path.join(nodeModulesPrismaClientDir, 'index.d.ts');
+const clientTsPath = path.join(nodeModulesPrismaClientDir, 'client.ts');
 if (!fs.existsSync(clientTsPath)) {
-  console.error('Prisma client not found. Prisma generate may not have completed.');
+  console.error('Prisma client.ts not found. Prisma generate may not have completed.');
   process.exit(1);
 }
 
@@ -31,29 +31,30 @@ const defaultJsContent = `// This file is auto-generated. Do not edit manually.
 const prismaClientId = require.resolve('@prisma/client');
 const thisFileId = require.resolve('.prisma/client/default');
 
-// Strategy: Check if @prisma/client is already loaded in cache
-const cachedPrisma = require.cache[prismaClientId];
-if (cachedPrisma && cachedPrisma.exports && typeof cachedPrisma.exports.PrismaClient === 'function') {
-  // Already loaded and has PrismaClient - use cached version (breaks circular dependency)
-  module.exports = cachedPrisma.exports;
-} else {
-  // Not loaded yet - break circular dependency by removing this file from cache
-  const cachedThis = require.cache[thisFileId];
-  delete require.cache[thisFileId];
-  
-  try {
-    // Now require @prisma/client - it won't find us in cache, breaking the cycle
-    const prismaClient = require('@prisma/client');
-    module.exports = prismaClient;
-  } catch (e) {
-    // Fallback: export empty object (shouldn't happen)
+// Break circular dependency by removing this file from cache BEFORE requiring @prisma/client
+// This way, when @prisma/client tries to require '.prisma/client/default', we're not in cache
+// So it will create a fresh require, which we can then complete
+const cachedThis = require.cache[thisFileId];
+delete require.cache[thisFileId];
+
+try {
+  // Now require @prisma/client - it won't find us in cache, breaking the cycle
+  const prismaClient = require('@prisma/client');
+  module.exports = prismaClient;
+} catch (e) {
+  // If that fails, try to get from cache if available
+  const cachedPrisma = require.cache[prismaClientId];
+  if (cachedPrisma && cachedPrisma.exports) {
+    module.exports = cachedPrisma.exports;
+  } else {
+    // Last resort: export empty object
     console.error('Failed to load @prisma/client:', e.message);
     module.exports = {};
-  } finally {
-    // Restore cache
-    if (cachedThis) {
-      require.cache[thisFileId] = cachedThis;
-    }
+  }
+} finally {
+  // Restore cache
+  if (cachedThis) {
+    require.cache[thisFileId] = cachedThis;
   }
 }
 `;
