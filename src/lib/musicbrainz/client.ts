@@ -54,12 +54,16 @@ export async function searchAlbums(query: string, limit: number = 10): Promise<A
 
   try {
     // Build search query
-    // MusicBrainz search syntax: album:"title" AND artist:"artist"
+    // MusicBrainz Lucene search syntax supports searching by artist or release title
+    // We search both fields so "John Mayer" finds albums BY John Mayer
     const searchQuery = query.trim();
     
+    // Build a query that searches both artist and release title
+    // This allows users to search by artist name OR album title
+    const luceneQuery = `artist:"${searchQuery}" OR release:"${searchQuery}" OR "${searchQuery}"`;
+    
     const params = new URLSearchParams({
-      query: searchQuery,
-      type: 'album',
+      query: luceneQuery,
       fmt: 'json',
       limit: limit.toString(),
     });
