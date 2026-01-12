@@ -18,6 +18,14 @@ const nextConfig: NextConfig = {
         tls: false,
       };
     }
+    
+    // Fix circular dependency for Prisma Client
+    // Make sure .prisma/client/default resolves correctly
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '.prisma/client/default': require.resolve('@prisma/client'),
+    };
+    
     return config;
   },
   async redirects() {

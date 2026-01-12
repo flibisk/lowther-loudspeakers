@@ -16,52 +16,38 @@ if (!fs.existsSync(clientTsPath)) {
   process.exit(1);
 }
 
-// Create default.js that exports what @prisma/client expects
-// The key insight: @prisma/client/default.js does: module.exports = { ...require('.prisma/client/default') }
-// So we need to export an object that can be spread. We'll export @prisma/client's exports
-// but break the circular dependency by using a lazy getter pattern
+// Create default.js that exports PrismaClient directly
+// Instead of requiring @prisma/client (which creates circular dependency),
+// we'll create a simple re-export that webpack can resolve statically
+// The key: @prisma/client will be resolved by webpack's module resolution, not Node's
 const defaultJsContent = `// This file is auto-generated. Do not edit manually.
 // It provides a CommonJS entry point for @prisma/client/default.js
-// We break circular dependency by using a getter that loads @prisma/client lazily
+// We export from @prisma/client but webpack will handle the resolution
 
-// Store the resolved @prisma/client module
-let _client = null;
-
-function getClient() {
-  if (!_client) {
-    // Remove this file from cache to break circular dependency
-    const thisPath = require.resolve('.prisma/client/default');
-    const cached = require.cache[thisPath];
-    delete require.cache[thisPath];
-    
-    try {
-      // Now require @prisma/client - it won't find us in cache, breaking the cycle
-      _client = require('@prisma/client');
-    } finally {
-      // Restore cache
-      if (cached) {
-        require.cache[thisPath] = cached;
+// Use a function to defer the require until webpack processes it
+// This allows webpack to resolve @prisma/client properly without circular dependency
+(function() {
+  try {
+    // Webpack will replace this require with the actual module during bundling
+    const prisma = require('@prisma/client');
+    // Copy all exports to module.exports
+    for (const key in prisma) {
+      if (prisma.hasOwnProperty(key)) {
+        module.exports[key] = prisma[key];
       }
     }
+    // Also copy non-enumerable properties like PrismaClient
+    Object.getOwnPropertyNames(prisma).forEach(key => {
+      if (!module.exports.hasOwnProperty(key)) {
+        Object.defineProperty(module.exports, key, Object.getOwnPropertyDescriptor(prisma, key));
+      }
+    });
+  } catch (e) {
+    // Fallback: if require fails, export empty object (shouldn't happen in webpack)
+    console.error('Failed to load @prisma/client:', e.message);
+    module.exports = {};
   }
-  return _client;
-}
-
-// Export a proxy that forwards all property access to @prisma/client
-module.exports = new Proxy({}, {
-  get(target, prop) {
-    return getClient()[prop];
-  },
-  ownKeys(target) {
-    return Reflect.ownKeys(getClient());
-  },
-  getOwnPropertyDescriptor(target, prop) {
-    return Reflect.getOwnPropertyDescriptor(getClient(), prop);
-  },
-  has(target, prop) {
-    return prop in getClient();
-  }
-});
+})();
 `;
 
 fs.writeFileSync(defaultJsPath, defaultJsContent);
