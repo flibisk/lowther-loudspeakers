@@ -16,36 +16,52 @@ if (!fs.existsSync(clientTsPath)) {
   process.exit(1);
 }
 
-// Create default.js that exports what @prisma/client/default.js expects
-// @prisma/client/default.js does: module.exports = { ...require('.prisma/client/default') }
-// So we need to export the same structure that @prisma/client exports
-// We break the circular dependency by temporarily removing ourselves from cache
+// Create default.js that exports what @prisma/client expects
+// The key insight: @prisma/client/default.js does: module.exports = { ...require('.prisma/client/default') }
+// So we need to export an object that can be spread. We'll export @prisma/client's exports
+// but break the circular dependency by using a lazy getter pattern
 const defaultJsContent = `// This file is auto-generated. Do not edit manually.
 // It provides a CommonJS entry point for @prisma/client/default.js
+// We break circular dependency by using a getter that loads @prisma/client lazily
 
-// Break circular dependency: temporarily remove this file from require cache
-const defaultPath = require.resolve('.prisma/client/default');
-const cachedDefault = require.cache[defaultPath];
-delete require.cache[defaultPath];
+// Store the resolved @prisma/client module
+let _client = null;
 
-try {
-  // Now require @prisma/client - it will find us but we're not in cache, so no circular dependency
-  const prismaClient = require('@prisma/client');
-  module.exports = prismaClient;
-} catch (e) {
-  // If that fails, try requiring the main @prisma/client entry point
-  try {
-    const mainClient = require('@prisma/client/index.js');
-    module.exports = mainClient;
-  } catch (e2) {
-    throw new Error('Failed to load Prisma Client: ' + e.message);
+function getClient() {
+  if (!_client) {
+    // Remove this file from cache to break circular dependency
+    const thisPath = require.resolve('.prisma/client/default');
+    const cached = require.cache[thisPath];
+    delete require.cache[thisPath];
+    
+    try {
+      // Now require @prisma/client - it won't find us in cache, breaking the cycle
+      _client = require('@prisma/client');
+    } finally {
+      // Restore cache
+      if (cached) {
+        require.cache[thisPath] = cached;
+      }
+    }
   }
-} finally {
-  // Restore cache
-  if (cachedDefault) {
-    require.cache[defaultPath] = cachedDefault;
-  }
+  return _client;
 }
+
+// Export a proxy that forwards all property access to @prisma/client
+module.exports = new Proxy({}, {
+  get(target, prop) {
+    return getClient()[prop];
+  },
+  ownKeys(target) {
+    return Reflect.ownKeys(getClient());
+  },
+  getOwnPropertyDescriptor(target, prop) {
+    return Reflect.getOwnPropertyDescriptor(getClient(), prop);
+  },
+  has(target, prop) {
+    return prop in getClient();
+  }
+});
 `;
 
 fs.writeFileSync(defaultJsPath, defaultJsContent);
