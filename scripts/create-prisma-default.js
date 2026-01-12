@@ -4,15 +4,16 @@
 const fs = require('fs');
 const path = require('path');
 
+// With default output, Prisma generates to node_modules/.prisma/client
 // @prisma/client/default.js requires '.prisma/client/default' relative to node_modules/@prisma/client/
 // This resolves to node_modules/.prisma/client/default
 const nodeModulesPrismaClientDir = path.join(__dirname, '..', 'node_modules', '.prisma', 'client');
 const defaultJsPath = path.join(nodeModulesPrismaClientDir, 'default.js');
 
 // Check if Prisma has generated the client
-const clientTsPath = path.join(nodeModulesPrismaClientDir, 'client.ts');
+const clientTsPath = path.join(nodeModulesPrismaClientDir, 'index.d.ts');
 if (!fs.existsSync(clientTsPath)) {
-  console.error('Prisma client.ts not found. Prisma generate may not have completed.');
+  console.error('Prisma client not found. Prisma generate may not have completed.');
   process.exit(1);
 }
 
