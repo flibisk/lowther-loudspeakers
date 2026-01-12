@@ -5,20 +5,13 @@ const nextConfig: NextConfig = {
     unoptimized: true,
   },
   webpack: (config, { isServer }) => {
-    // Handle Prisma Client imports
+    // Handle Prisma Client imports - exclude from client bundle
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
         fs: false,
         net: false,
         tls: false,
-      };
-    }
-    // Ensure Prisma Client resolves correctly
-    if (isServer) {
-      config.resolve.alias = {
-        ...config.resolve.alias,
-        '.prisma/client/default': require.resolve('.prisma/client/default'),
       };
     }
     return config;
