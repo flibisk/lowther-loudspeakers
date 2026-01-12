@@ -1,10 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import Image from 'next/image';
-import { VoteButton } from './vote-button';
+import { ChevronUp } from 'lucide-react';
 
 interface Album {
   id: string;
@@ -16,18 +14,21 @@ interface Album {
   votesCount: number;
 }
 
+interface AlbumWithPosition extends Album {
+  previousPosition?: number;
+  isMovingUp?: boolean;
+}
+
 export function AlbumList() {
-  const [albums, setAlbums] = useState<Album[]>([]);
+  const [albums, setAlbums] = useState<AlbumWithPosition[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [votingId, setVotingId] = useState<string | null>(null);
+  const [votedIds, setVotedIds] = useState<Set<string>>(new Set());
+  const previousAlbumsRef = useRef<Album[]>([]);
 
-  useEffect(() => {
-    fetchAlbums();
-  }, []);
-
-  const fetchAlbums = async () => {
+  const fetchAlbums = useCallback(async (skipAnimation = false) => {
     try {
-      setLoading(true);
       const response = await fetch('/api/trust-your-ears/albums');
       
       if (!response.ok) {
@@ -35,33 +36,92 @@ export function AlbumList() {
       }
 
       const data = await response.json();
-      setAlbums(data.albums || []);
+      const newAlbums: Album[] = data.albums || [];
+      
+      // Track position changes for animation
+      if (!skipAnimation && previousAlbumsRef.current.length > 0) {
+        const prevPositions = new Map(
+          previousAlbumsRef.current.map((a, i) => [a.id, i])
+        );
+        
+        const albumsWithAnimation: AlbumWithPosition[] = newAlbums.map((album, newIndex) => {
+          const prevIndex = prevPositions.get(album.id);
+          const isMovingUp = prevIndex !== undefined && prevIndex > newIndex;
+          return {
+            ...album,
+            previousPosition: prevIndex,
+            isMovingUp,
+          };
+        });
+        
+        setAlbums(albumsWithAnimation);
+        
+        // Clear animation flags after animation completes
+        setTimeout(() => {
+          setAlbums(prev => prev.map(a => ({ ...a, isMovingUp: false })));
+        }, 600);
+      } else {
+        setAlbums(newAlbums);
+      }
+      
+      previousAlbumsRef.current = newAlbums;
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load albums');
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const handleVoteSuccess = () => {
-    // Refresh albums list after voting
-    fetchAlbums();
-    // Refresh the page to update featured album
-    window.location.reload();
+  useEffect(() => {
+    fetchAlbums(true);
+  }, [fetchAlbums]);
+
+  const handleVote = async (musicBrainzReleaseGroupId: string) => {
+    if (votedIds.has(musicBrainzReleaseGroupId)) return;
+    
+    setVotingId(musicBrainzReleaseGroupId);
+
+    try {
+      const response = await fetch('/api/trust-your-ears/vote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ musicBrainzReleaseGroupId }),
+      });
+
+      if (response.status === 409) {
+        // Already voted
+        setVotedIds(prev => new Set(prev).add(musicBrainzReleaseGroupId));
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error('Failed to vote');
+      }
+
+      setVotedIds(prev => new Set(prev).add(musicBrainzReleaseGroupId));
+      
+      // Refresh list with animation
+      await fetchAlbums(false);
+    } catch (err) {
+      console.error('Vote error:', err);
+    } finally {
+      setVotingId(null);
+    }
   };
 
   if (loading) {
     return (
-      <div className="py-12 text-center">
-        <p className="font-sarabun text-neutral-600">Loading albums...</p>
+      <div className="py-16 text-center">
+        <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-neutral-200 border-t-neutral-600" />
+        <p className="mt-4 font-sarabun text-neutral-500">Loading albums...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="py-12 text-center">
+      <div className="py-16 text-center">
         <p className="font-sarabun text-red-600">{error}</p>
       </div>
     );
@@ -69,8 +129,8 @@ export function AlbumList() {
 
   if (albums.length === 0) {
     return (
-      <div className="py-12 text-center">
-        <p className="font-sarabun text-neutral-600">
+      <div className="py-16 text-center">
+        <p className="font-sarabun text-neutral-500">
           No albums have been recommended yet.
         </p>
       </div>
@@ -78,55 +138,97 @@ export function AlbumList() {
   }
 
   return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {albums.map((album) => (
-        <Card key={album.id} className="border-neutral-200">
-          <CardContent className="p-0">
-            {/* Album Cover */}
-            <div className="relative aspect-square w-full overflow-hidden rounded-t-lg bg-neutral-100">
+    <div className="space-y-3">
+      {albums.map((album, index) => {
+        const isVoting = votingId === album.musicBrainzReleaseGroupId;
+        const hasVoted = votedIds.has(album.musicBrainzReleaseGroupId);
+        
+        return (
+          <div
+            key={album.id}
+            className={`
+              group relative flex items-center gap-4 rounded-xl bg-white p-3 shadow-sm ring-1 ring-black/5 transition-all duration-500
+              hover:shadow-md hover:ring-black/10
+              ${album.isMovingUp ? 'animate-move-up bg-green-50/50' : ''}
+            `}
+            style={{
+              animationDelay: album.isMovingUp ? '0ms' : undefined,
+            }}
+          >
+            {/* Rank number */}
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-neutral-100 font-sarabun text-lg font-semibold text-neutral-400">
+              {index + 1}
+            </div>
+
+            {/* Album cover */}
+            <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-neutral-100 ring-1 ring-black/5">
               {album.coverUrl ? (
                 <Image
                   src={album.coverUrl}
                   alt={`${album.title} by ${album.artist}`}
                   fill
                   className="object-cover"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  sizes="56px"
                 />
               ) : (
-                <div className="flex h-full w-full items-center justify-center bg-neutral-200 text-neutral-400">
-                  <span className="font-sarabun text-xs">No Cover</span>
+                <div className="flex h-full w-full items-center justify-center bg-neutral-200">
+                  <svg className="h-6 w-6 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                  </svg>
                 </div>
               )}
             </div>
 
-            {/* Album Info */}
-            <div className="p-4">
-              <h3 className="font-hvmuse mb-1 line-clamp-2 text-lg font-normal text-neutral-900">
+            {/* Album info */}
+            <div className="min-w-0 flex-1">
+              <h3 className="truncate font-hvmuse text-base text-neutral-900 sm:text-lg">
                 {album.title}
               </h3>
-              <p className="font-sarabun mb-2 line-clamp-1 text-sm text-neutral-700">
+              <p className="truncate font-sarabun text-sm text-neutral-500">
                 {album.artist}
+                {album.year && <span className="text-neutral-400"> · {album.year}</span>}
               </p>
-              {album.year && (
-                <p className="font-sarabun mb-3 text-xs text-neutral-500">
-                  {album.year}
+            </div>
+
+            {/* Vote count & button */}
+            <div className="flex shrink-0 items-center gap-3">
+              {/* Vote count */}
+              <div className="text-center">
+                <p className="font-sarabun text-lg font-semibold text-neutral-700">
+                  {album.votesCount}
                 </p>
-              )}
-              
-              <div className="mt-4 flex items-center justify-between">
-                <p className="font-sarabun text-xs text-neutral-600">
-                  <span className="font-semibold">{album.votesCount}</span>{' '}
+                <p className="font-sarabun text-[10px] uppercase tracking-wider text-neutral-400">
                   {album.votesCount === 1 ? 'vote' : 'votes'}
                 </p>
-                <VoteButton
-                  musicBrainzReleaseGroupId={album.musicBrainzReleaseGroupId}
-                  onSuccess={handleVoteSuccess}
-                />
               </div>
+
+              {/* Upvote button */}
+              <button
+                onClick={() => handleVote(album.musicBrainzReleaseGroupId)}
+                disabled={isVoting || hasVoted}
+                className={`
+                  flex h-12 w-12 items-center justify-center rounded-xl transition-all duration-200
+                  ${hasVoted 
+                    ? 'bg-green-100 text-green-600' 
+                    : 'bg-neutral-100 text-neutral-400 hover:bg-neutral-200 hover:text-neutral-600 active:scale-95'
+                  }
+                  disabled:cursor-not-allowed
+                `}
+                aria-label={hasVoted ? 'Already voted' : `Vote for ${album.title}`}
+              >
+                {isVoting ? (
+                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-neutral-300 border-t-neutral-600" />
+                ) : (
+                  <ChevronUp 
+                    className={`h-6 w-6 transition-transform ${hasVoted ? '' : 'group-hover:scale-110'}`} 
+                    strokeWidth={hasVoted ? 2.5 : 2}
+                  />
+                )}
+              </button>
             </div>
-          </CardContent>
-        </Card>
-      ))}
+          </div>
+        );
+      })}
     </div>
   );
 }
