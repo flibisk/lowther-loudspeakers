@@ -20,21 +20,18 @@ const nextConfig: NextConfig = {
     }
     
     // Fix circular dependency for Prisma Client
-    // Make webpack treat .prisma/client/default as an external that resolves to @prisma/client
+    // The issue: @prisma/client/default.js requires '.prisma/client/default'
+    // We need to make webpack resolve this to @prisma/client without circular dependency
     if (isServer) {
-      // Add alias to break circular dependency
-      config.resolve.alias = {
-        ...config.resolve.alias,
-        '.prisma/client/default': require.resolve('@prisma/client'),
-      };
-      
-      // Ensure Prisma Client is not externalized (we want it bundled)
-      if (config.externals) {
-        const externals = Array.isArray(config.externals) ? config.externals : [config.externals];
-        config.externals = externals.filter(
-          (external: any) => typeof external !== 'string' || !external.includes('@prisma')
-        );
-      }
+      // Use webpack's NormalModuleReplacementPlugin to replace the require
+      const webpack = require('webpack');
+      config.plugins = config.plugins || [];
+      config.plugins.push(
+        new webpack.NormalModuleReplacementPlugin(
+          /^\.prisma\/client\/default$/,
+          require.resolve('@prisma/client')
+        )
+      );
     }
     
     return config;
