@@ -53,47 +53,56 @@ export async function searchAlbums(query: string, limit: number = 10): Promise<A
   }
 
   try {
-    // Build search query
-    // MusicBrainz Lucene search syntax supports searching by artist or release title
-    // We search both fields so "John Mayer" finds albums BY John Mayer
     const searchQuery = query.trim();
+    const fetchLimit = Math.min(limit * 5, 100);
     
-    // Build a query that searches by artist name primarily, then by release title
-    // artistname:"query" matches albums BY that artist (exact phrase match)
-    // releasegroup:"query" matches albums with that title
-    // Fetch more results than needed (5x limit) to ensure we get good matches after filtering to albums only
-    const luceneQuery = `artistname:"${searchQuery}" OR releasegroup:"${searchQuery}"`;
-    
-    // Build URL manually to preserve quotes in the query
-    const encodedQuery = encodeURIComponent(luceneQuery);
-    const url = `https://musicbrainz.org/ws/2/release-group?query=${encodedQuery}&fmt=json&limit=${Math.min(limit * 5, 100)}`;
+    // Helper function to fetch from MusicBrainz
+    const fetchMusicBrainz = async (luceneQuery: string): Promise<MusicBrainzSearchResponse> => {
+      const encodedQuery = encodeURIComponent(luceneQuery);
+      const url = `https://musicbrainz.org/ws/2/release-group?query=${encodedQuery}&fmt=json&limit=${fetchLimit}`;
+      
+      const response = await fetch(url, {
+        headers: {
+          'User-Agent': USER_AGENT,
+          Accept: 'application/json',
+        },
+      });
 
-    const response = await fetch(url, {
-      headers: {
-        'User-Agent': USER_AGENT,
-        Accept: 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      if (response.status === 503) {
-        // Rate limited - return cached data if available, otherwise empty
-        console.warn('MusicBrainz rate limited, using cache if available');
-        return cached?.data || [];
+      if (!response.ok) {
+        if (response.status === 503) {
+          console.warn('MusicBrainz rate limited');
+          return { 'release-groups': [] };
+        }
+        throw new Error(`MusicBrainz search failed: ${response.status} ${response.statusText}`);
       }
-      throw new Error(`MusicBrainz search failed: ${response.status} ${response.statusText}`);
-    }
 
-    const data: MusicBrainzSearchResponse = await response.json();
+      return response.json();
+    };
+
+    // Strategy: Search by artist name first, then by album title if no results
+    // This way "John Mayer" returns his albums, and "Born and Raised" finds that album
     
-    if (!data['release-groups'] || data['release-groups'].length === 0) {
+    // First: Search by artist name
+    const artistQuery = `artistname:"${searchQuery}"`;
+    let data = await fetchMusicBrainz(artistQuery);
+    
+    // Filter to albums only
+    let releaseGroups = (data['release-groups'] || []).filter(rg => rg['primary-type'] === 'Album');
+    
+    // If no albums found by artist, search by album title
+    if (releaseGroups.length === 0) {
+      const titleQuery = `releasegroup:"${searchQuery}"`;
+      data = await fetchMusicBrainz(titleQuery);
+      releaseGroups = (data['release-groups'] || []).filter(rg => rg['primary-type'] === 'Album');
+    }
+    
+    if (releaseGroups.length === 0) {
       return [];
     }
-
-    // Filter to only albums and transform results, then limit to requested amount
-    const albums: AlbumSearchResult[] = data['release-groups']
-      .filter((rg) => rg['primary-type'] === 'Album')
-      .slice(0, limit) // Limit to requested amount after filtering
+    
+    // Transform results and limit to requested amount
+    const albums: AlbumSearchResult[] = releaseGroups
+      .slice(0, limit)
       .map((rg) => {
         // Extract artist name from artist-credit
         let artist = 'Unknown Artist';
