@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     unoptimized: true,
   },
   outputFileTracingIncludes: {
-    '/api/**/*': ['./node_modules/.prisma/client/**/*'],
+    '/api/**/*': ['./.prisma/client/**/*'],
   },
   webpack: (config, { isServer }) => {
     // Handle Prisma Client imports - exclude from client bundle
