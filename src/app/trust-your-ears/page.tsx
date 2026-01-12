@@ -13,8 +13,8 @@ export const metadata: Metadata = {
 export default async function TrustYourEarsPage() {
   return (
     <div className="min-h-screen bg-neutral-50">
-      {/* Featured Album Banner - Full Width */}
-      <FeaturedAlbum />
+      {/* Featured Album Banner - Full Width with Comments */}
+      <FeaturedAlbum showComments={true} />
 
       {/* Content Section */}
       <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">

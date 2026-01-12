@@ -7,6 +7,7 @@ import { generateStructuredData } from "@/lib/seo";
 import { CurrencyProvider } from "@/contexts/currency-context";
 import { CartProvider } from "@/contexts/cart-context";
 import { WishlistProvider } from "@/contexts/wishlist-context";
+import { AuthProvider } from "@/contexts/auth-context";
 import { CookieConsent } from "@/components/cookie-consent";
 import { ClarityScript } from "@/components/clarity-script";
 import { MetaPixel } from "@/components/meta-pixel";
@@ -135,18 +136,20 @@ export default function RootLayout({
         <CurrencyProvider>
           <CartProvider>
             <WishlistProvider>
-              <SiteHeader nav={NAV} />
-              <div className="min-h-screen flex flex-col">
-                <main className="flex-1">
-                  {children}
-                </main>
-                <Footer />
-              </div>
-              <Analytics />
-              <ClarityScript />
-              <MetaPixel />
-              <CookieConsent />
-              <AbandonedCartTracker />
+              <AuthProvider>
+                <SiteHeader nav={NAV} />
+                <div className="min-h-screen flex flex-col">
+                  <main className="flex-1">
+                    {children}
+                  </main>
+                  <Footer />
+                </div>
+                <Analytics />
+                <ClarityScript />
+                <MetaPixel />
+                <CookieConsent />
+                <AbandonedCartTracker />
+              </AuthProvider>
             </WishlistProvider>
           </CartProvider>
         </CurrencyProvider>

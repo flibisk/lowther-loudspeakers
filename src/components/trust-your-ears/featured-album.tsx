@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import { CommentsSection } from './comments-section';
 
 interface Album {
   id: string;
@@ -13,7 +14,11 @@ interface Album {
   votesCount: number;
 }
 
-export function FeaturedAlbum() {
+interface FeaturedAlbumProps {
+  showComments?: boolean;
+}
+
+export function FeaturedAlbum({ showComments = false }: FeaturedAlbumProps) {
   const [album, setAlbum] = useState<Album | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -141,6 +146,13 @@ export function FeaturedAlbum() {
             </div>
           </div>
         </div>
+
+        {/* Comments Section */}
+        {showComments && (
+          <div className="mt-8">
+            <CommentsSection albumId={album.id} albumTitle={album.title} />
+          </div>
+        )}
       </div>
     </div>
   );

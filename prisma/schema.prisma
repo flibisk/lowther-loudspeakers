@@ -22,6 +22,7 @@ model Album {
   updatedAt                 DateTime @updatedAt
   
   votes                     Vote[]
+  comments                  Comment[]
   
   @@index([votesCount])
   @@index([musicBrainzReleaseGroupId])
@@ -38,4 +39,47 @@ model Vote {
   @@unique([albumId, voterHash])
   @@index([albumId])
   @@index([voterHash])
+}
+
+// User for commenting system (email-based auth)
+model User {
+  id              String    @id @default(uuid())
+  email           String    @unique
+  displayName     String?   // Optional display name
+  createdAt       DateTime  @default(now())
+  lastLoginAt     DateTime  @default(now())
+  
+  comments        Comment[]
+  
+  @@index([email])
+}
+
+// Verification codes for passwordless email auth
+model VerificationCode {
+  id        String   @id @default(uuid())
+  email     String
+  code      String   // 6-digit code
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  
+  @@index([email, code])
+  @@index([expiresAt])
+}
+
+// Comments on albums
+model Comment {
+  id        String   @id @default(uuid())
+  content   String   // The comment text
+  albumId   String
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  album     Album    @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([albumId])
+  @@index([userId])
+  @@index([createdAt])
 }
