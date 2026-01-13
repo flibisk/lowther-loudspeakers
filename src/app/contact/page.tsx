@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { LowtherForLifeSection } from '@/components/lowther-for-life-section';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { Mail, Phone, Facebook, Instagram } from 'lucide-react';
+import { TurnstileInvisible, TurnstileRef } from '@/components/turnstile';
 
 // Note: Since this is a client component, metadata should be added in a parent layout or page.tsx wrapper
 // For now, we'll document the metadata that should be added
@@ -22,6 +23,7 @@ export default function ContactPage() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const turnstileRef = useRef<TurnstileRef>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,6 +31,18 @@ export default function ContactPage() {
     setError('');
 
     try {
+      // Get Turnstile token (invisible verification)
+      let turnstileToken = '';
+      try {
+        turnstileToken = await turnstileRef.current?.execute() || '';
+      } catch (err) {
+        console.error('Turnstile verification failed:', err);
+        setError('Security verification failed. Please try again.');
+        setIsSubmitting(false);
+        turnstileRef.current?.reset();
+        return;
+      }
+
       const response = await fetch('/api/form', {
         method: 'POST',
         headers: {
@@ -37,6 +51,7 @@ export default function ContactPage() {
         body: JSON.stringify({
           ...formData,
           segment: 'Contact',
+          turnstileToken,
         }),
       });
 
@@ -257,6 +272,9 @@ export default function ContactPage() {
                         className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#c59862] focus:border-transparent"
                       />
                     </div>
+
+                    {/* Invisible Turnstile - runs on submit */}
+                    <TurnstileInvisible ref={turnstileRef} />
 
                     {/* Error Message */}
                     {error && (
