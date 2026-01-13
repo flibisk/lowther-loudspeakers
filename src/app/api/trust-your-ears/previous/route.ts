@@ -1,19 +1,27 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db/prisma';
 
-const TWO_WEEKS_MS = 14 * 24 * 60 * 60 * 1000;
+/**
+ * Get the start of the current week (Sunday at midnight UTC)
+ */
+function getWeekStart(date: Date = new Date()): Date {
+  const d = new Date(date);
+  const day = d.getUTCDay(); // 0 = Sunday
+  d.setUTCDate(d.getUTCDate() - day);
+  d.setUTCHours(0, 0, 0, 0);
+  return d;
+}
 
 export async function GET() {
   try {
-    const now = new Date();
-    const twoWeeksAgo = new Date(now.getTime() - TWO_WEEKS_MS);
+    const currentWeekStart = getWeekStart();
 
-    // Get albums that have been featured and their 2-week period has ended
+    // Get albums that were featured before this week started
     const previousAlbums = await prisma.album.findMany({
       where: {
         featuredAt: {
           not: null,
-          lt: twoWeeksAgo, // Featured more than 2 weeks ago
+          lt: currentWeekStart, // Featured before this Sunday
         },
       },
       orderBy: {

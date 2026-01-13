@@ -56,7 +56,7 @@ export default function TrustYourEarsPage() {
         {/* Footer text */}
         <div className="mt-8 text-center">
           <p className="font-sarabun text-sm text-neutral-400">
-            The album with the most votes becomes the next 2-week discussion
+            Every Sunday, the album with the most votes becomes the week&apos;s discussion
           </p>
         </div>
 

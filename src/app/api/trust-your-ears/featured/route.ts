@@ -1,18 +1,48 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db/prisma';
 
-const TWO_WEEKS_MS = 14 * 24 * 60 * 60 * 1000; // 14 days in milliseconds
+/**
+ * Get the start of the current week (Sunday at midnight UTC)
+ */
+function getWeekStart(date: Date = new Date()): Date {
+  const d = new Date(date);
+  const day = d.getUTCDay(); // 0 = Sunday
+  d.setUTCDate(d.getUTCDate() - day);
+  d.setUTCHours(0, 0, 0, 0);
+  return d;
+}
+
+/**
+ * Get the end of the current week (Saturday at 23:59:59 UTC)
+ */
+function getWeekEnd(date: Date = new Date()): Date {
+  const weekStart = getWeekStart(date);
+  const weekEnd = new Date(weekStart);
+  weekEnd.setUTCDate(weekEnd.getUTCDate() + 6);
+  weekEnd.setUTCHours(23, 59, 59, 999);
+  return weekEnd;
+}
+
+/**
+ * Calculate days remaining until Sunday
+ */
+function getDaysUntilSunday(): number {
+  const now = new Date();
+  const weekEnd = getWeekEnd(now);
+  const diffMs = weekEnd.getTime() - now.getTime();
+  return Math.max(0, Math.ceil(diffMs / (24 * 60 * 60 * 1000)));
+}
 
 export async function GET() {
   try {
     const now = new Date();
-    const twoWeeksAgo = new Date(now.getTime() - TWO_WEEKS_MS);
+    const currentWeekStart = getWeekStart(now);
 
-    // 1. Check if there's a currently featured album (featuredAt within last 2 weeks)
+    // 1. Check if there's an album featured this week (featuredAt >= this Sunday)
     let featuredAlbum = await prisma.album.findFirst({
       where: {
         featuredAt: {
-          gte: twoWeeksAgo,
+          gte: currentWeekStart,
         },
       },
       select: {
@@ -28,7 +58,7 @@ export async function GET() {
       },
     });
 
-    // 2. If no current featured album, find the next one to feature
+    // 2. If no album featured this week, select the next one
     if (!featuredAlbum) {
       // Get the highest voted album that hasn't been featured yet
       const nextToFeature = await prisma.album.findFirst({
@@ -37,12 +67,12 @@ export async function GET() {
         },
         orderBy: [
           { votesCount: 'desc' },
-          { createdAt: 'asc' }, // Tie-breaker: earliest submission wins
+          { createdAt: 'asc' }, // Tie-breaker: earliest submission first
         ],
       });
 
       if (nextToFeature) {
-        // Mark this album as featured now
+        // Mark this album as featured now (start of this week's discussion)
         featuredAlbum = await prisma.album.update({
           where: { id: nextToFeature.id },
           data: { featuredAt: now },
@@ -59,7 +89,7 @@ export async function GET() {
           },
         });
         
-        console.log(`[FEATURED] New album featured: "${featuredAlbum.title}" by ${featuredAlbum.artist}`);
+        console.log(`[FEATURED] New weekly album: "${featuredAlbum.title}" by ${featuredAlbum.artist}`);
       }
     }
 
@@ -67,15 +97,15 @@ export async function GET() {
       return NextResponse.json({ album: null });
     }
 
-    // Calculate days remaining
-    const featuredAtDate = new Date(featuredAlbum.featuredAt!);
-    const endsAt = new Date(featuredAtDate.getTime() + TWO_WEEKS_MS);
-    const daysRemaining = Math.max(0, Math.ceil((endsAt.getTime() - now.getTime()) / (24 * 60 * 60 * 1000)));
+    // Calculate days remaining until next Sunday
+    const daysRemaining = getDaysUntilSunday();
+    const weekEnd = getWeekEnd(now);
 
     return NextResponse.json({ 
       album: featuredAlbum,
       daysRemaining,
-      endsAt: endsAt.toISOString(),
+      endsAt: weekEnd.toISOString(),
+      resetsOn: 'Sunday',
     });
   } catch (error) {
     console.error('Featured album fetch error:', error);

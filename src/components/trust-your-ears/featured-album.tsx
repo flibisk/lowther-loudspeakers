@@ -98,12 +98,12 @@ export function FeaturedAlbum({ showComments = false }: FeaturedAlbumProps) {
         {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/40" />
         
-        {/* "Current Listen" label */}
+        {/* "This Week's Listen" label */}
         <div className="relative pt-6 text-center">
           <span className="inline-block rounded-full bg-white/10 px-4 py-1.5 font-sarabun text-xs uppercase tracking-widest text-white/80 backdrop-blur-sm">
             {daysRemaining !== null && daysRemaining > 0 
-              ? `${daysRemaining} day${daysRemaining === 1 ? '' : 's'} remaining` 
-              : 'Current Discussion'}
+              ? `${daysRemaining} day${daysRemaining === 1 ? '' : 's'} left this week` 
+              : 'This Week\'s Listen'}
           </span>
         </div>
         
