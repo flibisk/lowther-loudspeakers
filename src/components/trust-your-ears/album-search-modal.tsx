@@ -32,17 +32,20 @@ export function AlbumSearchModal({ isOpen, onClose, onSuccess }: AlbumSearchModa
 
   // Debounced search - only search when user pauses typing
   useEffect(() => {
-    if (!user || !query.trim() || query.length < 2) {
+    if (!user || !query.trim() || query.length < 3) {
       setResults([]);
+      setLoading(false);
       return;
     }
 
+    // Clear old results and show loading immediately
+    setResults([]);
     setLoading(true);
+    setError(null);
+    
     const timer = setTimeout(async () => {
-      setError(null);
-      
       try {
-        const response = await fetch(`/api/musicbrainz/search-albums?q=${encodeURIComponent(query)}`);
+        const response = await fetch(`/api/musicbrainz/search-albums?q=${encodeURIComponent(query.trim())}`);
         if (response.ok) {
           const data = await response.json();
           setResults(data.albums || []);
@@ -54,11 +57,10 @@ export function AlbumSearchModal({ isOpen, onClose, onSuccess }: AlbumSearchModa
       } finally {
         setLoading(false);
       }
-    }, 500); // 500ms debounce
+    }, 600); // 600ms debounce - wait for user to finish typing
 
     return () => {
       clearTimeout(timer);
-      setLoading(false);
     };
   }, [query, user]);
 
@@ -214,18 +216,18 @@ export function AlbumSearchModal({ isOpen, onClose, onSuccess }: AlbumSearchModa
 
             {/* Search input */}
             <div className="p-4">
-              <div className="relative">
-                <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-neutral-400" />
+              <div className="relative flex items-center">
+                <Search className="absolute left-4 h-5 w-5 text-neutral-400 pointer-events-none" />
                 <input
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search by artist or album name..."
+                  placeholder="Search artist or album..."
                   autoFocus
-                  className="w-full rounded-xl border border-neutral-200 bg-neutral-50 py-3 pl-12 pr-4 font-sarabun text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-neutral-200"
+                  className="w-full rounded-xl border border-neutral-200 bg-neutral-50 py-3.5 pl-12 pr-12 font-sarabun text-base text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-neutral-200"
                 />
                 {loading && (
-                  <Loader2 className="absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 animate-spin text-neutral-400" />
+                  <Loader2 className="absolute right-4 h-5 w-5 animate-spin text-neutral-400" />
                 )}
               </div>
               
@@ -236,21 +238,30 @@ export function AlbumSearchModal({ isOpen, onClose, onSuccess }: AlbumSearchModa
 
             {/* Results */}
             <div className="max-h-[50vh] overflow-y-auto border-t border-neutral-100">
-              {results.length === 0 && query.length >= 2 && !loading && (
-                <div className="p-8 text-center">
-                  <p className="font-sarabun text-neutral-500">
-                    No albums found for &ldquo;{query}&rdquo;
-                  </p>
-                </div>
-              )}
+            {results.length === 0 && query.length >= 3 && !loading && (
+              <div className="p-8 text-center">
+                <p className="font-sarabun text-neutral-500">
+                  No albums found for &ldquo;{query}&rdquo;
+                </p>
+              </div>
+            )}
 
-              {results.length === 0 && query.length < 2 && (
-                <div className="p-8 text-center">
-                  <p className="font-sarabun text-neutral-500">
-                    Type an artist or album name to search
-                  </p>
-                </div>
-              )}
+            {results.length === 0 && query.length < 3 && !loading && (
+              <div className="p-8 text-center">
+                <p className="font-sarabun text-neutral-500">
+                  {query.length === 0 
+                    ? 'Type an artist or album name to search'
+                    : `Type ${3 - query.length} more character${3 - query.length === 1 ? '' : 's'}...`
+                  }
+                </p>
+              </div>
+            )}
+
+            {loading && results.length === 0 && (
+              <div className="flex items-center justify-center p-8">
+                <Loader2 className="h-6 w-6 animate-spin text-neutral-400" />
+              </div>
+            )}
 
               {results.map((album) => {
                 const isSubmitting = submitting === album.musicBrainzReleaseGroupId;

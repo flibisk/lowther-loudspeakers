@@ -43,8 +43,8 @@ export function FeaturedAlbum({ showComments = false }: FeaturedAlbumProps) {
 
   if (loading) {
     return (
-      <div className="relative w-full bg-neutral-900 pt-20">
-        <div className="flex h-[380px] items-center justify-center">
+      <div className="relative w-full bg-neutral-900 pt-28">
+        <div className="flex h-[360px] items-center justify-center">
           <div className="h-8 w-8 animate-spin rounded-full border-2 border-white/20 border-t-white/80" />
         </div>
       </div>
@@ -53,14 +53,14 @@ export function FeaturedAlbum({ showComments = false }: FeaturedAlbumProps) {
 
   if (!album) {
     return (
-      <div className="relative w-full overflow-hidden bg-gradient-to-br from-neutral-800 to-neutral-900 pt-20">
+      <div className="relative w-full overflow-hidden bg-gradient-to-br from-neutral-800 to-neutral-900 pt-28">
         {/* Abstract pattern background */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute -left-20 -top-20 h-96 w-96 rounded-full bg-white/20 blur-3xl" />
           <div className="absolute -bottom-20 -right-20 h-96 w-96 rounded-full bg-white/10 blur-3xl" />
         </div>
         
-        <div className="relative flex h-[380px] items-center justify-center px-4">
+        <div className="relative flex h-[360px] items-center justify-center px-4">
           <div className="text-center">
             <div className="mb-4 inline-flex h-24 w-24 items-center justify-center rounded-full bg-white/10">
               <svg className="h-12 w-12 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -81,8 +81,8 @@ export function FeaturedAlbum({ showComments = false }: FeaturedAlbumProps) {
 
   return (
     <div className="relative w-full">
-      {/* Full-width banner with blurred album art - pt-20 for navbar */}
-      <div className="relative w-full overflow-hidden bg-neutral-900 pt-20">
+      {/* Full-width banner with blurred album art - pt-28 for navbar clearance */}
+      <div className="relative w-full overflow-hidden bg-neutral-900 pt-28">
         {/* Blurred background image */}
         <div className="absolute inset-0 scale-110">
           <Image
