@@ -1,5 +1,5 @@
 -- Seed script for testing "Previously Discussed Albums" with comments
--- Run this in Supabase SQL Editor to see what past discussions look like
+-- Run this in Supabase SQL Editor AFTER running migrate-comment-likes-replies.sql
 
 -- First, create test users for comments
 INSERT INTO "User" (id, email, "displayName", "createdAt", "lastLoginAt")
@@ -9,8 +9,11 @@ VALUES
   ('test-user-3', 'music@example.com', 'TubeAmpFan', NOW(), NOW())
 ON CONFLICT (id) DO NOTHING;
 
+-- Delete existing test albums to refresh them
+DELETE FROM "Album" WHERE id IN ('prev-album-1', 'prev-album-2');
+
 -- Create a previously discussed album (Kind of Blue by Miles Davis)
--- Using actual MusicBrainz release group ID
+-- Real MusicBrainz release group ID
 INSERT INTO "Album" (
   id, 
   "musicBrainzReleaseGroupId", 
@@ -25,21 +28,19 @@ INSERT INTO "Album" (
 )
 VALUES (
   'prev-album-1',
-  'f6e76eb0-8f74-3a47-9f34-5b90b8d8f4c5',
+  '4e4e5de2-5c4f-35b2-b2f2-2b5f0b183f5e',
   'Kind of Blue',
   'Miles Davis',
   1959,
-  'https://coverartarchive.org/release-group/f6e76eb0-8f74-3a47-9f34-5b90b8d8f4c5/front-250',
+  'https://coverartarchive.org/release-group/4e4e5de2-5c4f-35b2-b2f2-2b5f0b183f5e/front-250',
   12,
   NOW() - INTERVAL '14 days',
   NOW() - INTERVAL '21 days',
   NOW()
-)
-ON CONFLICT (id) DO UPDATE SET 
-  "featuredAt" = NOW() - INTERVAL '14 days',
-  "coverUrl" = 'https://coverartarchive.org/release-group/f6e76eb0-8f74-3a47-9f34-5b90b8d8f4c5/front-250';
+);
 
 -- Create another previously discussed album (Rumours by Fleetwood Mac)
+-- Real MusicBrainz release group ID
 INSERT INTO "Album" (
   id, 
   "musicBrainzReleaseGroupId", 
@@ -54,23 +55,19 @@ INSERT INTO "Album" (
 )
 VALUES (
   'prev-album-2',
-  '028bc6f1-3a2b-3487-a0bd-c1f9ae6b9fb1',
+  '95a0fb6a-dd63-347e-a0f3-63f13a4de448',
   'Rumours',
   'Fleetwood Mac',
   1977,
-  'https://coverartarchive.org/release-group/028bc6f1-3a2b-3487-a0bd-c1f9ae6b9fb1/front-250',
+  'https://coverartarchive.org/release-group/95a0fb6a-dd63-347e-a0f3-63f13a4de448/front-250',
   8,
   NOW() - INTERVAL '21 days',
   NOW() - INTERVAL '28 days',
   NOW()
-)
-ON CONFLICT (id) DO UPDATE SET 
-  "featuredAt" = NOW() - INTERVAL '21 days',
-  "coverUrl" = 'https://coverartarchive.org/release-group/028bc6f1-3a2b-3487-a0bd-c1f9ae6b9fb1/front-250';
+);
 
--- Add likesCount column if it doesn't exist (for new comment likes feature)
-ALTER TABLE "Comment" ADD COLUMN IF NOT EXISTS "likesCount" INTEGER NOT NULL DEFAULT 0;
-ALTER TABLE "Comment" ADD COLUMN IF NOT EXISTS "parentId" TEXT;
+-- Delete existing test comments to refresh them
+DELETE FROM "Comment" WHERE id LIKE 'comment-%';
 
 -- Add comments to "Kind of Blue"
 INSERT INTO "Comment" (id, content, "albumId", "userId", "likesCount", "createdAt", "updatedAt")
@@ -110,8 +107,7 @@ VALUES
     2,
     NOW() - INTERVAL '9 days',
     NOW() - INTERVAL '9 days'
-  )
-ON CONFLICT (id) DO NOTHING;
+  );
 
 -- Add comments to "Rumours"
 INSERT INTO "Comment" (id, content, "albumId", "userId", "likesCount", "createdAt", "updatedAt")
@@ -142,10 +138,9 @@ VALUES
     2,
     NOW() - INTERVAL '16 days',
     NOW() - INTERVAL '16 days'
-  )
-ON CONFLICT (id) DO NOTHING;
+  );
 
--- Add a reply to demonstrate threading (comment-1-reply is a reply to comment-1)
+-- Add a reply to demonstrate threading
 INSERT INTO "Comment" (id, content, "albumId", "userId", "parentId", "likesCount", "createdAt", "updatedAt")
 VALUES 
   (
@@ -157,8 +152,7 @@ VALUES
     1,
     NOW() - INTERVAL '12 days 6 hours',
     NOW() - INTERVAL '12 days 6 hours'
-  )
-ON CONFLICT (id) DO NOTHING;
+  );
 
 -- Verify the data
 SELECT 

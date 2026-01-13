@@ -99,17 +99,17 @@ export function FeaturedAlbum({ showComments = false }: FeaturedAlbumProps) {
         {/* Subtle gradient overlay for text readability */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/50" />
         
-        {/* "This Week's Listen" label */}
-        <div className="relative pt-6 text-center">
+        {/* Spacer for banner height - taller on desktop */}
+        <div className="h-[280px] sm:h-[340px] lg:h-[380px]" />
+        
+        {/* "This Week's Listen" label - positioned at bottom of banner, above album card */}
+        <div className="absolute bottom-52 left-0 right-0 text-center sm:bottom-56">
           <span className="inline-block rounded-full bg-white/10 px-4 py-1.5 font-sarabun text-xs uppercase tracking-widest text-white/80 backdrop-blur-sm">
             {daysRemaining !== null && daysRemaining > 0 
               ? `${daysRemaining} day${daysRemaining === 1 ? '' : 's'} left this week` 
               : 'This Week\'s Listen'}
           </span>
         </div>
-        
-        {/* Spacer for banner height - taller on desktop */}
-        <div className="h-[280px] sm:h-[340px] lg:h-[380px]" />
       </div>
 
       {/* Album card - overlaps the banner, matches content width */}
