@@ -602,10 +602,28 @@ export default function SiteHeader({ nav }: Props) {
                   )}
                 </div>
 
+                {/* Listening Circle */}
+                <div className="animate-slide-in-left-delay-6">
+                  <button 
+                    onClick={() => setExpandedSection(expandedSection === 'listening-circle' ? null : 'listening-circle')} 
+                    className="flex items-center justify-between w-full text-left text-white hover:text-neutral-300 transition-colors py-2"
+                  >
+                    <span className="font-display text-xl">Listening Circle</span>
+                    <svg className={`w-5 h-5 transition-transform ${expandedSection === 'listening-circle' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  {expandedSection === 'listening-circle' && (
+                    <div className="pl-4 space-y-2 py-2">
+                      <Link href="/trust-your-ears" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)}>Trust Your Ears</Link>
+                    </div>
+                  )}
+                </div>
+
                 {/* Our Blog */}
                 <Link 
                   href="/blog" 
-                  className="block text-white hover:text-neutral-300 transition-colors font-display text-xl py-2 animate-slide-in-left-delay-6" 
+                  className="block text-white hover:text-neutral-300 transition-colors font-display text-xl py-2 animate-slide-in-left-delay-7" 
                   onClick={() => setMenuOpen(false)}
                 >
                   Our Blog
@@ -617,7 +635,7 @@ export default function SiteHeader({ nav }: Props) {
                     setMenuOpen(false);
                     setContactFormOpen(true);
                   }}
-                  className="block text-white hover:text-neutral-300 transition-colors font-display text-xl py-2 animate-slide-in-left-delay-7 text-left"
+                  className="block text-white hover:text-neutral-300 transition-colors font-display text-xl py-2 animate-slide-in-left-delay-8 text-left"
                 >
                   Contact Us
                 </button>
@@ -719,6 +737,12 @@ export default function SiteHeader({ nav }: Props) {
               { label: 'Listening Rooms', href: '/services/listening-rooms', image: '/images/Menu/services/listening-rooms.jpg' },
               { label: 'Order a Catalogue', href: '/catalogue', image: '/images/Menu/services/order-catalogue.jpg' },
               { label: 'OEM Opportunities', href: '/services/oem-opportunities', image: '/images/Menu/services/oem-opportunities.jpg' },
+            ]
+          },
+          {
+            label: 'Listening Circle',
+            children: [
+              { label: 'Trust Your Ears', href: '/trust-your-ears', desc: 'Weekly album discussions' },
             ]
           },
           {
