@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { OverlayForm } from "@/components/ui/overlay-form";
+import { TurnstileInvisible, TurnstileRef } from "@/components/turnstile";
 
 interface PointsOfSaleFormProps {
   isOpen: boolean;
@@ -22,13 +23,82 @@ export function PointsOfSaleForm({ isOpen, onClose }: PointsOfSaleFormProps) {
     email: '',
     preferredLocation: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<{
+    type: 'success' | 'error' | null;
+    message: string;
+  }>({ type: null, message: '' });
+  const turnstileRef = useRef<TurnstileRef>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Points of Sale Form Data:', formData);
-    // Here you would typically send the data to your backend
-    alert('Request submitted successfully! We\'ll contact you about points of sale in your preferred location.');
-    onClose();
+    setIsSubmitting(true);
+    setSubmitStatus({ type: null, message: '' });
+
+    try {
+      // Get Turnstile token (invisible verification)
+      let turnstileToken = '';
+      try {
+        turnstileToken = await turnstileRef.current?.execute() || '';
+      } catch (error) {
+        console.error('Turnstile verification failed:', error);
+        setSubmitStatus({
+          type: 'error',
+          message: 'Security verification failed. Please try again.',
+        });
+        setIsSubmitting(false);
+        turnstileRef.current?.reset();
+        return;
+      }
+
+      const response = await fetch('/api/points-of-sale', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          turnstileToken,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Store email in localStorage for wishlist notifications
+        if (formData.email) {
+          localStorage.setItem('user_email', formData.email);
+        }
+        setSubmitStatus({
+          type: 'success',
+          message: data.message || 'Request submitted successfully!',
+        });
+        // Reset form after successful submission
+        setFormData({
+          name: '',
+          email: '',
+          preferredLocation: ''
+        });
+        // Close form after 2 seconds
+        setTimeout(() => {
+          onClose();
+          setSubmitStatus({ type: null, message: '' });
+        }, 2000);
+      } else {
+        setSubmitStatus({
+          type: 'error',
+          message: data.message || 'Failed to submit request. Please try again.',
+        });
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setSubmitStatus({
+        type: 'error',
+        message: 'An error occurred. Please try again or contact us directly.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleInputChange = (field: keyof FormData, value: string) => {
@@ -101,6 +171,20 @@ export function PointsOfSaleForm({ isOpen, onClose }: PointsOfSaleFormProps) {
           </p>
         </div>
 
+        {/* Invisible Turnstile - runs on submit */}
+        <TurnstileInvisible ref={turnstileRef} />
+
+        {/* Status Messages */}
+        {submitStatus.type && (
+          <div className={`p-4 rounded-lg ${
+            submitStatus.type === 'success' 
+              ? 'bg-green-50 text-green-800 border border-green-200' 
+              : 'bg-red-50 text-red-800 border border-red-200'
+          }`}>
+            <p className="text-sm">{submitStatus.message}</p>
+          </div>
+        )}
+
         {/* Submit Button */}
         <div className="pt-4">
           <Button
@@ -108,8 +192,9 @@ export function PointsOfSaleForm({ isOpen, onClose }: PointsOfSaleFormProps) {
             variant="black"
             size="lowther"
             className="w-full"
+            disabled={isSubmitting}
           >
-            Submit Request
+            {isSubmitting ? 'Submitting...' : 'Submit Request'}
           </Button>
         </div>
       </form>
