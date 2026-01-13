@@ -97,7 +97,7 @@ export function MobileMenu({ isOpen, onClose, menuItems, currentLanguage, curren
 
   return (
     <>
-      <div className="fixed inset-0 z-[30000] bg-black/95 animate-fade-in flex flex-col">
+      <div className="fixed inset-0 z-[30000] bg-black/90 backdrop-blur-md animate-fade-in flex flex-col">
         {/* Header */}
         <div className="flex items-center px-6 py-4 border-b border-neutral-800 flex-shrink-0">
           {/* Left Side - Fixed Width */}

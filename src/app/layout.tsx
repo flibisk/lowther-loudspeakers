@@ -91,11 +91,11 @@ const NAV = [
   ]},
   { label: 'Cables', href: '/category/cables' },
   { label: 'Build', href: '/build-a-lowther' },
-  { label: 'Blog', href: '/blog' },
   { label: 'Listen', href: '/listen' },
   { label: 'Listening Circle', href: '/trust-your-ears', children: [
     { label: 'Trust Your Ears', href: '/trust-your-ears', desc: 'Weekly album discussions' },
   ]},
+  { label: 'Blog', href: '/blog' },
   { label: 'Shop', href: process.env.NEXT_PUBLIC_SHOP_URL ?? 'https://shop.lowtherloudspeakers.com' },
 ];
 

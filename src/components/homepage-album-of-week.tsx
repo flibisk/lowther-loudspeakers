@@ -66,7 +66,7 @@ export function HomepageAlbumOfWeek() {
   const coverUrl = album.coverUrl || '/images/album-placeholder.svg';
 
   return (
-    <section className="bg-neutral-50 py-16 sm:py-20">
+    <section className="bg-white py-16 sm:py-20">
       <div className="mx-auto max-w-7xl px-6 sm:px-6 lg:px-8 xl:px-12">
         {/* Section Header */}
         <div className="mb-10 text-center">
