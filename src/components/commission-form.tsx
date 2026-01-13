@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Turnstile } from '@/components/turnstile';
+import { TurnstileInvisible, TurnstileRef } from '@/components/turnstile';
 
 interface CommissionFormProps {
   isOpen: boolean;
@@ -72,7 +72,7 @@ export function CommissionForm({ isOpen, onClose, speakerName }: CommissionFormP
     questions: ''
   });
 
-  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const turnstileRef = useRef<TurnstileRef>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<{
     type: 'success' | 'error' | null;
@@ -81,25 +81,27 @@ export function CommissionForm({ isOpen, onClose, speakerName }: CommissionFormP
   
   const leadTime = getLeadTime(speakerName);
 
-  const handleTurnstileVerify = useCallback((token: string) => {
-    setTurnstileToken(token);
-  }, []);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!turnstileToken) {
-      setSubmitStatus({
-        type: 'error',
-        message: 'Please complete the security check.',
-      });
-      return;
-    }
-    
     setIsSubmitting(true);
     setSubmitStatus({ type: null, message: '' });
 
     try {
+      // Get Turnstile token (invisible verification)
+      let turnstileToken = '';
+      try {
+        turnstileToken = await turnstileRef.current?.execute() || '';
+      } catch (error) {
+        console.error('Turnstile verification failed:', error);
+        setSubmitStatus({
+          type: 'error',
+          message: 'Security verification failed. Please try again.',
+        });
+        setIsSubmitting(false);
+        turnstileRef.current?.reset();
+        return;
+      }
+
       const response = await fetch('/api/commission', {
         method: 'POST',
         headers: {
@@ -342,14 +344,8 @@ export function CommissionForm({ isOpen, onClose, speakerName }: CommissionFormP
             </div>
 
             {/* Status Messages */}
-            {/* Turnstile Widget - Fixed height to prevent layout shift */}
-            <div className="flex justify-center min-h-[65px]">
-              <Turnstile 
-                onVerify={handleTurnstileVerify}
-                onExpire={() => setTurnstileToken(null)}
-                theme="light"
-              />
-            </div>
+            {/* Invisible Turnstile - runs on submit */}
+            <TurnstileInvisible ref={turnstileRef} />
 
             {submitStatus.type && (
               <div className={`p-4 rounded-lg ${
