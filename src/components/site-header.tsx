@@ -425,9 +425,9 @@ export default function SiteHeader({ nav }: Props) {
             </div>
           </div>
 
-          {/* Menu Content - 90% opacity */}
+          {/* Menu Content - 90% opacity with blur */}
           <div 
-            className="flex min-h-[calc(100vh-80px)] bg-black/90"
+            className="flex min-h-[calc(100vh-80px)] bg-black/90 backdrop-blur-md"
             onMouseLeave={() => setHoveredImage(null)}
           >
             {/* Left Panel - Menu Items */}
