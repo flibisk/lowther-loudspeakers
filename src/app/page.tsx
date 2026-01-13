@@ -11,6 +11,7 @@ import { BuildALowtherBanner } from "@/components/build-a-lowther-banner";
 import { ReviewsSection } from "@/components/reviews-section";
 import { HistoryBanner } from "@/components/history-banner";
 import { HomepageFAQ } from "@/components/homepage-faq";
+import { HomepageAlbumOfWeek } from "@/components/homepage-album-of-week";
 import { generateSEOMetadata, generateStructuredData } from "@/lib/seo";
 import { getPageMetadata } from "@/lib/metadata-config";
 
@@ -248,6 +249,9 @@ export default async function HomePage() {
 
       {/* CATALOGUE ORDER - Dark atmospheric banner */}
       <CatalogueOrder />
+
+      {/* ALBUM OF THE WEEK - Trust Your Ears featured album */}
+      <HomepageAlbumOfWeek />
 
       {/* FAQ SECTION - Frequently asked questions */}
       <HomepageFAQ />
