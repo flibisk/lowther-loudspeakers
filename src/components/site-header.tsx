@@ -611,7 +611,7 @@ export default function SiteHeader({ nav }: Props) {
                     onClick={() => handleDropdownClick('listening-circle')}
                     className="flex items-center justify-between w-full text-left text-white hover:text-neutral-300 transition-colors py-2"
                   >
-                    <span className="font-display text-xl">Listening Circle</span>
+                    <span className="font-display text-xl">The Listening Circle</span>
                     <svg className={`h-4 w-4 transition-transform duration-200 ${activeDropdown === 'listening-circle' ? 'rotate-90' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
@@ -743,7 +743,7 @@ export default function SiteHeader({ nav }: Props) {
             ]
           },
           {
-            label: 'Listening Circle',
+            label: 'The Listening Circle',
             children: [
               { label: 'Album of the Week', href: '/trust-your-ears', desc: 'Weekly album discussions', image: '/images/og/trust-your-ears.jpeg' },
             ]
