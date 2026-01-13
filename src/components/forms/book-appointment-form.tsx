@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { OverlayForm } from "@/components/ui/overlay-form";
+import { Turnstile } from "@/components/turnstile";
 
 interface BookAppointmentFormProps {
   isOpen: boolean;
@@ -33,14 +34,28 @@ export function BookAppointmentForm({ isOpen, onClose }: BookAppointmentFormProp
     message: ''
   });
 
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<{
     type: 'success' | 'error' | null;
     message: string;
   }>({ type: null, message: '' });
 
+  const handleTurnstileVerify = useCallback((token: string) => {
+    setTurnstileToken(token);
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!turnstileToken) {
+      setSubmitStatus({
+        type: 'error',
+        message: 'Please complete the security check.',
+      });
+      return;
+    }
+    
     setIsSubmitting(true);
     setSubmitStatus({ type: null, message: '' });
 
@@ -55,6 +70,7 @@ export function BookAppointmentForm({ isOpen, onClose }: BookAppointmentFormProp
         location: formData.appointmentType === 'visit' ? 'norfolk' : 'phone_call',
         interest: formData.appointmentType === 'phone' ? 'Phone Consultation' : 'Listening Room Visit',
         message: formData.message || '',
+        turnstileToken,
       };
 
       const response = await fetch('/api/book-appointment', {
@@ -255,6 +271,15 @@ export function BookAppointmentForm({ isOpen, onClose }: BookAppointmentFormProp
             rows={3}
             className="w-full px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c59862] focus:border-transparent"
             placeholder="Tell us more about your requirements..."
+          />
+        </div>
+
+        {/* Turnstile Widget */}
+        <div className="flex justify-center">
+          <Turnstile 
+            onVerify={handleTurnstileVerify}
+            onExpire={() => setTurnstileToken(null)}
+            theme="light"
           />
         </div>
 

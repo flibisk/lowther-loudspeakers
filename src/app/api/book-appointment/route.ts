@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { submitLead } from '@/lib/leads/submitLead';
+import { verifyTurnstileToken } from '@/lib/turnstile';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, email, phone, preferredDate, preferredTime, location, interest, message } = body;
+    const { name, email, phone, preferredDate, preferredTime, location, interest, message, turnstileToken } = body;
 
     // Validate required fields
     if (!name || !email || !preferredDate || !location) {
@@ -12,6 +13,17 @@ export async function POST(request: NextRequest) {
         { success: false, message: 'Name, email, preferred date, and location are required' },
         { status: 400 }
       );
+    }
+
+    // Verify Turnstile token
+    if (process.env.TURNSTILE_SECRET_KEY) {
+      const verification = await verifyTurnstileToken(turnstileToken);
+      if (!verification.success) {
+        return NextResponse.json(
+          { success: false, message: verification.error || 'Security verification failed' },
+          { status: 400 }
+        );
+      }
     }
 
     // Format location for display

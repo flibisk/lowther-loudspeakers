@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { OverlayForm } from "@/components/ui/overlay-form";
+import { Turnstile } from "@/components/turnstile";
 
 interface ContactFormProps {
   isOpen: boolean;
@@ -27,14 +28,28 @@ export function ContactForm({ isOpen, onClose, segment = "Contact" }: ContactFor
     location: '',
     message: ''
   });
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<{
     type: 'success' | 'error' | null;
     message: string;
   }>({ type: null, message: '' });
 
+  const handleTurnstileVerify = useCallback((token: string) => {
+    setTurnstileToken(token);
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!turnstileToken) {
+      setSubmitStatus({
+        type: 'error',
+        message: 'Please complete the security check.',
+      });
+      return;
+    }
+    
     setIsSubmitting(true);
     setSubmitStatus({ type: null, message: '' });
 
@@ -47,6 +62,7 @@ export function ContactForm({ isOpen, onClose, segment = "Contact" }: ContactFor
         body: JSON.stringify({
           ...formData,
           segment,
+          turnstileToken,
         }),
       });
 
@@ -186,6 +202,15 @@ export function ContactForm({ isOpen, onClose, segment = "Contact" }: ContactFor
           <p className="text-sm text-neutral-700">
             Phone: <a href="tel:+442083009166" className="text-[#c59862] hover:underline">+44 20 8300 9166</a>
           </p>
+        </div>
+
+        {/* Turnstile Widget */}
+        <div className="flex justify-center">
+          <Turnstile 
+            onVerify={handleTurnstileVerify}
+            onExpire={() => setTurnstileToken(null)}
+            theme="light"
+          />
         </div>
 
         {/* Status Messages */}

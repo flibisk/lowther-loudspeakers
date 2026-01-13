@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { submitLead } from '@/lib/leads/submitLead';
+import { verifyTurnstileToken } from '@/lib/turnstile';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, email, phone, location, message, segment } = body;
+    const { name, email, phone, location, message, segment, turnstileToken } = body;
 
     // Validate required fields
     if (!name || !email || !message) {
@@ -12,6 +13,17 @@ export async function POST(request: NextRequest) {
         { success: false, message: 'Name, email, and message are required' },
         { status: 400 }
       );
+    }
+
+    // Verify Turnstile token (skip if not configured - for development)
+    if (process.env.TURNSTILE_SECRET_KEY) {
+      const verification = await verifyTurnstileToken(turnstileToken);
+      if (!verification.success) {
+        return NextResponse.json(
+          { success: false, message: verification.error || 'Security verification failed' },
+          { status: 400 }
+        );
+      }
     }
 
     // Use shared submitLead helper

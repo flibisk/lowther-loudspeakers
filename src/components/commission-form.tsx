@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
+import { Turnstile } from '@/components/turnstile';
 
 interface CommissionFormProps {
   isOpen: boolean;
@@ -71,6 +72,7 @@ export function CommissionForm({ isOpen, onClose, speakerName }: CommissionFormP
     questions: ''
   });
 
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<{
     type: 'success' | 'error' | null;
@@ -79,8 +81,21 @@ export function CommissionForm({ isOpen, onClose, speakerName }: CommissionFormP
   
   const leadTime = getLeadTime(speakerName);
 
+  const handleTurnstileVerify = useCallback((token: string) => {
+    setTurnstileToken(token);
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!turnstileToken) {
+      setSubmitStatus({
+        type: 'error',
+        message: 'Please complete the security check.',
+      });
+      return;
+    }
+    
     setIsSubmitting(true);
     setSubmitStatus({ type: null, message: '' });
 
@@ -93,6 +108,7 @@ export function CommissionForm({ isOpen, onClose, speakerName }: CommissionFormP
         body: JSON.stringify({
           ...formData,
           speakerName,
+          turnstileToken,
         }),
       });
 
@@ -326,6 +342,15 @@ export function CommissionForm({ isOpen, onClose, speakerName }: CommissionFormP
             </div>
 
             {/* Status Messages */}
+            {/* Turnstile Widget */}
+            <div className="flex justify-center">
+              <Turnstile 
+                onVerify={handleTurnstileVerify}
+                onExpire={() => setTurnstileToken(null)}
+                theme="light"
+              />
+            </div>
+
             {submitStatus.type && (
               <div className={`p-4 rounded-lg ${
                 submitStatus.type === 'success' 
