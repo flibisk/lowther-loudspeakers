@@ -1,15 +1,45 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { prisma } from '@/lib/db/prisma';
-import { generateVoterHash, getClientIp } from '@/lib/trust-your-ears/voting';
 import { getAlbumById } from '@/lib/musicbrainz/client';
 import { getCoverArtUrl, getPlaceholderImageUrl } from '@/lib/cover-art-archive/client';
-import { createHash } from 'crypto';
 
 export async function POST(request: NextRequest) {
   try {
+    // Check authentication
+    const cookieStore = await cookies();
+    const sessionCookie = cookieStore.get('tye_session');
+
+    if (!sessionCookie?.value) {
+      return NextResponse.json(
+        { error: 'You must be signed in to recommend albums' },
+        { status: 401 }
+      );
+    }
+
+    // Parse session: userId:token
+    const [userId] = sessionCookie.value.split(':');
+    if (!userId) {
+      return NextResponse.json(
+        { error: 'Invalid session' },
+        { status: 401 }
+      );
+    }
+
+    // Verify user exists
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      return NextResponse.json(
+        { error: 'User not found' },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
-    const { musicBrainzReleaseGroupId, cookieId } = body;
+    const { musicBrainzReleaseGroupId } = body;
 
     if (!musicBrainzReleaseGroupId || typeof musicBrainzReleaseGroupId !== 'string') {
       return NextResponse.json(
@@ -18,20 +48,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get or create cookie ID
-    const cookieStore = await cookies();
-    let voterCookieId = cookieStore.get('trust-your-ears-voter-id')?.value;
-    
-    if (!voterCookieId) {
-      // Generate new cookie ID
-      voterCookieId = createHash('sha256')
-        .update(`${Date.now()}-${Math.random()}-${request.headers.get('user-agent') || ''}`)
-        .digest('hex');
-    }
-
-    // Get IP address and generate voter hash
-    const ipAddress = getClientIp(request.headers);
-    const voterHash = generateVoterHash(ipAddress, voterCookieId);
+    // Use user ID as the voter hash for authenticated users
+    const voterHash = `user:${userId}`;
 
     // Check if album exists in database
     let album = await prisma.album.findUnique({
@@ -63,6 +81,8 @@ export async function POST(request: NextRequest) {
           votesCount: 0,
         },
       });
+
+      console.log(`[VOTE] New album added: "${album.title}" by ${album.artist}`);
     }
 
     // Check if user has already voted for this album
@@ -77,7 +97,7 @@ export async function POST(request: NextRequest) {
 
     if (existingVote) {
       return NextResponse.json(
-        { error: 'You have already voted for this album', alreadyVoted: true },
+        { error: 'You have already recommended this album', alreadyVoted: true },
         { status: 409 }
       );
     }
@@ -103,46 +123,28 @@ export async function POST(request: NextRequest) {
     // Fetch updated album
     const updatedAlbum = await prisma.album.findUnique({
       where: { id: album.id },
-      include: {
-        _count: {
-          select: { votes: true },
-        },
-      },
     });
 
-    // Set cookie in response if it wasn't already set
-    const response = NextResponse.json({
+    console.log(`[VOTE] ${user.email} voted for "${album.title}"`);
+
+    return NextResponse.json({
       success: true,
       album: updatedAlbum,
-      message: album.votesCount === 0
-        ? 'Album added and voted!'
-        : 'Vote recorded!',
+      message: 'Album recommended!',
     });
-
-    // Set cookie for future requests (expires in 1 year)
-    if (!cookieStore.get('trust-your-ears-voter-id')) {
-      response.cookies.set('trust-your-ears-voter-id', voterCookieId, {
-        maxAge: 60 * 60 * 24 * 365, // 1 year
-        httpOnly: true,
-        sameSite: 'lax',
-        secure: process.env.NODE_ENV === 'production',
-      });
-    }
-
-    return response;
   } catch (error) {
     console.error('Vote error:', error);
     
     // Handle unique constraint violation (race condition)
     if (error instanceof Error && error.message.includes('Unique constraint')) {
       return NextResponse.json(
-        { error: 'You have already voted for this album', alreadyVoted: true },
+        { error: 'You have already recommended this album', alreadyVoted: true },
         { status: 409 }
       );
     }
 
     return NextResponse.json(
-      { error: 'Failed to record vote' },
+      { error: 'Failed to record recommendation' },
       { status: 500 }
     );
   }
