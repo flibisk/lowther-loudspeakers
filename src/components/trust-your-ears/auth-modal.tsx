@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { X, Mail, ArrowRight, Loader2 } from 'lucide-react';
+import { X, Mail, ArrowRight, Loader2, User } from 'lucide-react';
 import { useAuth } from '@/contexts/auth-context';
 
 interface AuthModalProps {
@@ -11,10 +11,11 @@ interface AuthModalProps {
 }
 
 export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
-  const { signIn, verifyCode } = useAuth();
-  const [step, setStep] = useState<'email' | 'code'>('email');
+  const { signIn, verifyCode, setUsername } = useAuth();
+  const [step, setStep] = useState<'email' | 'code' | 'username'>('email');
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
+  const [username, setUsernameValue] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -42,14 +43,47 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
 
     setLoading(false);
     if (result.success) {
-      onSuccess?.();
-      onClose();
-      // Reset state
-      setStep('email');
-      setEmail('');
-      setCode('');
+      // Check if this is a new user who needs to set a username
+      if (result.needsUsername) {
+        setStep('username');
+      } else {
+        onSuccess?.();
+        handleClose();
+      }
     } else {
       setError(result.error || 'Invalid code');
+    }
+  };
+
+  const handleSubmitUsername = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Validate username
+    const trimmedUsername = username.trim();
+    if (trimmedUsername.length < 3) {
+      setError('Username must be at least 3 characters');
+      return;
+    }
+    if (trimmedUsername.length > 20) {
+      setError('Username must be 20 characters or less');
+      return;
+    }
+    if (!/^[a-zA-Z0-9_]+$/.test(trimmedUsername)) {
+      setError('Username can only contain letters, numbers, and underscores');
+      return;
+    }
+    
+    setLoading(true);
+    setError(null);
+
+    const result = await setUsername(trimmedUsername);
+
+    setLoading(false);
+    if (result.success) {
+      onSuccess?.();
+      handleClose();
+    } else {
+      setError(result.error || 'Username not available');
     }
   };
 
@@ -60,6 +94,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
       setStep('email');
       setEmail('');
       setCode('');
+      setUsernameValue('');
       setError(null);
     }, 300);
   };
@@ -88,15 +123,21 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
           {/* Header */}
           <div className="mb-6 text-center">
             <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-neutral-100">
-              <Mail className="h-6 w-6 text-neutral-600" />
+              {step === 'username' ? (
+                <User className="h-6 w-6 text-neutral-600" />
+              ) : (
+                <Mail className="h-6 w-6 text-neutral-600" />
+              )}
             </div>
             <h2 className="font-hvmuse text-xl text-neutral-900">
-              {step === 'email' ? 'Join the Conversation' : 'Check Your Email'}
+              {step === 'email' && 'Join the Conversation'}
+              {step === 'code' && 'Check Your Email'}
+              {step === 'username' && 'Choose a Username'}
             </h2>
             <p className="mt-2 font-sarabun text-sm text-neutral-500">
-              {step === 'email'
-                ? 'Enter your email to sign in and share your thoughts'
-                : `We sent a 6-digit code to ${email}`}
+              {step === 'email' && 'Enter your email to sign in and share your thoughts'}
+              {step === 'code' && `We sent a 6-digit code to ${email}`}
+              {step === 'username' && 'This will be displayed publicly with your comments'}
             </p>
           </div>
 
@@ -196,9 +237,61 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
             </form>
           )}
 
+          {/* Username Form */}
+          {step === 'username' && (
+            <form onSubmit={handleSubmitUsername}>
+              <div className="mb-4">
+                <label htmlFor="username" className="sr-only">
+                  Username
+                </label>
+                <input
+                  id="username"
+                  type="text"
+                  value={username}
+                  onChange={(e) => {
+                    setUsernameValue(e.target.value.replace(/[^a-zA-Z0-9_]/g, ''));
+                    setError(null);
+                  }}
+                  placeholder="YourUsername"
+                  required
+                  autoFocus
+                  maxLength={20}
+                  className="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 font-sarabun text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-neutral-200"
+                />
+                <p className="mt-2 font-sarabun text-xs text-neutral-400">
+                  3-20 characters. Letters, numbers, and underscores only.
+                </p>
+              </div>
+
+              {error && (
+                <p className="mb-4 text-center font-sarabun text-sm text-red-600">
+                  {error}
+                </p>
+              )}
+
+              <button
+                type="submit"
+                disabled={loading || username.length < 3}
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-neutral-900 px-4 py-3 font-sarabun font-medium text-white transition-all hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {loading ? (
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                ) : (
+                  <>
+                    Complete Sign Up
+                    <ArrowRight className="h-4 w-4" />
+                  </>
+                )}
+              </button>
+            </form>
+          )}
+
           {/* Footer */}
           <p className="mt-6 text-center font-sarabun text-xs text-neutral-400">
-            By continuing, you agree to receive occasional updates about Lowther.
+            {step === 'username' 
+              ? 'Your email will never be shown publicly'
+              : 'By continuing, you agree to receive occasional updates about Lowther.'
+            }
           </p>
         </div>
       </div>

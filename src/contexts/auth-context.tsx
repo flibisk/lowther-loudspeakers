@@ -12,7 +12,8 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   signIn: (email: string) => Promise<{ success: boolean; error?: string }>;
-  verifyCode: (email: string, code: string) => Promise<{ success: boolean; error?: string }>;
+  verifyCode: (email: string, code: string) => Promise<{ success: boolean; needsUsername?: boolean; error?: string }>;
+  setUsername: (username: string) => Promise<{ success: boolean; error?: string }>;
   signOut: () => Promise<void>;
   refreshUser: () => Promise<void>;
 }
@@ -64,7 +65,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const verifyCode = async (email: string, code: string): Promise<{ success: boolean; error?: string }> => {
+  const verifyCode = async (email: string, code: string): Promise<{ success: boolean; needsUsername?: boolean; error?: string }> => {
     try {
       const response = await fetch('/api/auth/verify-code', {
         method: 'POST',
@@ -78,6 +79,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { success: false, error: data.error || 'Failed to verify code' };
       }
 
+      setUser(data.user);
+      
+      // Check if user needs to set a username (new user without displayName)
+      const needsUsername = !data.user.displayName;
+      
+      return { success: true, needsUsername };
+    } catch (error) {
+      return { success: false, error: 'An error occurred' };
+    }
+  };
+
+  const setUsername = async (username: string): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const response = await fetch('/api/auth/set-username', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        return { success: false, error: data.error || 'Failed to set username' };
+      }
+
+      // Update user with new displayName
       setUser(data.user);
       return { success: true };
     } catch (error) {
@@ -95,7 +122,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, verifyCode, signOut, refreshUser }}>
+    <AuthContext.Provider value={{ user, loading, signIn, verifyCode, setUsername, signOut, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );

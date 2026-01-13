@@ -73,7 +73,7 @@ export async function GET(request: NextRequest) {
       hasLiked: Array.isArray(comment.likes) ? comment.likes.length > 0 : false,
       user: {
         id: comment.user.id,
-        displayName: comment.user.displayName || maskEmail(comment.user.email),
+        displayName: getDisplayName(comment.user),
       },
       replies: comment.replies?.map(reply => ({
         id: reply.id,
@@ -83,7 +83,7 @@ export async function GET(request: NextRequest) {
         hasLiked: Array.isArray(reply.likes) ? reply.likes.length > 0 : false,
         user: {
           id: reply.user.id,
-          displayName: reply.user.displayName || maskEmail(reply.user.email),
+          displayName: getDisplayName(reply.user),
         },
       })) || [],
     }));
@@ -216,7 +216,7 @@ export async function POST(request: NextRequest) {
         hasLiked: false,
         user: {
           id: comment.user.id,
-          displayName: comment.user.displayName || maskEmail(comment.user.email),
+          displayName: getDisplayName(comment.user),
         },
         replies: [],
       },
@@ -230,13 +230,11 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Helper to mask email for privacy
-function maskEmail(email: string): string {
-  const [localPart, domain] = email.split('@');
-  if (!localPart || !domain) return 'Anonymous';
-  
-  const firstChar = localPart.charAt(0);
-  const maskedLocal = firstChar + '***';
-  
-  return `${maskedLocal}@${domain}`;
+// Get display name - use username if set, otherwise show "Anonymous"
+function getDisplayName(user: { displayName: string | null; email: string }): string {
+  if (user.displayName) {
+    return user.displayName;
+  }
+  // Fallback for users who signed up before usernames were required
+  return 'Anonymous';
 }

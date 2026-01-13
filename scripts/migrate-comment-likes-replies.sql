@@ -74,6 +74,12 @@ REFERENCES "Comment"("id")
 ON DELETE CASCADE 
 ON UPDATE CASCADE;
 
+-- Add unique constraint on displayName for usernames
+CREATE UNIQUE INDEX IF NOT EXISTS "User_displayName_key" ON "User"("displayName") WHERE "displayName" IS NOT NULL;
+
+-- Add index on displayName for faster lookups
+CREATE INDEX IF NOT EXISTS "User_displayName_idx" ON "User"("displayName");
+
 -- Verify the changes
 SELECT column_name, data_type 
 FROM information_schema.columns 

@@ -202,6 +202,11 @@ export function FeaturedAlbum() {
             Join Discussion
             <ChevronRight className="h-4 w-4" />
           </Link>
+          
+          {/* Weekly rotation info */}
+          <p className="mt-4 text-center font-sarabun text-xs text-neutral-400">
+            Every Sunday, the album with the most votes becomes the week&apos;s discussion
+          </p>
         </div>
       </div>
     </div>

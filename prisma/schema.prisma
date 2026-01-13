@@ -47,7 +47,7 @@ model Vote {
 model User {
   id              String        @id @default(uuid())
   email           String        @unique
-  displayName     String?       // Optional display name
+  displayName     String?       @unique // Username - must be unique
   createdAt       DateTime      @default(now())
   lastLoginAt     DateTime      @default(now())
   
@@ -55,6 +55,7 @@ model User {
   commentLikes    CommentLike[]
   
   @@index([email])
+  @@index([displayName])
 }
 
 // Verification codes for passwordless email auth
