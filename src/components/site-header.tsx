@@ -742,7 +742,7 @@ export default function SiteHeader({ nav }: Props) {
           {
             label: 'Listening Circle',
             children: [
-              { label: 'Album of the Week', href: '/trust-your-ears', desc: 'Weekly album discussions' },
+              { label: 'Album of the Week', href: '/trust-your-ears', desc: 'Weekly album discussions', image: '/images/og/trust-your-ears.jpeg' },
             ]
           },
           {
