@@ -95,7 +95,10 @@ export default function SiteHeader({ nav }: Props) {
     'authenticity-checker': '/images/Menu/services/authenticity-checker.jpg',
     'listening-rooms': '/images/Menu/services/listening-rooms.jpg',
     'order-catalogue': '/images/Menu/services/order-catalogue.jpg',
-    'oem-opportunities': '/images/Menu/services/oem-opportunities.jpg'
+    'oem-opportunities': '/images/Menu/services/oem-opportunities.jpg',
+    
+    // Listening Circle
+    'album-of-the-week': '/images/og/trust-your-ears.jpeg'
   };
 
   const lastYRef = useRef(0);
@@ -440,8 +443,8 @@ export default function SiteHeader({ nav }: Props) {
                     className="flex items-center justify-between w-full text-left text-white hover:text-neutral-300 transition-colors py-2"
                   >
                     <span className="font-display text-xl">Masterpieces</span>
-                    <svg className={`h-4 w-4 transition-transform duration-200 ${activeDropdown === 'masterpieces' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    <svg className={`h-4 w-4 transition-transform duration-200 ${activeDropdown === 'masterpieces' ? 'rotate-90' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                   </button>
                   {activeDropdown === 'masterpieces' && (
@@ -482,8 +485,8 @@ export default function SiteHeader({ nav }: Props) {
                     className="flex items-center justify-between w-full text-left text-white hover:text-neutral-300 transition-colors py-2"
                   >
                     <span className="font-display text-xl">Instruments</span>
-                    <svg className={`h-4 w-4 transition-transform duration-200 ${activeDropdown === 'instruments' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    <svg className={`h-4 w-4 transition-transform duration-200 ${activeDropdown === 'instruments' ? 'rotate-90' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                   </button>
                   {activeDropdown === 'instruments' && (
@@ -522,8 +525,8 @@ export default function SiteHeader({ nav }: Props) {
                     className="flex items-center justify-between w-full text-left text-white hover:text-neutral-300 transition-colors py-2"
                   >
                     <span className="font-display text-xl">Lowther Ensemble</span>
-                    <svg className={`h-4 w-4 transition-transform duration-200 ${activeDropdown === 'ensemble' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    <svg className={`h-4 w-4 transition-transform duration-200 ${activeDropdown === 'ensemble' ? 'rotate-90' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                   </button>
                   {activeDropdown === 'ensemble' && (
@@ -545,8 +548,8 @@ export default function SiteHeader({ nav }: Props) {
                     className="flex items-center justify-between w-full text-left text-white hover:text-neutral-300 transition-colors py-2"
                   >
                     <span className="font-display text-xl">The Brand</span>
-                    <svg className={`h-4 w-4 transition-transform duration-200 ${activeDropdown === 'brand' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    <svg className={`h-4 w-4 transition-transform duration-200 ${activeDropdown === 'brand' ? 'rotate-90' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                   </button>
                   {activeDropdown === 'brand' && (
@@ -567,8 +570,8 @@ export default function SiteHeader({ nav }: Props) {
                     className="flex items-center justify-between w-full text-left text-white hover:text-neutral-300 transition-colors py-2"
                   >
                     <span className="font-display text-xl">Speaker Making</span>
-                    <svg className={`h-4 w-4 transition-transform duration-200 ${activeDropdown === 'speaker-making' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    <svg className={`h-4 w-4 transition-transform duration-200 ${activeDropdown === 'speaker-making' ? 'rotate-90' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                   </button>
                   {activeDropdown === 'speaker-making' && (
@@ -586,8 +589,8 @@ export default function SiteHeader({ nav }: Props) {
                     className="flex items-center justify-between w-full text-left text-white hover:text-neutral-300 transition-colors py-2"
                   >
                     <span className="font-display text-xl">Services</span>
-                    <svg className={`h-4 w-4 transition-transform duration-200 ${activeDropdown === 'services' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    <svg className={`h-4 w-4 transition-transform duration-200 ${activeDropdown === 'services' ? 'rotate-90' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                   </button>
                   {activeDropdown === 'services' && (
@@ -609,13 +612,13 @@ export default function SiteHeader({ nav }: Props) {
                     className="flex items-center justify-between w-full text-left text-white hover:text-neutral-300 transition-colors py-2"
                   >
                     <span className="font-display text-xl">Listening Circle</span>
-                    <svg className={`w-5 h-5 transition-transform ${activeDropdown === 'listening-circle' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    <svg className={`h-4 w-4 transition-transform duration-200 ${activeDropdown === 'listening-circle' ? 'rotate-90' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                   </button>
                   {activeDropdown === 'listening-circle' && (
                     <div className="mt-2 space-y-2 pl-4">
-                      <Link href="/trust-your-ears" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)}>Album of the Week</Link>
+                      <Link href="/trust-your-ears" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)} onMouseEnter={() => setHoveredImage(menuImages['album-of-the-week'])}>Album of the Week</Link>
                     </div>
                   )}
                 </div>
