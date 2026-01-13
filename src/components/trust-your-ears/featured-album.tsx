@@ -82,21 +82,22 @@ export function FeaturedAlbum({ showComments = false }: FeaturedAlbumProps) {
   return (
     <div className="relative w-full">
       {/* Full-width banner with blurred album art - pt-28 for navbar clearance */}
-      <div className="relative w-full overflow-hidden bg-neutral-900 pt-28">
+      <div className="relative w-full overflow-hidden bg-neutral-800 pt-28">
         {/* Blurred background image */}
-        <div className="absolute inset-0 scale-110">
+        <div className="absolute inset-0 scale-125">
           <Image
             src={coverUrl}
             alt=""
             fill
-            className="object-cover blur-2xl brightness-50 saturate-50"
+            className="object-cover blur-3xl brightness-75 saturate-100"
             sizes="100vw"
             priority
+            unoptimized={coverUrl.includes('coverartarchive')}
           />
         </div>
         
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/40" />
+        {/* Subtle gradient overlay for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/50" />
         
         {/* "This Week's Listen" label */}
         <div className="relative pt-6 text-center">

@@ -216,18 +216,19 @@ export function AlbumSearchModal({ isOpen, onClose, onSuccess }: AlbumSearchModa
 
             {/* Search input */}
             <div className="p-4">
-              <div className="relative flex items-center">
-                <Search className="absolute left-4 h-5 w-5 text-neutral-400 pointer-events-none" />
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-neutral-400 pointer-events-none" />
                 <input
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Search artist or album..."
                   autoFocus
-                  className="w-full rounded-xl border border-neutral-200 bg-neutral-50 py-3.5 pl-12 pr-12 font-sarabun text-base text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-neutral-200"
+                  style={{ lineHeight: '1.5' }}
+                  className="w-full rounded-xl border border-neutral-200 bg-neutral-50 h-12 px-12 font-sarabun text-base text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-neutral-200"
                 />
                 {loading && (
-                  <Loader2 className="absolute right-4 h-5 w-5 animate-spin text-neutral-400" />
+                  <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 animate-spin text-neutral-400" />
                 )}
               </div>
               
