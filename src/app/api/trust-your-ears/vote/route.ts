@@ -39,11 +39,27 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { musicBrainzReleaseGroupId } = body;
+    const { musicBrainzReleaseGroupId, comment } = body;
 
     if (!musicBrainzReleaseGroupId || typeof musicBrainzReleaseGroupId !== 'string') {
       return NextResponse.json(
         { error: 'musicBrainzReleaseGroupId is required' },
+        { status: 400 }
+      );
+    }
+
+    // Require a comment explaining why they're recommending
+    if (!comment || typeof comment !== 'string' || comment.trim().length < 20) {
+      return NextResponse.json(
+        { error: 'Please explain why you\'re recommending this album (at least 20 characters)' },
+        { status: 400 }
+      );
+    }
+
+    const trimmedComment = comment.trim();
+    if (trimmedComment.length > 1000) {
+      return NextResponse.json(
+        { error: 'Comment must be less than 1000 characters' },
         { status: 400 }
       );
     }
@@ -125,7 +141,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create vote and increment vote count
+    // Create vote, increment vote count, and add the initial comment
     await prisma.$transaction([
       prisma.vote.create({
         data: {
@@ -141,6 +157,14 @@ export async function POST(request: NextRequest) {
           },
         },
       }),
+      prisma.comment.create({
+        data: {
+          albumId: album.id,
+          userId,
+          content: trimmedComment,
+          likesCount: 0,
+        },
+      }),
     ]);
 
     // Fetch updated album
@@ -148,7 +172,7 @@ export async function POST(request: NextRequest) {
       where: { id: album.id },
     });
 
-    console.log(`[VOTE] ${user.email} voted for "${album.title}"`);
+    console.log(`[VOTE] ${user.email} recommended "${album.title}" with comment`);
 
     return NextResponse.json({
       success: true,

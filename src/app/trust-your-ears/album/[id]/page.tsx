@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, MessageCircle, Calendar, Heart } from 'lucide-react';
 import { CommentsSection } from '@/components/trust-your-ears/comments-section';
@@ -98,60 +97,40 @@ export default function AlbumDiscussionPage() {
 
   // Use placeholder if no cover or use the cover URL
   const coverUrl = album.coverUrl || '/images/album-placeholder.svg';
-  const isExternal = coverUrl.startsWith('http');
 
   return (
     <div className="min-h-screen bg-neutral-50">
-      {/* Album Header Banner */}
-      <div className="relative overflow-hidden bg-neutral-800 pt-20 pb-40 sm:pb-48">
+      {/* Album Header Banner - extra padding for navbar */}
+      <div className="relative overflow-hidden bg-neutral-800 pt-32 pb-40 sm:pt-36 sm:pb-48 lg:pt-40">
         {/* Blurred background */}
-        <div className="absolute inset-0 scale-125">
-          {isExternal ? (
-            <Image
-              src={coverUrl}
-              alt=""
-              fill
-              className="object-cover blur-3xl brightness-50 saturate-75"
-              sizes="100vw"
-              unoptimized
-            />
-          ) : (
-            <Image
-              src={coverUrl}
-              alt=""
-              fill
-              className="object-cover blur-3xl brightness-50 saturate-75"
-              sizes="100vw"
-            />
-          )}
+        <div className="absolute inset-0 scale-150">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={coverUrl}
+            alt=""
+            className="h-full w-full object-cover blur-3xl brightness-75 saturate-100"
+            onError={(e) => {
+              // Fallback if image fails to load
+              e.currentTarget.style.display = 'none';
+            }}
+          />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-black/60" />
         
         {/* Album Info */}
         <div className="relative mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-end sm:gap-8">
             {/* Cover Art */}
             <div className="relative aspect-square w-48 shrink-0 overflow-hidden rounded-xl bg-neutral-700 shadow-2xl ring-1 ring-white/10 sm:w-56">
-              {isExternal ? (
-                <Image
-                  src={coverUrl}
-                  alt={`${album.title} by ${album.artist}`}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 640px) 192px, 224px"
-                  priority
-                  unoptimized
-                />
-              ) : (
-                <Image
-                  src={coverUrl}
-                  alt={`${album.title} by ${album.artist}`}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 640px) 192px, 224px"
-                  priority
-                />
-              )}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={coverUrl}
+                alt={`${album.title} by ${album.artist}`}
+                className="h-full w-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.src = '/images/album-placeholder.svg';
+                }}
+              />
             </div>
             
             {/* Album Details */}

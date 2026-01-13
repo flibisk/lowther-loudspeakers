@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { MessageCircle, ChevronRight, Search } from 'lucide-react';
 
@@ -107,22 +106,15 @@ export function PreviousAlbums() {
             >
               {/* Album cover */}
               <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-neutral-100 ring-1 ring-black/5">
-                {album.coverUrl ? (
-                  <Image
-                    src={album.coverUrl}
-                    alt={`${album.title} by ${album.artist}`}
-                    fill
-                    className="object-cover"
-                    sizes="56px"
-                    unoptimized={album.coverUrl.includes('coverartarchive') || album.coverUrl.startsWith('http')}
-                  />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center bg-neutral-200">
-                    <svg className="h-6 w-6 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-                    </svg>
-                  </div>
-                )}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={album.coverUrl || '/images/album-placeholder.svg'}
+                  alt={`${album.title} by ${album.artist}`}
+                  className="h-full w-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = '/images/album-placeholder.svg';
+                  }}
+                />
               </div>
 
               {/* Album info */}
