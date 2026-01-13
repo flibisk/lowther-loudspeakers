@@ -7,6 +7,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = request.nextUrl;
     const albumId = searchParams.get('albumId');
+    const sort = searchParams.get('sort') || 'newest';
 
     if (!albumId) {
       return NextResponse.json(
@@ -15,9 +16,23 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Get current user ID if logged in
+    const cookieStore = await cookies();
+    const sessionCookie = cookieStore.get('tye_session');
+    const currentUserId = sessionCookie?.value?.split(':')[0] || null;
+
+    // Determine sort order
+    const orderBy = sort === 'popular' 
+      ? { likesCount: 'desc' as const }
+      : { createdAt: 'desc' as const };
+
+    // Fetch top-level comments (no parentId)
     const comments = await prisma.comment.findMany({
-      where: { albumId },
-      orderBy: { createdAt: 'desc' },
+      where: { 
+        albumId,
+        parentId: null, // Only top-level comments
+      },
+      orderBy,
       include: {
         user: {
           select: {
@@ -26,21 +41,54 @@ export async function GET(request: NextRequest) {
             displayName: true,
           },
         },
+        likes: currentUserId ? {
+          where: { userId: currentUserId },
+          select: { id: true },
+        } : false,
+        replies: {
+          orderBy: { createdAt: 'asc' }, // Replies in chronological order
+          include: {
+            user: {
+              select: {
+                id: true,
+                email: true,
+                displayName: true,
+              },
+            },
+            likes: currentUserId ? {
+              where: { userId: currentUserId },
+              select: { id: true },
+            } : false,
+          },
+        },
       },
     });
 
-    // Mask emails for privacy (show first letter + domain)
-    const maskedComments = comments.map(comment => ({
+    // Transform comments to include hasLiked and mask emails
+    const transformedComments = comments.map(comment => ({
       id: comment.id,
       content: comment.content,
       createdAt: comment.createdAt,
+      likesCount: comment.likesCount,
+      hasLiked: Array.isArray(comment.likes) ? comment.likes.length > 0 : false,
       user: {
         id: comment.user.id,
         displayName: comment.user.displayName || maskEmail(comment.user.email),
       },
+      replies: comment.replies?.map(reply => ({
+        id: reply.id,
+        content: reply.content,
+        createdAt: reply.createdAt,
+        likesCount: reply.likesCount,
+        hasLiked: Array.isArray(reply.likes) ? reply.likes.length > 0 : false,
+        user: {
+          id: reply.user.id,
+          displayName: reply.user.displayName || maskEmail(reply.user.email),
+        },
+      })) || [],
     }));
 
-    return NextResponse.json({ comments: maskedComments });
+    return NextResponse.json({ comments: transformedComments });
   } catch (error) {
     console.error('Fetch comments error:', error);
     return NextResponse.json(
@@ -85,7 +133,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { albumId, content } = body;
+    const { albumId, content, parentId } = body;
 
     if (!albumId || !content) {
       return NextResponse.json(
@@ -122,12 +170,28 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // If replying, verify parent comment exists
+    if (parentId) {
+      const parentComment = await prisma.comment.findUnique({
+        where: { id: parentId },
+      });
+
+      if (!parentComment) {
+        return NextResponse.json(
+          { error: 'Parent comment not found' },
+          { status: 404 }
+        );
+      }
+    }
+
     // Create comment
     const comment = await prisma.comment.create({
       data: {
         content: trimmedContent,
         albumId,
         userId,
+        parentId: parentId || null,
+        likesCount: 0,
       },
       include: {
         user: {
@@ -140,7 +204,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    console.log(`[COMMENTS] New comment on "${album.title}" by ${user.email}`);
+    console.log(`[COMMENTS] New ${parentId ? 'reply' : 'comment'} on "${album.title}" by ${user.email}`);
 
     return NextResponse.json({
       success: true,
@@ -148,10 +212,13 @@ export async function POST(request: NextRequest) {
         id: comment.id,
         content: comment.content,
         createdAt: comment.createdAt,
+        likesCount: 0,
+        hasLiked: false,
         user: {
           id: comment.user.id,
           displayName: comment.user.displayName || maskEmail(comment.user.email),
         },
+        replies: [],
       },
     });
   } catch (error) {

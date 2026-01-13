@@ -45,13 +45,14 @@ model Vote {
 
 // User for commenting system (email-based auth)
 model User {
-  id              String    @id @default(uuid())
-  email           String    @unique
-  displayName     String?   // Optional display name
-  createdAt       DateTime  @default(now())
-  lastLoginAt     DateTime  @default(now())
+  id              String        @id @default(uuid())
+  email           String        @unique
+  displayName     String?       // Optional display name
+  createdAt       DateTime      @default(now())
+  lastLoginAt     DateTime      @default(now())
   
   comments        Comment[]
+  commentLikes    CommentLike[]
   
   @@index([email])
 }
@@ -69,19 +70,41 @@ model VerificationCode {
   @@index([expiresAt])
 }
 
-// Comments on albums
+// Comments on albums (supports threading via parentId)
 model Comment {
   id        String   @id @default(uuid())
   content   String   // The comment text
   albumId   String
   userId    String
+  parentId  String?  // If replying to another comment
+  likesCount Int     @default(0) // Denormalized count for sorting
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   
   album     Album    @relation(fields: [albumId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent    Comment? @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   Comment[] @relation("CommentReplies")
+  likes     CommentLike[]
   
   @@index([albumId])
   @@index([userId])
+  @@index([parentId])
   @@index([createdAt])
+  @@index([likesCount])
+}
+
+// Likes on comments
+model CommentLike {
+  id        String   @id @default(uuid())
+  commentId String
+  userId    String
+  createdAt DateTime @default(now())
+  
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([commentId, userId]) // One like per user per comment
+  @@index([commentId])
+  @@index([userId])
 }

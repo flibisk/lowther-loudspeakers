@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, MessageCircle, Calendar, Heart } from 'lucide-react';
@@ -21,7 +21,6 @@ interface Album {
 
 export default function AlbumDiscussionPage() {
   const params = useParams();
-  const router = useRouter();
   const albumId = params.id as string;
   
   const [album, setAlbum] = useState<Album | null>(null);
@@ -97,36 +96,34 @@ export default function AlbumDiscussionPage() {
     );
   }
 
+  // Use placeholder if no cover or use the cover URL
   const coverUrl = album.coverUrl || '/images/album-placeholder.svg';
-  const isExternal = coverUrl.includes('coverartarchive') || coverUrl.startsWith('http');
+  const isExternal = coverUrl.startsWith('http');
 
   return (
     <div className="min-h-screen bg-neutral-50">
-      {/* Header with back button */}
-      <div className="sticky top-0 z-50 border-b border-neutral-200 bg-white/80 backdrop-blur-lg">
-        <div className="mx-auto max-w-3xl px-4 py-4 sm:px-6 lg:px-8">
-          <Link 
-            href="/trust-your-ears"
-            className="inline-flex items-center gap-2 font-sarabun text-sm text-neutral-600 transition-colors hover:text-neutral-900"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to Trust Your Ears
-          </Link>
-        </div>
-      </div>
-
-      {/* Album Header */}
-      <div className="relative overflow-hidden bg-neutral-800 pt-8 pb-32">
+      {/* Album Header Banner */}
+      <div className="relative overflow-hidden bg-neutral-800 pt-20 pb-40 sm:pb-48">
         {/* Blurred background */}
         <div className="absolute inset-0 scale-125">
-          <Image
-            src={coverUrl}
-            alt=""
-            fill
-            className="object-cover blur-3xl brightness-50 saturate-75"
-            sizes="100vw"
-            unoptimized={isExternal}
-          />
+          {isExternal ? (
+            <Image
+              src={coverUrl}
+              alt=""
+              fill
+              className="object-cover blur-3xl brightness-50 saturate-75"
+              sizes="100vw"
+              unoptimized
+            />
+          ) : (
+            <Image
+              src={coverUrl}
+              alt=""
+              fill
+              className="object-cover blur-3xl brightness-50 saturate-75"
+              sizes="100vw"
+            />
+          )}
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60" />
         
@@ -135,15 +132,26 @@ export default function AlbumDiscussionPage() {
           <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-end sm:gap-8">
             {/* Cover Art */}
             <div className="relative aspect-square w-48 shrink-0 overflow-hidden rounded-xl bg-neutral-700 shadow-2xl ring-1 ring-white/10 sm:w-56">
-              <Image
-                src={coverUrl}
-                alt={`${album.title} by ${album.artist}`}
-                fill
-                className="object-cover"
-                sizes="(max-width: 640px) 192px, 224px"
-                priority
-                unoptimized={isExternal}
-              />
+              {isExternal ? (
+                <Image
+                  src={coverUrl}
+                  alt={`${album.title} by ${album.artist}`}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 640px) 192px, 224px"
+                  priority
+                  unoptimized
+                />
+              ) : (
+                <Image
+                  src={coverUrl}
+                  alt={`${album.title} by ${album.artist}`}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 640px) 192px, 224px"
+                  priority
+                />
+              )}
             </div>
             
             {/* Album Details */}
@@ -177,12 +185,20 @@ export default function AlbumDiscussionPage() {
         </div>
       </div>
 
-      {/* Comments Section */}
-      <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="-mt-20 rounded-2xl bg-white p-6 shadow-xl ring-1 ring-black/5 sm:p-8">
-          <h2 className="mb-6 font-hvmuse text-xl text-neutral-900">Discussion</h2>
-          <CommentsSection albumId={album.id} albumTitle={album.title} />
-        </div>
+      {/* Back button - below banner */}
+      <div className="mx-auto max-w-3xl px-4 pt-6 sm:px-6 lg:px-8">
+        <Link 
+          href="/trust-your-ears"
+          className="inline-flex items-center gap-2 font-sarabun text-sm text-neutral-500 transition-colors hover:text-neutral-900"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Trust Your Ears
+        </Link>
+      </div>
+
+      {/* Comments Section - more margin from banner */}
+      <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
+        <CommentsSection albumId={album.id} albumTitle={album.title} />
       </div>
     </div>
   );
