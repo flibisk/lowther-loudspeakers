@@ -108,12 +108,12 @@ export function FeaturedAlbum({ showComments = false }: FeaturedAlbumProps) {
           </span>
         </div>
         
-        {/* Spacer for banner height */}
-        <div className="h-[280px]" />
+        {/* Spacer for banner height - taller on desktop */}
+        <div className="h-[280px] sm:h-[340px] lg:h-[380px]" />
       </div>
 
-      {/* Album card - overlaps the banner */}
-      <div className="relative z-10 mx-auto -mt-48 max-w-2xl px-4">
+      {/* Album card - overlaps the banner, matches content width */}
+      <div className="relative z-10 mx-auto -mt-48 max-w-3xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center rounded-2xl bg-white p-6 shadow-2xl ring-1 ring-black/5 sm:flex-row sm:items-start sm:gap-8 sm:p-8">
           {/* Album cover */}
           <div className="relative -mt-24 aspect-square w-48 shrink-0 overflow-hidden rounded-xl bg-neutral-100 shadow-xl ring-1 ring-black/10 sm:-mt-28 sm:w-56">
