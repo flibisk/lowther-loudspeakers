@@ -29,7 +29,7 @@ export default function TrustYourEarsPage() {
         <FeaturedAlbum key={`featured-${refreshKey}`} />
         
         {/* How It Works Button - Positioned above album card */}
-        <div className="absolute left-0 right-0 top-28 z-20 flex justify-center sm:top-36">
+        <div className="absolute left-0 right-0 top-24 z-20 flex justify-center sm:top-36">
           <button
             onClick={() => setShowHowItWorks(true)}
             className="flex items-center gap-2 rounded-full bg-black/90 px-5 py-2.5 font-sarabun text-sm font-medium text-white shadow-lg backdrop-blur-sm transition-all hover:bg-black"

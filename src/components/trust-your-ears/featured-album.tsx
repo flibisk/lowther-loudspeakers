@@ -119,8 +119,8 @@ export function FeaturedAlbum() {
         {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/50" />
         
-        {/* Spacer for banner height */}
-        <div className="h-[260px] sm:h-[320px] lg:h-[360px]" />
+        {/* Spacer for banner height - taller on mobile for How it works button */}
+        <div className="h-[300px] sm:h-[320px] lg:h-[360px]" />
       </div>
 
       {/* Album card - overlaps the banner */}
