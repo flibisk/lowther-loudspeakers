@@ -20,8 +20,8 @@ export default function TrustYourEarsPage() {
 
   return (
     <div className="min-h-screen bg-neutral-50">
-      {/* Featured Album Banner - Full Width with Comments */}
-      <FeaturedAlbum key={`featured-${refreshKey}`} showComments={true} />
+      {/* Featured Album Banner */}
+      <FeaturedAlbum key={`featured-${refreshKey}`} />
 
       {/* Content Section */}
       <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
