@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     siteName: 'Lowther Loudspeakers',
     images: [
       {
-        url: `${BASE_URL}/images/og/trust-your-ears.jpg`,
+        url: `${BASE_URL}/images/og/trust-your-ears.jpeg`,
         width: 1200,
         height: 630,
         alt: 'Trust Your Ears - Lowther Album Club',
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Album of the Week | Trust Your Ears',
     description: "Trust Your Ears is Lowther's album club. Every week the community recommends and votes on a single record to listen to together.",
-    images: [`${BASE_URL}/images/og/trust-your-ears.jpg`],
+    images: [`${BASE_URL}/images/og/trust-your-ears.jpeg`],
   },
   alternates: {
     canonical: `${BASE_URL}/trust-your-ears`,

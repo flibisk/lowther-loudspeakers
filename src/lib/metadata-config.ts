@@ -81,7 +81,7 @@ export const METADATA_CONFIG: Record<string, PageMetadata> = {
   "trust-your-ears": {
     title: "Album of the Week | Trust Your Ears",
     description: "Trust Your Ears is Lowther's album club. Every week the community recommends and votes on a single record to listen to together. A simple way for Lowther owners to discover beautifully mastered music and hear what their speakers are truly capable of.",
-    ogImage: "/images/og/trust-your-ears.jpg",
+    ogImage: "/images/og/trust-your-ears.jpeg",
     keywords: ["album club", "music recommendation", "vinyl", "audiophile", "album of the week", "listening community", "hi-fi music"],
   },
   
