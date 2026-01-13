@@ -342,8 +342,8 @@ export function CommissionForm({ isOpen, onClose, speakerName }: CommissionFormP
             </div>
 
             {/* Status Messages */}
-            {/* Turnstile Widget */}
-            <div className="flex justify-center">
+            {/* Turnstile Widget - Fixed height to prevent layout shift */}
+            <div className="flex justify-center min-h-[65px]">
               <Turnstile 
                 onVerify={handleTurnstileVerify}
                 onExpire={() => setTurnstileToken(null)}

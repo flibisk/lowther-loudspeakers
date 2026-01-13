@@ -109,7 +109,7 @@ export function Turnstile({
   return (
     <div 
       ref={containerRef} 
-      className={`cf-turnstile ${className}`}
+      className={`cf-turnstile min-h-[65px] flex items-center justify-center ${className}`}
     />
   );
 }

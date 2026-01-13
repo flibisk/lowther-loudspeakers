@@ -204,8 +204,8 @@ export function ContactForm({ isOpen, onClose, segment = "Contact" }: ContactFor
           </p>
         </div>
 
-        {/* Turnstile Widget */}
-        <div className="flex justify-center">
+        {/* Turnstile Widget - Fixed height to prevent layout shift */}
+        <div className="flex justify-center min-h-[65px]">
           <Turnstile 
             onVerify={handleTurnstileVerify}
             onExpire={() => setTurnstileToken(null)}
