@@ -605,16 +605,16 @@ export default function SiteHeader({ nav }: Props) {
                 {/* Listening Circle */}
                 <div className="animate-slide-in-left-delay-6">
                   <button 
-                    onClick={() => setExpandedSection(expandedSection === 'listening-circle' ? null : 'listening-circle')} 
+                    onClick={() => handleDropdownClick('listening-circle')}
                     className="flex items-center justify-between w-full text-left text-white hover:text-neutral-300 transition-colors py-2"
                   >
                     <span className="font-display text-xl">Listening Circle</span>
-                    <svg className={`w-5 h-5 transition-transform ${expandedSection === 'listening-circle' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className={`w-5 h-5 transition-transform ${activeDropdown === 'listening-circle' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
-                  {expandedSection === 'listening-circle' && (
-                    <div className="pl-4 space-y-2 py-2">
+                  {activeDropdown === 'listening-circle' && (
+                    <div className="mt-2 space-y-2 pl-4">
                       <Link href="/trust-your-ears" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)}>Trust Your Ears</Link>
                     </div>
                   )}
