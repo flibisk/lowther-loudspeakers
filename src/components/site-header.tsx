@@ -615,7 +615,7 @@ export default function SiteHeader({ nav }: Props) {
                   </button>
                   {activeDropdown === 'listening-circle' && (
                     <div className="mt-2 space-y-2 pl-4">
-                      <Link href="/trust-your-ears" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)}>Trust Your Ears</Link>
+                      <Link href="/trust-your-ears" className="block text-neutral-400 hover:text-white transition-colors py-1" onClick={() => setMenuOpen(false)}>Album of the Week</Link>
                     </div>
                   )}
                 </div>
@@ -742,7 +742,7 @@ export default function SiteHeader({ nav }: Props) {
           {
             label: 'Listening Circle',
             children: [
-              { label: 'Trust Your Ears', href: '/trust-your-ears', desc: 'Weekly album discussions' },
+              { label: 'Album of the Week', href: '/trust-your-ears', desc: 'Weekly album discussions' },
             ]
           },
           {
