@@ -56,6 +56,29 @@ export async function POST(request: NextRequest) {
       where: { musicBrainzReleaseGroupId },
     });
 
+    // If album was featured more than 30 days ago, reset it for re-discussion
+    const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
+    if (album && album.featuredAt) {
+      const featuredAge = Date.now() - new Date(album.featuredAt).getTime();
+      if (featuredAge > THIRTY_DAYS_MS) {
+        // Reset the album so it can be featured again - keep all existing comments
+        album = await prisma.album.update({
+          where: { id: album.id },
+          data: { 
+            featuredAt: null,
+            votesCount: 1, // Start fresh with this vote
+          },
+        });
+        
+        // Also clear old votes so people can vote again
+        await prisma.vote.deleteMany({
+          where: { albumId: album.id },
+        });
+        
+        console.log(`[VOTE] Album "${album.title}" reset for re-discussion after 30 days`);
+      }
+    }
+
     if (!album) {
       // Fetch album metadata from MusicBrainz
       const musicBrainzAlbum = await getAlbumById(musicBrainzReleaseGroupId);

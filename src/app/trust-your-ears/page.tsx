@@ -17,10 +17,6 @@ export default function TrustYourEarsPage() {
     setRefreshKey(k => k + 1);
   }, []);
 
-  const handleViewPreviousAlbum = (albumId: string) => {
-    // TODO: Open album detail modal or scroll to comments
-    console.log('View previous album:', albumId);
-  };
 
   return (
     <div className="min-h-screen bg-neutral-50">
@@ -61,7 +57,7 @@ export default function TrustYourEarsPage() {
         </div>
 
         {/* Previously Discussed Albums */}
-        <PreviousAlbums onViewAlbum={handleViewPreviousAlbum} />
+        <PreviousAlbums />
       </div>
 
       {/* Search Modal */}

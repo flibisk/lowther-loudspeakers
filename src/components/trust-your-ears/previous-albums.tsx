@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import Image from 'next/image';
-import { MessageCircle, ChevronRight } from 'lucide-react';
+import Link from 'next/link';
+import { MessageCircle, ChevronRight, Search } from 'lucide-react';
 
 interface PreviousAlbum {
   id: string;
@@ -16,13 +17,10 @@ interface PreviousAlbum {
   commentsCount: number;
 }
 
-interface PreviousAlbumsProps {
-  onViewAlbum?: (albumId: string) => void;
-}
-
-export function PreviousAlbums({ onViewAlbum }: PreviousAlbumsProps) {
+export function PreviousAlbums() {
   const [albums, setAlbums] = useState<PreviousAlbum[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     async function fetchPrevious() {
@@ -40,6 +38,18 @@ export function PreviousAlbums({ onViewAlbum }: PreviousAlbumsProps) {
     }
     fetchPrevious();
   }, []);
+
+  // Filter albums by search query
+  const filteredAlbums = useMemo(() => {
+    if (!searchQuery.trim()) return albums;
+    
+    const query = searchQuery.toLowerCase();
+    return albums.filter(album => 
+      album.title.toLowerCase().includes(query) ||
+      album.artist.toLowerCase().includes(query) ||
+      (album.year && album.year.toString().includes(query))
+    );
+  }, [albums, searchQuery]);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -63,64 +73,87 @@ export function PreviousAlbums({ onViewAlbum }: PreviousAlbumsProps) {
 
   return (
     <div className="mt-12">
-      <h2 className="mb-6 font-hvmuse text-xl text-neutral-900">
-        Previously Discussed
-      </h2>
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <h2 className="font-hvmuse text-xl text-neutral-900">
+          Previously Discussed
+        </h2>
+        
+        {/* Search input */}
+        {albums.length > 3 && (
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search discussions..."
+              className="h-9 w-full rounded-lg border border-neutral-200 bg-white pl-9 pr-4 font-sarabun text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-400 focus:outline-none focus:ring-1 focus:ring-neutral-200 sm:w-64"
+            />
+          </div>
+        )}
+      </div>
       
       <div className="space-y-3">
-        {albums.map((album) => (
-          <button
-            key={album.id}
-            onClick={() => onViewAlbum?.(album.id)}
-            className="group flex w-full items-center gap-4 rounded-xl bg-white p-3 text-left shadow-sm ring-1 ring-black/5 transition-all hover:shadow-md hover:ring-black/10"
-          >
-            {/* Album cover */}
-            <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-neutral-100 ring-1 ring-black/5">
-              {album.coverUrl ? (
-                <Image
-                  src={album.coverUrl}
-                  alt={`${album.title} by ${album.artist}`}
-                  fill
-                  className="object-cover"
-                  sizes="56px"
-                />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center bg-neutral-200">
-                  <svg className="h-6 w-6 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-                  </svg>
-                </div>
-              )}
-            </div>
-
-            {/* Album info */}
-            <div className="min-w-0 flex-1">
-              <h3 className="truncate font-hvmuse text-base text-neutral-900">
-                {album.title}
-              </h3>
-              <p className="truncate font-sarabun text-sm text-neutral-500">
-                {album.artist}
-                {album.year && <span> · {album.year}</span>}
-              </p>
-            </div>
-
-            {/* Meta info */}
-            <div className="flex shrink-0 items-center gap-4 text-neutral-400">
-              {/* Comments count */}
-              <div className="flex items-center gap-1">
-                <MessageCircle className="h-4 w-4" />
-                <span className="font-sarabun text-sm">{album.commentsCount}</span>
+        {filteredAlbums.length === 0 ? (
+          <p className="py-4 text-center font-sarabun text-sm text-neutral-500">
+            No albums found matching &ldquo;{searchQuery}&rdquo;
+          </p>
+        ) : (
+          filteredAlbums.map((album) => (
+            <Link
+              key={album.id}
+              href={`/trust-your-ears/album/${album.id}`}
+              className="group flex w-full items-center gap-4 rounded-xl bg-white p-3 text-left shadow-sm ring-1 ring-black/5 transition-all hover:shadow-md hover:ring-black/10"
+            >
+              {/* Album cover */}
+              <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-neutral-100 ring-1 ring-black/5">
+                {album.coverUrl ? (
+                  <Image
+                    src={album.coverUrl}
+                    alt={`${album.title} by ${album.artist}`}
+                    fill
+                    className="object-cover"
+                    sizes="56px"
+                    unoptimized={album.coverUrl.includes('coverartarchive') || album.coverUrl.startsWith('http')}
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center bg-neutral-200">
+                    <svg className="h-6 w-6 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                    </svg>
+                  </div>
+                )}
               </div>
-              
-              {/* Featured date */}
-              <span className="hidden font-sarabun text-xs sm:block">
-                {formatDate(album.featuredAt)}
-              </span>
-              
-              <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </div>
-          </button>
-        ))}
+
+              {/* Album info */}
+              <div className="min-w-0 flex-1">
+                <h3 className="truncate font-hvmuse text-base text-neutral-900">
+                  {album.title}
+                </h3>
+                <p className="truncate font-sarabun text-sm text-neutral-500">
+                  {album.artist}
+                  {album.year && <span> · {album.year}</span>}
+                </p>
+              </div>
+
+              {/* Meta info */}
+              <div className="flex shrink-0 items-center gap-4 text-neutral-400">
+                {/* Comments count */}
+                <div className="flex items-center gap-1">
+                  <MessageCircle className="h-4 w-4" />
+                  <span className="font-sarabun text-sm">{album.commentsCount}</span>
+                </div>
+                
+                {/* Featured date */}
+                <span className="hidden font-sarabun text-xs sm:block">
+                  {formatDate(album.featuredAt)}
+                </span>
+                
+                <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </div>
+            </Link>
+          ))
+        )}
       </div>
     </div>
   );
