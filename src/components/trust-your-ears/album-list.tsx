@@ -28,7 +28,10 @@ export function AlbumList() {
 
   const fetchAlbums = useCallback(async (skipAnimation = false) => {
     try {
-      const response = await fetch('/api/trust-your-ears/albums');
+      // Add cache-busting to ensure we get fresh data after voting
+      const response = await fetch('/api/trust-your-ears/albums', {
+        cache: 'no-store',
+      });
       
       if (!response.ok) {
         throw new Error('Failed to fetch albums');

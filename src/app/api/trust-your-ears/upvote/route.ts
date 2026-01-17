@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
       where: { id: album.id },
     });
 
-    console.log(`[UPVOTE] Anonymous vote for "${album.title}"`);
+    console.log(`[UPVOTE] Vote for "${album.title}" - now has ${updatedAlbum?.votesCount} votes`);
 
     return NextResponse.json({
       success: true,
