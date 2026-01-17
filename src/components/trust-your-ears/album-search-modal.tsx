@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { X, Search, Loader2, Check, Mail, ArrowLeft, Send } from 'lucide-react';
-import Image from 'next/image';
 import { useAuth } from '@/contexts/auth-context';
 import { AuthModal } from './auth-modal';
 
@@ -229,17 +228,14 @@ export function AlbumSearchModal({ isOpen, onClose, onSuccess }: AlbumSearchModa
             <div className="border-b border-neutral-100 p-4">
               <div className="flex items-center gap-4">
                 <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-neutral-100">
-                  <Image
+                  <img
                     src={selectedAlbum.coverUrl || '/images/album-placeholder.svg'}
                     alt={selectedAlbum.title}
-                    fill
-                    className="object-cover"
-                    sizes="80px"
-                    unoptimized={selectedAlbum.coverUrl?.startsWith('http')}
+                    className="h-full w-full object-cover"
                   />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="font-hvmuse text-lg text-neutral-900">
+                  <p className="font-hvmuse text-lg text-neutral-900 line-clamp-2">
                     {selectedAlbum.title}
                   </p>
                   <p className="font-sarabun text-sm text-neutral-500">
@@ -386,23 +382,20 @@ export function AlbumSearchModal({ isOpen, onClose, onSuccess }: AlbumSearchModa
                 <button
                   key={album.musicBrainzReleaseGroupId}
                   onClick={() => handleSelectAlbum(album)}
-                  className="flex w-full items-center gap-4 border-b border-neutral-50 p-4 text-left transition-colors hover:bg-neutral-50 last:border-b-0"
+                  className="flex w-full items-center gap-3 sm:gap-4 border-b border-neutral-50 p-3 sm:p-4 text-left transition-colors hover:bg-neutral-50 active:bg-neutral-100 last:border-b-0"
                 >
-                  <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-neutral-100">
-                    <Image
+                  <div className="relative h-12 w-12 sm:h-14 sm:w-14 shrink-0 overflow-hidden rounded-lg bg-neutral-100">
+                    <img
                       src={album.coverUrl || '/images/album-placeholder.svg'}
                       alt={album.title}
-                      fill
-                      className="object-cover"
-                      sizes="56px"
-                      unoptimized={album.coverUrl?.startsWith('http')}
+                      className="h-full w-full object-cover"
                     />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate font-hvmuse text-base text-neutral-900">
+                    <p className="font-hvmuse text-sm sm:text-base text-neutral-900 leading-snug line-clamp-2 sm:truncate">
                       {album.title}
                     </p>
-                    <p className="truncate font-sarabun text-sm text-neutral-500">
+                    <p className="font-sarabun text-xs sm:text-sm text-neutral-500 mt-0.5 line-clamp-1">
                       {album.artist}
                       {album.year && <span> · {album.year}</span>}
                     </p>
