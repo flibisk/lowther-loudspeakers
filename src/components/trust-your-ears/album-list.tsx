@@ -11,6 +11,7 @@ interface Album {
   year: number | null;
   coverUrl: string | null;
   votesCount: number;
+  createdAt: string;
 }
 
 interface AlbumWithPosition extends Album {
@@ -38,7 +39,13 @@ export function AlbumList() {
       }
 
       const data = await response.json();
-      const newAlbums: Album[] = data.albums || [];
+      // Sort by votes (desc) then by creation date (asc) - safety measure
+      const newAlbums: Album[] = (data.albums || []).sort((a: Album, b: Album) => {
+        if (b.votesCount !== a.votesCount) {
+          return b.votesCount - a.votesCount; // More votes first
+        }
+        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(); // Earlier first
+      });
       
       // Track position changes for animation
       if (!skipAnimation && previousAlbumsRef.current.length > 0) {
