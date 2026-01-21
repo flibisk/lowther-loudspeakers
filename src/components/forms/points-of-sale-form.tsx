@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { OverlayForm } from "@/components/ui/overlay-form";
 import { TurnstileInvisible, TurnstileRef } from "@/components/turnstile";
+import { trackFormSubmit, trackEnquiryStart, trackEnquirySubmit } from "@/lib/analytics";
 
 interface PointsOfSaleFormProps {
   isOpen: boolean;
@@ -29,6 +30,7 @@ export function PointsOfSaleForm({ isOpen, onClose }: PointsOfSaleFormProps) {
     message: string;
   }>({ type: null, message: '' });
   const turnstileRef = useRef<TurnstileRef>(null);
+  const hasTrackedStart = useRef(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,6 +67,10 @@ export function PointsOfSaleForm({ isOpen, onClose }: PointsOfSaleFormProps) {
       const data = await response.json();
 
       if (data.success) {
+        // Track form submission
+        trackFormSubmit('Points of Sale');
+        trackEnquirySubmit('Points of Sale');
+        
         // Store email in localStorage for wishlist notifications
         if (formData.email) {
           localStorage.setItem('user_email', formData.email);
@@ -102,6 +108,11 @@ export function PointsOfSaleForm({ isOpen, onClose }: PointsOfSaleFormProps) {
   };
 
   const handleInputChange = (field: keyof FormData, value: string) => {
+    // Track enquiry start on first input
+    if (!hasTrackedStart.current && value.length > 0) {
+      hasTrackedStart.current = true;
+      trackEnquiryStart('Points of Sale');
+    }
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 

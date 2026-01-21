@@ -95,7 +95,6 @@ export async function GET(request: NextRequest) {
       where: {
         eventType: 'PRODUCT_VIEW',
         timestamp: { gte: startDate },
-        eventData: { not: null },
       },
       select: { eventData: true },
     });
@@ -103,6 +102,7 @@ export async function GET(request: NextRequest) {
     // Aggregate product handles
     const productCounts: Record<string, number> = {};
     for (const event of productViewsRaw) {
+      if (!event.eventData) continue;
       const data = event.eventData as any;
       if (data?.productHandle) {
         productCounts[data.productHandle] = (productCounts[data.productHandle] || 0) + 1;

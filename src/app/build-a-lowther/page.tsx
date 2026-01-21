@@ -8,6 +8,7 @@ import { LowtherForLifeSection } from '@/components/lowther-for-life-section';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { Button } from '@/components/ui/button';
 import { DriveUnitCard } from '@/components/drive-unit-card';
+import { trackBrochureDownload, trackFormSubmit } from '@/lib/analytics';
 
 interface CabinetPlan {
   id: string;
@@ -207,6 +208,7 @@ export default function BuildALowtherPage() {
       const data = await response.json();
 
       if (data.success) {
+        trackFormSubmit(`Build a Lowther - ${selectedPlan?.title || 'Unknown'}`);
         setFormSubmitted(true);
       } else {
         alert('There was an error submitting your request. Please try again or contact us directly.');
@@ -662,7 +664,12 @@ export default function BuildALowtherPage() {
                         <p className="text-sm text-gray-600 mb-4 text-center">
                           Already have your drive units?
                         </p>
-                        <a href={selectedPlan.pdfPath} download className="block w-full">
+                        <a 
+                          href={selectedPlan.pdfPath} 
+                          download 
+                          className="block w-full"
+                          onClick={() => trackBrochureDownload(selectedPlan.id)}
+                        >
                           <Button
                             variant="outline"
                             size="lowther"

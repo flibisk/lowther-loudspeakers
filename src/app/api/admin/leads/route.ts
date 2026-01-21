@@ -120,13 +120,13 @@ export async function GET(request: NextRequest) {
             userId: user.id,
             eventType: { in: ['PRODUCT_VIEW', 'ADD_TO_CART', 'BEGIN_CHECKOUT'] },
             timestamp: { gte: startDate },
-            eventData: { not: null },
           },
           select: { eventData: true },
         });
 
         const interests: Record<string, number> = {};
         for (const event of productEvents) {
+          if (!event.eventData) continue;
           const data = event.eventData as any;
           if (data?.productHandle) {
             interests[data.productHandle] = (interests[data.productHandle] || 0) + 1;

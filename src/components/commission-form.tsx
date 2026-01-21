@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { TurnstileInvisible, TurnstileRef } from '@/components/turnstile';
+import { trackFormSubmit, trackEnquiryStart, trackEnquirySubmit } from '@/lib/analytics';
 
 interface CommissionFormProps {
   isOpen: boolean;
@@ -73,6 +74,7 @@ export function CommissionForm({ isOpen, onClose, speakerName }: CommissionFormP
   });
 
   const turnstileRef = useRef<TurnstileRef>(null);
+  const hasTrackedStart = useRef(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<{
     type: 'success' | 'error' | null;
@@ -80,6 +82,7 @@ export function CommissionForm({ isOpen, onClose, speakerName }: CommissionFormP
   }>({ type: null, message: '' });
   
   const leadTime = getLeadTime(speakerName);
+  const formType = `Commission - ${speakerName}`;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -117,6 +120,10 @@ export function CommissionForm({ isOpen, onClose, speakerName }: CommissionFormP
       const data = await response.json();
 
       if (data.success) {
+        // Track form submission
+        trackFormSubmit(formType);
+        trackEnquirySubmit(formType);
+        
         // Store email in localStorage for wishlist notifications
         if (formData.email) {
           localStorage.setItem('user_email', formData.email);
@@ -158,6 +165,11 @@ export function CommissionForm({ isOpen, onClose, speakerName }: CommissionFormP
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    // Track enquiry start on first input
+    if (!hasTrackedStart.current && e.target.value.length > 0) {
+      hasTrackedStart.current = true;
+      trackEnquiryStart(formType);
+    }
     setFormData({
       ...formData,
       [e.target.name]: e.target.value

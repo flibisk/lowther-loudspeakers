@@ -61,7 +61,6 @@ export async function GET(
       where: {
         userId: id,
         eventType: { in: ['PRODUCT_VIEW', 'ADD_TO_CART', 'BEGIN_CHECKOUT'] },
-        eventData: { not: null },
       },
       select: { eventData: true },
     });
@@ -70,6 +69,7 @@ export async function GET(
     const interests: Record<string, { count: number; type: 'product' | 'collection' }> = {};
 
     for (const event of productEvents) {
+      if (!event.eventData) continue;
       const data = event.eventData as any;
       if (data?.productHandle) {
         const name = data.productHandle;

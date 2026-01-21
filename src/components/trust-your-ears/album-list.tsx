@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { ChevronUp } from 'lucide-react';
+import { trackTrustYourEarsVote } from '@/lib/analytics';
 
 interface Album {
   id: string;
@@ -108,6 +109,9 @@ export function AlbumList() {
       if (!response.ok) {
         throw new Error('Failed to vote');
       }
+
+      // Track the vote
+      trackTrustYourEarsVote(albumId);
 
       setVotedIds(prev => new Set(prev).add(albumId));
       

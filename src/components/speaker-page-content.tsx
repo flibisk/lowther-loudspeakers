@@ -10,6 +10,7 @@ import { ScrollReveal } from '@/components/scroll-reveal';
 import { LowtherForLifeSection } from '@/components/lowther-for-life-section';
 import { X, ChevronLeft, ChevronRight, Play, ExternalLink, Heart } from 'lucide-react';
 import { useWishlist } from '@/contexts/wishlist-context';
+import { trackProductView, trackVideoPlay } from '@/lib/analytics';
 
 interface SpeakerPageContentProps {
   speaker: any;
@@ -98,6 +99,12 @@ export function SpeakerPageContent({
   // Generate a consistent ID for the masterpiece based on speaker title
   const masterpieceId = `masterpiece-${speaker.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
   const isSaved = isInWishlist(masterpieceId);
+
+  // Track product view on mount
+  useEffect(() => {
+    const productHandle = slug || speaker.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    trackProductView(productHandle, 'masterpieces');
+  }, [slug, speaker.title]);
   
   const handleWishlistToggle = () => {
     if (isSaved) {
@@ -173,6 +180,9 @@ export function SpeakerPageContent({
     setCurrentVideoTitle(videoTitle);
     setIsVideoOpen(true);
     document.body.style.overflow = 'hidden';
+    
+    // Track video play
+    trackVideoPlay(videoTitle);
   };
 
   const closeVideo = () => {

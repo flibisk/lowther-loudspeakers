@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { OverlayForm } from "@/components/ui/overlay-form";
 import { TurnstileInvisible, TurnstileRef } from "@/components/turnstile";
+import { trackFormSubmit, trackEnquiryStart, trackEnquirySubmit } from "@/lib/analytics";
 
 interface ContactFormProps {
   isOpen: boolean;
@@ -34,6 +35,7 @@ export function ContactForm({ isOpen, onClose, segment = "Contact" }: ContactFor
     type: 'success' | 'error' | null;
     message: string;
   }>({ type: null, message: '' });
+  const hasTrackedStart = useRef(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,6 +73,10 @@ export function ContactForm({ isOpen, onClose, segment = "Contact" }: ContactFor
       const data = await response.json();
 
       if (data.success) {
+        // Track form submission
+        trackFormSubmit(segment);
+        trackEnquirySubmit(segment);
+        
         // Store email in localStorage for wishlist notifications
         if (formData.email) {
           localStorage.setItem('user_email', formData.email);
@@ -110,6 +116,11 @@ export function ContactForm({ isOpen, onClose, segment = "Contact" }: ContactFor
   };
 
   const handleInputChange = (field: keyof FormData, value: string) => {
+    // Track enquiry start on first input
+    if (!hasTrackedStart.current && value.length > 0) {
+      hasTrackedStart.current = true;
+      trackEnquiryStart(segment);
+    }
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 

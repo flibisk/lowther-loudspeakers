@@ -8,6 +8,7 @@ import { CurrencyProvider } from "@/contexts/currency-context";
 import { CartProvider } from "@/contexts/cart-context";
 import { WishlistProvider } from "@/contexts/wishlist-context";
 import { AuthProvider } from "@/contexts/auth-context";
+import { AnalyticsProvider } from "@/contexts/analytics-context";
 import { CookieConsent } from "@/components/cookie-consent";
 import { ClarityScript } from "@/components/clarity-script";
 import { MetaPixel } from "@/components/meta-pixel";
@@ -137,18 +138,20 @@ export default function RootLayout({
           <CartProvider>
             <WishlistProvider>
               <AuthProvider>
-                <SiteHeader nav={NAV} />
-                <div className="min-h-screen flex flex-col">
-                  <main className="flex-1">
-                    {children}
-                  </main>
-                  <Footer />
-                </div>
-                <Analytics />
-                <ClarityScript />
-                <MetaPixel />
-                <CookieConsent />
-                <AbandonedCartTracker />
+                <AnalyticsProvider>
+                  <SiteHeader nav={NAV} />
+                  <div className="min-h-screen flex flex-col">
+                    <main className="flex-1">
+                      {children}
+                    </main>
+                    <Footer />
+                  </div>
+                  <Analytics />
+                  <ClarityScript />
+                  <MetaPixel />
+                  <CookieConsent />
+                  <AbandonedCartTracker />
+                </AnalyticsProvider>
               </AuthProvider>
             </WishlistProvider>
           </CartProvider>
