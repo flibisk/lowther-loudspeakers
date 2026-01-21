@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Mail, ArrowRight, Loader2, User, MapPin, Speaker } from 'lucide-react';
 import { useAuth } from '@/contexts/auth-context';
 
@@ -139,9 +140,18 @@ export function AuthModal({ isOpen, onClose, onSuccess, mode = 'signin' }: AuthM
     }, 300);
   };
 
-  if (!isOpen) return null;
+  // Use state to track if we're mounted (for portal)
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
 
-  return (
+  if (!isOpen || !mounted) return null;
+
+  // Use portal to render to document.body - this ensures the modal persists
+  // even if the parent component re-renders/unmounts
+  const modalContent = (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div 
@@ -398,4 +408,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, mode = 'signin' }: AuthM
       </div>
     </div>
   );
+
+  // Render via portal to document.body so it persists through parent re-renders
+  return createPortal(modalContent, document.body);
 }

@@ -36,11 +36,11 @@ async function addToBeehiiv(email: string): Promise<boolean> {
           reactivate_existing: true,
           send_welcome_email: false,
           utm_source: 'website',
-          utm_medium: 'trust_your_ears',
-          utm_campaign: 'community_comments',
+          utm_medium: 'account_signup',
+          utm_campaign: 'listening_circle',
           referring_site: 'lowtherloudspeakers.com',
           custom_fields: [
-            { name: 'lead_type', value: 'Trust Your Ears Commenter' },
+            { name: 'lead_type', value: 'Listening Circle Member' },
           ],
         }),
       }

@@ -35,12 +35,19 @@ const levelConfig = {
 };
 
 export default function AccountPage() {
-  const { user, loading: authLoading, signOut } = useAuth();
+  const { user, loading: authLoading, signOut, refreshUser } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loadingProfile, setLoadingProfile] = useState(false);
+
+  // Handle successful auth - refresh user and close modal
+  const handleAuthSuccess = async () => {
+    await refreshUser();
+    setShowAuthModal(false);
+    fetchProfile();
+  };
 
   const shopifyAccountUrl = process.env.NEXT_PUBLIC_SHOP_URL 
     ? `${process.env.NEXT_PUBLIC_SHOP_URL}/account`
@@ -91,6 +98,8 @@ export default function AccountPage() {
     );
   }
 
+  const displayName = user ? (profile?.fullName || profile?.displayName || 'Lowther Member') : '';
+  
   // Show sign-in prompt if not authenticated
   if (!user) {
     return (
@@ -125,16 +134,16 @@ export default function AccountPage() {
             </div>
           </div>
         </div>
+        {/* Auth Modal - rendered here so it persists through the entire auth flow */}
         <AuthModal 
           isOpen={showAuthModal} 
           onClose={() => setShowAuthModal(false)} 
+          onSuccess={handleAuthSuccess}
           mode={authMode}
         />
       </>
     );
   }
-
-  const displayName = profile?.fullName || profile?.displayName || 'Lowther Member';
   const level = profile?.level || 'ENTHUSIAST';
   const levelInfo = levelConfig[level];
 
