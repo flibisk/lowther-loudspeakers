@@ -23,7 +23,7 @@ interface Recommendation {
   title: string;
   artist: string;
   coverUrl: string | null;
-  releaseDate: string | null;
+  year: number | null;
 }
 
 interface UserProfileModalProps {

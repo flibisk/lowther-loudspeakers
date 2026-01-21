@@ -89,7 +89,7 @@ export async function GET(
         title: true,
         artist: true,
         coverUrl: true,
-        releaseDate: true,
+        year: true,
         createdAt: true,
       },
     });
