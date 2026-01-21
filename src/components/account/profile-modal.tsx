@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X, User, Mail, MapPin, Lock, Eye, EyeOff, Loader2, Check } from 'lucide-react';
+import { X, User, Mail, MapPin, Lock, Eye, EyeOff, Loader2, Check, Globe } from 'lucide-react';
 
 interface ProfileModalProps {
   isOpen: boolean;
@@ -13,6 +13,7 @@ interface ProfileModalProps {
     displayName: string | null;
     fullName: string | null;
     address: string | null;
+    country: string | null;
     level: string;
   } | null;
 }
@@ -20,6 +21,7 @@ interface ProfileModalProps {
 export function ProfileModal({ isOpen, onClose, onSave, profile }: ProfileModalProps) {
   const [fullName, setFullName] = useState('');
   const [address, setAddress] = useState('');
+  const [country, setCountry] = useState('');
   const [showPasswordSection, setShowPasswordSection] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -34,6 +36,7 @@ export function ProfileModal({ isOpen, onClose, onSave, profile }: ProfileModalP
     if (profile) {
       setFullName(profile.fullName || '');
       setAddress(profile.address || '');
+      setCountry(profile.country || '');
     }
   }, [profile]);
 
@@ -81,6 +84,7 @@ export function ProfileModal({ isOpen, onClose, onSave, profile }: ProfileModalP
         body: JSON.stringify({
           fullName: fullName.trim() || null,
           address: address.trim() || null,
+          country: country.trim() || null,
           password: showPasswordSection && newPassword ? newPassword : undefined,
         }),
       });
@@ -183,6 +187,23 @@ export function ProfileModal({ isOpen, onClose, onSave, profile }: ProfileModalP
                   className="w-full rounded-lg border border-neutral-200 bg-neutral-100 pl-10 pr-4 py-3 font-sarabun text-sm text-neutral-500 cursor-not-allowed"
                 />
               </div>
+            </div>
+          </div>
+
+          {/* Country */}
+          <div>
+            <label className="block font-sarabun text-xs uppercase tracking-wider text-neutral-400 mb-2">
+              Country
+            </label>
+            <div className="relative">
+              <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
+              <input
+                type="text"
+                value={country}
+                onChange={(e) => setCountry(e.target.value)}
+                placeholder="United Kingdom"
+                className="w-full rounded-lg border border-neutral-200 bg-neutral-50 pl-10 pr-4 py-3 font-sarabun text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-neutral-200"
+              />
             </div>
           </div>
 

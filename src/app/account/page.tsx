@@ -25,6 +25,7 @@ interface UserProfile {
   displayName: string | null;
   fullName: string | null;
   address: string | null;
+  country: string | null;
   level: 'ENTHUSIAST' | 'ADVOCATE' | 'AMBASSADOR';
 }
 

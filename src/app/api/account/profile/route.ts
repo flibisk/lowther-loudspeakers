@@ -25,6 +25,7 @@ async function getAuthenticatedUser() {
       displayName: true,
       fullName: true,
       address: true,
+      country: true,
       level: true,
       role: true,
       passwordHash: true,
@@ -72,12 +73,13 @@ export async function PUT(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { fullName, address, password } = body;
+    const { fullName, address, country, password } = body;
 
     // Build update data
     const updateData: {
       fullName?: string | null;
       address?: string | null;
+      country?: string | null;
       passwordHash?: string;
     } = {};
 
@@ -87,6 +89,10 @@ export async function PUT(request: NextRequest) {
 
     if (address !== undefined) {
       updateData.address = address;
+    }
+
+    if (country !== undefined) {
+      updateData.country = country;
     }
 
     // Hash password if provided
@@ -109,6 +115,7 @@ export async function PUT(request: NextRequest) {
         displayName: true,
         fullName: true,
         address: true,
+        country: true,
         level: true,
         role: true,
       },

@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { X, Loader2, Speaker, Music, Calendar } from 'lucide-react';
+import { X, Loader2, Speaker, Music, Calendar, MapPin } from 'lucide-react';
 
 interface UserProfile {
   id: string;
   displayName: string;
   fullName: string | null;
+  country: string | null;
   level: 'ENTHUSIAST' | 'ADVOCATE' | 'AMBASSADOR';
   memberSince: string;
 }
@@ -176,10 +177,18 @@ export function UserProfileModal({ isOpen, onClose, userId }: UserProfileModalPr
                       {user.fullName}
                     </p>
                   )}
-                  <p className="font-sarabun text-xs text-neutral-400 mt-1 flex items-center gap-1">
-                    <Calendar className="h-3 w-3" />
-                    Member since {new Date(user.memberSince).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}
-                  </p>
+                  <div className="mt-1 space-y-0.5">
+                    <p className="font-sarabun text-xs text-neutral-400 flex items-center gap-1">
+                      <Calendar className="h-3 w-3" />
+                      Member since {new Date(user.memberSince).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}
+                    </p>
+                    {user.country && (
+                      <p className="font-sarabun text-xs text-neutral-400 flex items-center gap-1">
+                        <MapPin className="h-3 w-3" />
+                        {user.country}
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

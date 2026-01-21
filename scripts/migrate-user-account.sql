@@ -18,6 +18,7 @@ END $$;
 -- Add new columns to User table
 ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "fullName" TEXT;
 ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "address" TEXT;
+ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "country" TEXT;
 ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "passwordHash" TEXT;
 
 -- Add level column with default

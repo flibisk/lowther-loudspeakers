@@ -63,6 +63,7 @@ model User {
   displayName     String?       @unique // Username for Trust Your Ears
   fullName        String?                // Full name for profile
   address         String?                // Address (free text)
+  country         String?                // Country for display on profile
   level           UserLevel     @default(ENTHUSIAST)
   role            UserRole      @default(USER)
   passwordHash    String?                // Optional - null means magic link only

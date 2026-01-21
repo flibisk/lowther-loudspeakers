@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { X, Mail, ArrowRight, Loader2, User, MapPin, Speaker } from 'lucide-react';
+import { X, Mail, ArrowRight, Loader2, User, MapPin, Speaker, Globe } from 'lucide-react';
 import { useAuth } from '@/contexts/auth-context';
 
 interface AuthModalProps {
@@ -20,6 +20,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, mode = 'signin' }: AuthM
   const [displayName, setDisplayName] = useState('');
   const [fullName, setFullName] = useState('');
   const [address, setAddress] = useState('');
+  const [country, setCountry] = useState('');
   const [equipment, setEquipment] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -91,7 +92,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, mode = 'signin' }: AuthM
     }
 
     // Then save optional profile data if provided
-    if (fullName.trim() || address.trim()) {
+    if (fullName.trim() || address.trim() || country.trim()) {
       try {
         const profileResponse = await fetch('/api/account/profile', {
           method: 'PUT',
@@ -99,6 +100,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, mode = 'signin' }: AuthM
           body: JSON.stringify({
             fullName: fullName.trim() || null,
             address: address.trim() || null,
+            country: country.trim() || null,
           }),
         });
         
@@ -152,6 +154,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, mode = 'signin' }: AuthM
       setDisplayName('');
       setFullName('');
       setAddress('');
+      setCountry('');
       setEquipment('');
       setError(null);
     }, 300);
@@ -352,10 +355,28 @@ export function AuthModal({ isOpen, onClose, onSuccess, mode = 'signin' }: AuthM
                 />
               </div>
 
-              {/* Location/Address */}
+              {/* Country */}
+              <div className="mb-4">
+                <label htmlFor="country" className="block font-sarabun text-xs uppercase tracking-wider text-neutral-500 mb-2">
+                  Country <span className="text-neutral-400">(optional)</span>
+                </label>
+                <div className="relative">
+                  <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
+                  <input
+                    id="country"
+                    type="text"
+                    value={country}
+                    onChange={(e) => setCountry(e.target.value)}
+                    placeholder="United Kingdom"
+                    className="w-full rounded-xl border border-neutral-200 bg-neutral-50 pl-10 pr-4 py-3 font-sarabun text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-neutral-200"
+                  />
+                </div>
+              </div>
+
+              {/* Full Address */}
               <div className="mb-4">
                 <label htmlFor="address" className="block font-sarabun text-xs uppercase tracking-wider text-neutral-500 mb-2">
-                  Location <span className="text-neutral-400">(optional)</span>
+                  Full Address <span className="text-neutral-400">(optional)</span>
                 </label>
                 <div className="relative">
                   <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
@@ -364,7 +385,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, mode = 'signin' }: AuthM
                     type="text"
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
-                    placeholder="London, UK"
+                    placeholder="123 High Street, London"
                     className="w-full rounded-xl border border-neutral-200 bg-neutral-50 pl-10 pr-4 py-3 font-sarabun text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-neutral-200"
                   />
                 </div>
