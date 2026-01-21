@@ -2,14 +2,21 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { prisma } from '@/lib/db/prisma';
 
-// Lead scoring values
+// Lead scoring values - +1 for unique page views, +3 for return visits
 const LEAD_SCORES: Record<string, number> = {
-  ENQUIRY_SUBMIT: 10,
-  BEGIN_CHECKOUT: 6,
+  PAGE_VIEW: 1,           // Unique page view
+  PRODUCT_VIEW: 5,        // First product view
+  PRODUCT_REVISIT: 3,     // Return visit to product
+  VIDEO_PLAY: 3,
+  DOWNLOAD_BROCHURE: 10,
+  FORM_SUBMIT: 15,
+  CTA_CLICK: 2,
+  ADD_TO_CART: 20,
+  BEGIN_CHECKOUT: 30,
   ENQUIRY_START: 5,
-  PRODUCT_REVISIT: 3,
-  DOWNLOAD_BROCHURE: 2,
-  BLOG_DEEP_READ: 1,
+  ENQUIRY_SUBMIT: 25,
+  TRUST_YOUR_EARS_VOTE: 3,
+  BLOG_DEEP_READ: 4,
 };
 
 const ADMIN_EMAILS = [

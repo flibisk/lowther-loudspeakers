@@ -9,10 +9,11 @@ const ADMIN_EMAILS = [
 ];
 
 // Lead scoring configuration
+// +1 for unique page views, +3 for return visits
 const SCORE_WEIGHTS = {
-  PAGE_VIEW: 1,
-  PRODUCT_VIEW: 5,
-  PRODUCT_REVISIT: 8,
+  PAGE_VIEW: 1,          // Unique page view
+  PRODUCT_VIEW: 5,       // First view of a product
+  PRODUCT_REVISIT: 3,    // Return visit to a product
   VIDEO_PLAY: 3,
   DOWNLOAD_BROCHURE: 10,
   FORM_SUBMIT: 15,

@@ -50,7 +50,7 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
   const pathname = usePathname();
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-64 bg-neutral-900 text-white flex flex-col">
+    <aside className="fixed left-0 top-32 h-[calc(100vh-8rem)] w-64 bg-neutral-900 text-white flex flex-col rounded-tr-2xl">
       {/* Header */}
       <div className="p-6 border-b border-neutral-800">
         <Link href="/" className="flex items-center gap-2 text-neutral-400 hover:text-white transition-colors text-sm mb-4">

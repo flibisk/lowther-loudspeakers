@@ -54,14 +54,14 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50 pt-24">
+    <div className="min-h-screen bg-neutral-50 pt-32">
       <div className="flex">
         {/* Sidebar */}
         <AdminSidebar user={user} />
         
         {/* Main content */}
         <main className="flex-1 ml-64">
-          <div className="p-8 pt-4">
+          <div className="p-8 pt-6">
             {children}
           </div>
         </main>
