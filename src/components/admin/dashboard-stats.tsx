@@ -64,8 +64,8 @@ export function DashboardStats() {
 
   const navigateToProduct = (handle: string) => {
     // Navigate to Page Views filtered by product
-    const productPath = `/collection/${handle}`;
-    router.push(`/admin/pages?selected=${encodeURIComponent(productPath)}`);
+    // Products can be at various paths, so search for the handle
+    router.push(`/admin/pages?product=${encodeURIComponent(handle)}`);
   };
 
   const navigateToUser = (userId: string) => {

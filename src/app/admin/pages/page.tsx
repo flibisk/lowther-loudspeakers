@@ -24,6 +24,7 @@ interface PageUser {
 export default function AdminPagesPage() {
   const searchParams = useSearchParams();
   const initialSelected = searchParams.get('selected');
+  const productSearch = searchParams.get('product');
   
   const [pages, setPages] = useState<PageStats[]>([]);
   const [loading, setLoading] = useState(true);
@@ -42,6 +43,19 @@ export default function AdminPagesPage() {
       loadPageUsers(initialSelected);
     }
   }, [initialSelected, loading]);
+  
+  // Handle product search from URL - find matching page
+  useEffect(() => {
+    if (productSearch && !loading && pages.length > 0) {
+      // Find page that contains this product handle in its path
+      const matchingPage = pages.find(p => 
+        p.path.toLowerCase().includes(productSearch.toLowerCase())
+      );
+      if (matchingPage) {
+        loadPageUsers(matchingPage.path);
+      }
+    }
+  }, [productSearch, loading, pages]);
 
   const loadPages = async () => {
     setLoading(true);
