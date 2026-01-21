@@ -43,9 +43,12 @@ export async function GET(
     });
 
     // Fetch album recommendations (albums this user was first to recommend)
-    // We look for albums where this user cast the first vote
-    const firstVotes = await prisma.vote.findMany({
-      where: { userId: id },
+    // We look for albums where this user left the first comment (the initial recommendation)
+    const userComments = await prisma.comment.findMany({
+      where: { 
+        userId: id,
+        parentId: null, // Top-level comments only
+      },
       orderBy: { createdAt: 'asc' },
       select: {
         albumId: true,
@@ -53,17 +56,20 @@ export async function GET(
       },
     });
 
-    // Get unique album IDs where this user was first voter
+    // Get unique album IDs where this user was first commenter
     const recommendedAlbumIds: string[] = [];
-    for (const vote of firstVotes) {
-      // Check if this was the first vote for this album
-      const firstVoteForAlbum = await prisma.vote.findFirst({
-        where: { albumId: vote.albumId },
+    for (const comment of userComments) {
+      // Check if this was the first comment for this album
+      const firstCommentForAlbum = await prisma.comment.findFirst({
+        where: { 
+          albumId: comment.albumId,
+          parentId: null,
+        },
         orderBy: { createdAt: 'asc' },
       });
       
-      if (firstVoteForAlbum?.userId === id && !recommendedAlbumIds.includes(vote.albumId)) {
-        recommendedAlbumIds.push(vote.albumId);
+      if (firstCommentForAlbum?.userId === id && !recommendedAlbumIds.includes(comment.albumId)) {
+        recommendedAlbumIds.push(comment.albumId);
       }
     }
 
