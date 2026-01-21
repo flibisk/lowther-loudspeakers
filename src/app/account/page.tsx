@@ -41,12 +41,15 @@ export default function AccountPage() {
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loadingProfile, setLoadingProfile] = useState(false);
+  const [dataRefreshTrigger, setDataRefreshTrigger] = useState(0);
 
   // Handle successful auth - refresh user and close modal
   const handleAuthSuccess = async () => {
     await refreshUser();
     setShowAuthModal(false);
     fetchProfile();
+    // Trigger refresh of child components (equipment, recommendations)
+    setDataRefreshTrigger(prev => prev + 1);
   };
 
   const shopifyAccountUrl = process.env.NEXT_PUBLIC_SHOP_URL 
@@ -201,7 +204,7 @@ export default function AccountPage() {
             </div>
 
             {/* My Lowther Collection */}
-            <EquipmentSection userId={user.id} />
+            <EquipmentSection userId={user.id} refreshTrigger={dataRefreshTrigger} />
 
             {/* Trust Your Ears Recommendations */}
             <RecommendationsSection userId={user.id} />

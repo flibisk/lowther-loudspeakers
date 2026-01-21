@@ -12,9 +12,10 @@ interface Equipment {
 
 interface EquipmentSectionProps {
   userId: string;
+  refreshTrigger?: number;
 }
 
-export function EquipmentSection({ userId }: EquipmentSectionProps) {
+export function EquipmentSection({ userId, refreshTrigger = 0 }: EquipmentSectionProps) {
   const [equipment, setEquipment] = useState<Equipment[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -24,7 +25,7 @@ export function EquipmentSection({ userId }: EquipmentSectionProps) {
 
   useEffect(() => {
     fetchEquipment();
-  }, [userId]);
+  }, [userId, refreshTrigger]);
 
   const fetchEquipment = async () => {
     try {

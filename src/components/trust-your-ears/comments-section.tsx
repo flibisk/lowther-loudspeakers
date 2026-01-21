@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { MessageCircle, Send, Loader2, User, LogOut, ThumbsUp, ChevronDown, Reply, X } from 'lucide-react';
 import { useAuth } from '@/contexts/auth-context';
 import { AuthModal } from './auth-modal';
+import { UserProfileModal } from '@/components/user-profile-modal';
 
 interface Comment {
   id: string;
@@ -37,6 +38,13 @@ export function CommentsSection({ albumId, albumTitle }: CommentsSectionProps) {
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [replyContent, setReplyContent] = useState('');
   const [submittingReply, setSubmittingReply] = useState(false);
+  const [showUserProfile, setShowUserProfile] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+
+  const handleUserClick = (userId: string) => {
+    setSelectedUserId(userId);
+    setShowUserProfile(true);
+  };
 
   const fetchComments = useCallback(async () => {
     try {
@@ -200,9 +208,12 @@ export function CommentsSection({ albumId, albumTitle }: CommentsSectionProps) {
       <div className="rounded-xl bg-neutral-50 p-4">
         {/* Header */}
         <div className="mb-2 flex items-center justify-between">
-          <span className="font-sarabun text-sm font-medium text-neutral-700">
+          <button
+            onClick={() => handleUserClick(comment.user.id)}
+            className="font-sarabun text-sm font-medium text-neutral-700 hover:text-amber-700 transition-colors"
+          >
             {comment.user.displayName}
-          </span>
+          </button>
           <span className="font-sarabun text-xs text-neutral-400">
             {formatDate(comment.createdAt)}
           </span>
@@ -432,6 +443,18 @@ export function CommentsSection({ albumId, albumTitle }: CommentsSectionProps) {
           textarea?.focus();
         }}
       />
+
+      {/* User Profile Modal */}
+      {selectedUserId && (
+        <UserProfileModal
+          isOpen={showUserProfile}
+          onClose={() => {
+            setShowUserProfile(false);
+            setSelectedUserId(null);
+          }}
+          userId={selectedUserId}
+        />
+      )}
     </div>
   );
 }
