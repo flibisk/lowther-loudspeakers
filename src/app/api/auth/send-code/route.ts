@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
     const { error: emailError } = await resend.emails.send({
       from: 'Lowther Loudspeakers <mrbird@lowtherloudspeakers.com>',
       to: normalizedEmail,
-      subject: 'Your verification code for Trust Your Ears',
+      subject: 'Your verification code for Lowther',
       html: `
         <!DOCTYPE html>
         <html>
@@ -114,18 +114,18 @@ export async function POST(request: NextRequest) {
           </head>
           <body>
             <p>Hello,</p>
-            <p>Here's your verification code for Trust Your Ears:</p>
+            <p>Here's your verification code:</p>
             <div class="code">${code}</div>
             <p>This code will expire in 10 minutes.</p>
             <p>If you didn't request this code, you can safely ignore this email.</p>
             <div class="footer">
               <p>Lowther Loudspeakers<br>
-              Handcrafted in Norfolk, England</p>
+              Handcrafted in Great Britain</p>
             </div>
           </body>
         </html>
       `,
-      text: `Your verification code for Trust Your Ears is: ${code}\n\nThis code will expire in 10 minutes.\n\nIf you didn't request this code, you can safely ignore this email.`,
+      text: `Your verification code for Lowther is: ${code}\n\nThis code will expire in 10 minutes.\n\nIf you didn't request this code, you can safely ignore this email.`,
     });
 
     if (emailError) {
