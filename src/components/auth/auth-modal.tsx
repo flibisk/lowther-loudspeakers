@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { X, Mail, ArrowRight, Loader2, User, MapPin, Speaker, ChevronDown, ChevronUp } from 'lucide-react';
+import { X, Mail, ArrowRight, Loader2, User, MapPin, Speaker } from 'lucide-react';
 import { useAuth } from '@/contexts/auth-context';
 
 interface AuthModalProps {
@@ -20,10 +20,8 @@ export function AuthModal({ isOpen, onClose, onSuccess, mode = 'signin' }: AuthM
   const [fullName, setFullName] = useState('');
   const [address, setAddress] = useState('');
   const [equipment, setEquipment] = useState('');
-  const [showOptional, setShowOptional] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isNewUser, setIsNewUser] = useState(false);
 
   const handleSubmitEmail = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,8 +47,8 @@ export function AuthModal({ isOpen, onClose, onSuccess, mode = 'signin' }: AuthM
 
     setLoading(false);
     if (result.success) {
+      // If user doesn't have a displayName, show profile step
       if (result.needsUsername) {
-        setIsNewUser(true);
         setStep('profile');
       } else {
         onSuccess?.();
@@ -137,9 +135,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, mode = 'signin' }: AuthM
       setFullName('');
       setAddress('');
       setEquipment('');
-      setShowOptional(false);
       setError(null);
-      setIsNewUser(false);
     }, 300);
   };
 
@@ -314,74 +310,59 @@ export function AuthModal({ isOpen, onClose, onSuccess, mode = 'signin' }: AuthM
                 </p>
               </div>
 
-              {/* Optional Fields Toggle */}
-              <button
-                type="button"
-                onClick={() => setShowOptional(!showOptional)}
-                className="flex items-center gap-2 mb-4 font-sarabun text-sm text-neutral-500 hover:text-neutral-700 transition-colors"
-              >
-                {showOptional ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                {showOptional ? 'Hide optional details' : 'Add more details (optional)'}
-              </button>
+              {/* Full Name */}
+              <div className="mb-4">
+                <label htmlFor="fullName" className="block font-sarabun text-xs uppercase tracking-wider text-neutral-500 mb-2">
+                  Full Name <span className="text-neutral-400">(optional)</span>
+                </label>
+                <input
+                  id="fullName"
+                  type="text"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="John Smith"
+                  className="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 font-sarabun text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-neutral-200"
+                />
+              </div>
 
-              {/* Optional Fields */}
-              {showOptional && (
-                <div className="space-y-4 mb-4 p-4 bg-neutral-50 rounded-xl">
-                  {/* Full Name */}
-                  <div>
-                    <label htmlFor="fullName" className="block font-sarabun text-xs uppercase tracking-wider text-neutral-500 mb-2">
-                      Full Name
-                    </label>
-                    <input
-                      id="fullName"
-                      type="text"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      placeholder="John Smith"
-                      className="w-full rounded-lg border border-neutral-200 bg-white px-4 py-2.5 font-sarabun text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-200"
-                    />
-                  </div>
-
-                  {/* Location/Address */}
-                  <div>
-                    <label htmlFor="address" className="block font-sarabun text-xs uppercase tracking-wider text-neutral-500 mb-2">
-                      Location
-                    </label>
-                    <div className="relative">
-                      <MapPin className="absolute left-3 top-2.5 h-4 w-4 text-neutral-400" />
-                      <input
-                        id="address"
-                        type="text"
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                        placeholder="London, UK"
-                        className="w-full rounded-lg border border-neutral-200 bg-white pl-10 pr-4 py-2.5 font-sarabun text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-200"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Hi-Fi Equipment */}
-                  <div>
-                    <label htmlFor="equipment" className="block font-sarabun text-xs uppercase tracking-wider text-neutral-500 mb-2">
-                      My Hi-Fi Equipment
-                    </label>
-                    <div className="relative">
-                      <Speaker className="absolute left-3 top-2.5 h-4 w-4 text-neutral-400" />
-                      <input
-                        id="equipment"
-                        type="text"
-                        value={equipment}
-                        onChange={(e) => setEquipment(e.target.value)}
-                        placeholder="TP1 Speakers, Rega Planar 3, Naim Nait"
-                        className="w-full rounded-lg border border-neutral-200 bg-white pl-10 pr-4 py-2.5 font-sarabun text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-200"
-                      />
-                    </div>
-                    <p className="mt-1 font-sarabun text-xs text-neutral-400">
-                      Separate items with commas
-                    </p>
-                  </div>
+              {/* Location/Address */}
+              <div className="mb-4">
+                <label htmlFor="address" className="block font-sarabun text-xs uppercase tracking-wider text-neutral-500 mb-2">
+                  Location <span className="text-neutral-400">(optional)</span>
+                </label>
+                <div className="relative">
+                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
+                  <input
+                    id="address"
+                    type="text"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    placeholder="London, UK"
+                    className="w-full rounded-xl border border-neutral-200 bg-neutral-50 pl-10 pr-4 py-3 font-sarabun text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-neutral-200"
+                  />
                 </div>
-              )}
+              </div>
+
+              {/* Hi-Fi Equipment */}
+              <div className="mb-4">
+                <label htmlFor="equipment" className="block font-sarabun text-xs uppercase tracking-wider text-neutral-500 mb-2">
+                  My Hi-Fi Equipment <span className="text-neutral-400">(optional)</span>
+                </label>
+                <div className="relative">
+                  <Speaker className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
+                  <input
+                    id="equipment"
+                    type="text"
+                    value={equipment}
+                    onChange={(e) => setEquipment(e.target.value)}
+                    placeholder="TP1 Speakers, Rega Planar 3, Naim Nait"
+                    className="w-full rounded-xl border border-neutral-200 bg-neutral-50 pl-10 pr-4 py-3 font-sarabun text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-neutral-200"
+                  />
+                </div>
+                <p className="mt-1 font-sarabun text-xs text-neutral-400">
+                  Show off your setup! Separate items with commas.
+                </p>
+              </div>
 
               {error && (
                 <p className="mb-4 text-center font-sarabun text-sm text-red-600">
