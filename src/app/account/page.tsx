@@ -80,7 +80,7 @@ export default function AccountPage() {
   // Show loading state
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-[#faf9f7] pt-32 pb-16">
+      <div className="min-h-screen bg-[#faf9f7] pt-32 sm:pt-40 pb-16">
         <div className="max-w-3xl mx-auto px-4">
           <div className="flex items-center justify-center py-20">
             <div className="h-8 w-8 animate-spin rounded-full border-2 border-neutral-200 border-t-neutral-600" />
@@ -94,7 +94,7 @@ export default function AccountPage() {
   if (!user) {
     return (
       <>
-        <div className="min-h-screen bg-[#faf9f7] pt-32 pb-16">
+        <div className="min-h-screen bg-[#faf9f7] pt-32 sm:pt-40 pb-16">
           <div className="max-w-3xl mx-auto px-4">
             <div className="text-center py-20">
               <h1 className="font-hvmuse text-3xl text-neutral-900 mb-4">Your Account</h1>
@@ -121,7 +121,7 @@ export default function AccountPage() {
 
   return (
     <>
-      <div className="min-h-screen bg-[#faf9f7] pt-28 pb-16">
+      <div className="min-h-screen bg-[#faf9f7] pt-32 sm:pt-40 pb-16">
         <div className="max-w-3xl mx-auto px-4">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
