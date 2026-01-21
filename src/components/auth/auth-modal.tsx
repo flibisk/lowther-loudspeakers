@@ -91,7 +91,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, mode = 'signin' }: AuthM
     }
 
     // Then save optional profile data if provided
-    if (fullName.trim() || address.trim() || equipment.trim()) {
+    if (fullName.trim() || address.trim()) {
       try {
         const profileResponse = await fetch('/api/account/profile', {
           method: 'PUT',
@@ -101,21 +101,38 @@ export function AuthModal({ isOpen, onClose, onSuccess, mode = 'signin' }: AuthM
             address: address.trim() || null,
           }),
         });
-
-        // Add equipment if provided
-        if (equipment.trim()) {
-          const equipmentItems = equipment.split(',').map(item => item.trim()).filter(Boolean);
-          for (const item of equipmentItems) {
-            await fetch('/api/account/equipment', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ name: item }),
-            });
+        
+        if (!profileResponse.ok) {
+          const data = await profileResponse.json();
+          console.error('Failed to save profile:', data.error);
+        }
+      } catch (err) {
+        console.error('Failed to save profile data:', err);
+      }
+    }
+    
+    // Add equipment if provided - do this separately
+    if (equipment.trim()) {
+      try {
+        const equipmentItems = equipment.split(',').map(item => item.trim()).filter(Boolean);
+        console.log('[AUTH] Saving equipment items:', equipmentItems);
+        
+        for (const item of equipmentItems) {
+          const equipResponse = await fetch('/api/account/equipment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: item }),
+          });
+          
+          if (!equipResponse.ok) {
+            const data = await equipResponse.json();
+            console.error('Failed to save equipment:', item, data.error);
+          } else {
+            console.log('[AUTH] Equipment saved:', item);
           }
         }
       } catch (err) {
-        console.error('Failed to save optional profile data:', err);
-        // Don't block sign-up for optional data
+        console.error('Failed to save equipment:', err);
       }
     }
 
