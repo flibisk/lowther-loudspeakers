@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/auth-context';
-import { AuthModal } from '@/components/trust-your-ears/auth-modal';
+import { AuthModal } from '@/components/auth/auth-modal';
 import { ProfileModal } from '@/components/account/profile-modal';
 import { EquipmentSection } from '@/components/account/equipment-section';
 import { RecommendationsSection } from '@/components/account/recommendations-section';
@@ -37,6 +37,7 @@ const levelConfig = {
 export default function AccountPage() {
   const { user, loading: authLoading, signOut } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loadingProfile, setLoadingProfile] = useState(false);
@@ -98,19 +99,37 @@ export default function AccountPage() {
           <div className="max-w-3xl mx-auto px-4">
             <div className="text-center py-20">
               <h1 className="font-hvmuse text-3xl text-neutral-900 mb-4">Your Account</h1>
-              <p className="font-sarabun text-neutral-600 mb-8">
-                Sign in to access your account, manage your Lowther collection, and more.
+              <p className="font-sarabun text-neutral-600 mb-8 max-w-md mx-auto">
+                Sign in to access your account, join the Lowther community, and discover exclusive features.
               </p>
-              <button
-                onClick={() => setShowAuthModal(true)}
-                className="inline-flex items-center gap-2 rounded-lg bg-neutral-900 px-6 py-3 font-sarabun text-sm font-medium text-white transition-colors hover:bg-neutral-800"
-              >
-                Sign In
-              </button>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <button
+                  onClick={() => {
+                    setAuthMode('signin');
+                    setShowAuthModal(true);
+                  }}
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg bg-neutral-900 px-8 py-3 font-sarabun text-sm font-medium text-white transition-colors hover:bg-neutral-800"
+                >
+                  Sign In
+                </button>
+                <button
+                  onClick={() => {
+                    setAuthMode('signup');
+                    setShowAuthModal(true);
+                  }}
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg border border-neutral-300 bg-white px-8 py-3 font-sarabun text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-50"
+                >
+                  Create Account
+                </button>
+              </div>
             </div>
           </div>
         </div>
-        <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
+        <AuthModal 
+          isOpen={showAuthModal} 
+          onClose={() => setShowAuthModal(false)} 
+          mode={authMode}
+        />
       </>
     );
   }

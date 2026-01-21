@@ -84,7 +84,7 @@ export function EquipmentSection({ userId }: EquipmentSectionProps) {
   return (
     <div className="mb-6">
       <h3 className="font-sarabun text-xs uppercase tracking-wider text-neutral-400 mb-3">
-        My Lowther Collection
+        My Hi-Fi Equipment
       </h3>
       <div className="bg-white rounded-2xl p-5 shadow-sm ring-1 ring-black/5">
         {loading ? (
@@ -169,7 +169,7 @@ export function EquipmentSection({ userId }: EquipmentSectionProps) {
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              New orders are automatically added to your collection
+              Show off your setup! Lowther orders are added automatically.
             </p>
           </>
         )}
