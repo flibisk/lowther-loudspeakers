@@ -19,17 +19,37 @@ const VALID_EVENT_TYPES = [
   'BLOG_DEEP_READ',
 ];
 
-// Get authenticated user ID if logged in
-async function getUserId(): Promise<string | null> {
+// Admin emails that should not be tracked
+const EXCLUDED_EMAILS = [
+  'social@lowtherloudspeakers.com',
+  'hello@lowtherloudspeakers.com',
+];
+
+// Get authenticated user ID if logged in, returns null if admin
+async function getUserId(): Promise<{ userId: string | null; isAdmin: boolean }> {
   const cookieStore = await cookies();
   const sessionCookie = cookieStore.get('tye_session');
   
   if (!sessionCookie?.value) {
-    return null;
+    return { userId: null, isAdmin: false };
   }
   
   const [userId] = sessionCookie.value.split(':');
-  return userId || null;
+  if (!userId) {
+    return { userId: null, isAdmin: false };
+  }
+  
+  // Check if this is an admin user
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { email: true },
+  });
+  
+  if (user && EXCLUDED_EMAILS.includes(user.email)) {
+    return { userId, isAdmin: true };
+  }
+  
+  return { userId, isAdmin: false };
 }
 
 // Get IP address from request
@@ -144,7 +164,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Get user ID if authenticated
-    const userId = await getUserId();
+    const { userId, isAdmin } = await getUserId();
+
+    // Skip tracking for admin users
+    if (isAdmin) {
+      return NextResponse.json({ success: true, skipped: true });
+    }
 
     // Get user agent and IP from headers
     const userAgent = request.headers.get('user-agent') || null;
