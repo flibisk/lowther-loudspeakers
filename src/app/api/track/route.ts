@@ -53,6 +53,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Skip tracking for admin pages
+    if (path.startsWith('/admin')) {
+      return NextResponse.json({ success: true, skipped: true });
+    }
+
     // Validate sessionId
     if (!sessionId || typeof sessionId !== 'string') {
       return NextResponse.json(

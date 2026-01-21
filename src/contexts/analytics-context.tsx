@@ -93,6 +93,11 @@ export function AnalyticsProvider({ children }: { children: ReactNode }) {
 
   // Core tracking function
   const trackEvent = useCallback(async (eventType: EventType, eventData?: EventData) => {
+    // Skip tracking for admin pages
+    if (typeof window !== 'undefined' && window.location.pathname.startsWith('/admin')) {
+      return;
+    }
+
     if (!sessionId.current) {
       sessionId.current = getSessionId();
     }
