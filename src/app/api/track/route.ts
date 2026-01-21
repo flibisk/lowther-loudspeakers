@@ -32,6 +32,83 @@ async function getUserId(): Promise<string | null> {
   return userId || null;
 }
 
+// Get IP address from request
+function getClientIp(request: NextRequest): string | null {
+  // Check various headers for the real IP (behind proxies/load balancers)
+  const forwarded = request.headers.get('x-forwarded-for');
+  if (forwarded) {
+    return forwarded.split(',')[0].trim();
+  }
+  
+  const realIp = request.headers.get('x-real-ip');
+  if (realIp) {
+    return realIp;
+  }
+  
+  // Vercel-specific header
+  const vercelIp = request.headers.get('x-vercel-forwarded-for');
+  if (vercelIp) {
+    return vercelIp.split(',')[0].trim();
+  }
+  
+  return null;
+}
+
+// Simple in-memory cache for IP geolocation (to avoid hitting API too often)
+const geoCache = new Map<string, { country: string; city: string; expires: number }>();
+const GEO_CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
+
+// Get geolocation from IP (using free ip-api.com)
+async function getGeoFromIp(ip: string): Promise<{ country: string; city: string } | null> {
+  if (!ip || ip === '127.0.0.1' || ip === '::1') {
+    return null;
+  }
+  
+  // Check cache
+  const cached = geoCache.get(ip);
+  if (cached && cached.expires > Date.now()) {
+    return { country: cached.country, city: cached.city };
+  }
+  
+  try {
+    // ip-api.com is free for non-commercial use (45 requests per minute)
+    const response = await fetch(`http://ip-api.com/json/${ip}?fields=status,country,city`, {
+      signal: AbortSignal.timeout(2000), // 2 second timeout
+    });
+    
+    if (!response.ok) return null;
+    
+    const data = await response.json();
+    
+    if (data.status === 'success') {
+      const result = { country: data.country || 'Unknown', city: data.city || '' };
+      
+      // Cache the result
+      geoCache.set(ip, {
+        ...result,
+        expires: Date.now() + GEO_CACHE_TTL,
+      });
+      
+      // Clean up old cache entries periodically
+      if (geoCache.size > 10000) {
+        const now = Date.now();
+        for (const [key, value] of geoCache.entries()) {
+          if (value.expires < now) {
+            geoCache.delete(key);
+          }
+        }
+      }
+      
+      return result;
+    }
+  } catch (error) {
+    // Silently fail - geolocation is not critical
+    console.debug('[TRACK] Geolocation failed:', error);
+  }
+  
+  return null;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -69,8 +146,22 @@ export async function POST(request: NextRequest) {
     // Get user ID if authenticated
     const userId = await getUserId();
 
-    // Get user agent from headers
+    // Get user agent and IP from headers
     const userAgent = request.headers.get('user-agent') || null;
+    const ipAddress = getClientIp(request);
+    
+    // Get geolocation (async, but we won't wait for it to complete to speed up response)
+    let geoData: { country: string; city: string } | null = null;
+    if (ipAddress) {
+      geoData = await getGeoFromIp(ipAddress);
+    }
+
+    // Merge geo data into event data
+    const enrichedEventData = {
+      ...eventData,
+      ...(ipAddress && { ip: ipAddress }),
+      ...(geoData && { country: geoData.country, city: geoData.city }),
+    };
 
     // Create the event
     await prisma.userEvent.create({
@@ -78,7 +169,7 @@ export async function POST(request: NextRequest) {
         userId,
         sessionId,
         eventType: eventType as any,
-        eventData: eventData || null,
+        eventData: Object.keys(enrichedEventData).length > 0 ? enrichedEventData : null,
         path,
         referrer: referrer || null,
         userAgent,

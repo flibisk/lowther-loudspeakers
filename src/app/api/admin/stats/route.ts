@@ -130,16 +130,39 @@ export async function GET(request: NextRequest) {
     if (topUserRaw.length > 0 && topUserRaw[0].userId) {
       const user = await prisma.user.findUnique({
         where: { id: topUserRaw[0].userId },
-        select: { email: true, displayName: true },
+        select: { id: true, email: true, displayName: true },
       });
       if (user) {
         topUser = {
+          id: user.id,
           email: user.email,
           displayName: user.displayName,
           eventCount: topUserRaw[0]._count.id,
         };
       }
     }
+
+    // Top countries (from event data)
+    const allEvents = await prisma.userEvent.findMany({
+      where: {
+        timestamp: { gte: startDate },
+      },
+      select: { eventData: true },
+    });
+
+    const countryCounts: Record<string, number> = {};
+    for (const event of allEvents) {
+      if (!event.eventData) continue;
+      const data = event.eventData as any;
+      if (data?.country) {
+        countryCounts[data.country] = (countryCounts[data.country] || 0) + 1;
+      }
+    }
+
+    const topCountries = Object.entries(countryCounts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10)
+      .map(([country, count]) => ({ country, count }));
 
     // Event breakdown
     const eventBreakdownRaw = await prisma.userEvent.groupBy({
@@ -162,6 +185,7 @@ export async function GET(request: NextRequest) {
       totalUsers,
       topPages,
       topProducts,
+      topCountries,
       topUser,
       eventBreakdown,
     });

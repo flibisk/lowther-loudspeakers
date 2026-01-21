@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { 
   Eye, 
   Users, 
@@ -12,7 +12,9 @@ import {
   MousePointer,
   Package,
   UserCheck,
-  Loader2
+  Loader2,
+  Globe,
+  ChevronRight
 } from 'lucide-react';
 
 interface DashboardData {
@@ -21,11 +23,13 @@ interface DashboardData {
   totalUsers: number;
   topPages: { path: string; count: number }[];
   topProducts: { handle: string; count: number }[];
-  topUser: { email: string; displayName: string | null; eventCount: number } | null;
+  topCountries: { country: string; count: number }[];
+  topUser: { email: string; displayName: string | null; eventCount: number; id: string } | null;
   eventBreakdown: { type: string; count: number }[];
 }
 
 export function DashboardStats() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const range = searchParams.get('range') || '7d';
   const [data, setData] = useState<DashboardData | null>(null);
@@ -51,6 +55,21 @@ export function DashboardStats() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const navigateToPage = (path: string) => {
+    // Navigate to Page Views with the path selected
+    router.push(`/admin/pages?selected=${encodeURIComponent(path)}`);
+  };
+
+  const navigateToProduct = (handle: string) => {
+    // Navigate to Page Views filtered by product
+    const productPath = `/collection/${handle}`;
+    router.push(`/admin/pages?selected=${encodeURIComponent(productPath)}`);
+  };
+
+  const navigateToUser = (userId: string) => {
+    router.push(`/admin/users?selected=${userId}`);
   };
 
   if (loading) {
@@ -81,18 +100,21 @@ export function DashboardStats() {
           value={data.totalPageViews.toLocaleString()}
           icon={Eye}
           color="blue"
+          onClick={() => router.push('/admin/pages')}
         />
         <StatCard
           label="New Users"
           value={data.newUsers.toLocaleString()}
           icon={UserCheck}
           color="green"
+          onClick={() => router.push('/admin/users')}
         />
         <StatCard
           label="Total Users"
           value={data.totalUsers.toLocaleString()}
           icon={Users}
           color="purple"
+          onClick={() => router.push('/admin/users')}
         />
         <StatCard
           label="Top User Events"
@@ -100,6 +122,7 @@ export function DashboardStats() {
           subtitle={data.topUser?.displayName || data.topUser?.email || 'No data'}
           icon={TrendingUp}
           color="amber"
+          onClick={data.topUser ? () => navigateToUser(data.topUser!.id) : undefined}
         />
       </div>
 
@@ -131,23 +154,38 @@ export function DashboardStats() {
 
         {/* Top Pages */}
         <div className="bg-white rounded-xl p-6 shadow-sm">
-          <h3 className="font-hvmuse text-lg text-neutral-900 mb-4">Top Pages</h3>
-          <div className="space-y-3">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-hvmuse text-lg text-neutral-900">Top Pages</h3>
+            <button 
+              onClick={() => router.push('/admin/pages')}
+              className="text-xs text-amber-600 hover:text-amber-700 flex items-center gap-1"
+            >
+              View all <ChevronRight className="h-3 w-3" />
+            </button>
+          </div>
+          <div className="space-y-2">
             {data.topPages.length > 0 ? (
               data.topPages.map((page, i) => (
-                <div key={page.path} className="flex items-center justify-between">
+                <button
+                  key={page.path}
+                  onClick={() => navigateToPage(page.path)}
+                  className="w-full flex items-center justify-between p-2 rounded-lg hover:bg-neutral-50 transition-colors text-left"
+                >
                   <div className="flex items-center gap-3">
                     <span className="text-xs font-medium text-neutral-400 w-6">
                       {i + 1}.
                     </span>
-                    <span className="text-sm text-neutral-600 truncate max-w-[250px]">
-                      {page.path}
+                    <span className="text-sm text-neutral-600 truncate max-w-[200px]">
+                      {formatPath(page.path)}
                     </span>
                   </div>
-                  <span className="text-sm font-medium text-neutral-900">
-                    {page.count.toLocaleString()}
-                  </span>
-                </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium text-neutral-900">
+                      {page.count.toLocaleString()}
+                    </span>
+                    <ChevronRight className="h-4 w-4 text-neutral-300" />
+                  </div>
+                </button>
               ))
             ) : (
               <p className="text-sm text-neutral-500">No page views recorded yet</p>
@@ -156,32 +194,71 @@ export function DashboardStats() {
         </div>
       </div>
 
-      {/* Top Products */}
-      <div className="bg-white rounded-xl p-6 shadow-sm">
-        <h3 className="font-hvmuse text-lg text-neutral-900 mb-4">Top Products</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {data.topProducts.length > 0 ? (
-            data.topProducts.map((product, i) => (
-              <div 
-                key={product.handle} 
-                className="flex items-center gap-3 p-3 rounded-lg bg-neutral-50"
-              >
-                <span className="flex items-center justify-center h-8 w-8 rounded-full bg-amber-100 text-amber-700 text-sm font-medium">
-                  {i + 1}
-                </span>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-neutral-900 truncate">
-                    {formatProductHandle(product.handle)}
-                  </p>
-                  <p className="text-xs text-neutral-500">
-                    {product.count.toLocaleString()} views
-                  </p>
+      {/* Top Products & Countries */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Top Products */}
+        <div className="bg-white rounded-xl p-6 shadow-sm">
+          <h3 className="font-hvmuse text-lg text-neutral-900 mb-4">Top Products</h3>
+          <div className="space-y-2">
+            {data.topProducts.length > 0 ? (
+              data.topProducts.map((product, i) => (
+                <button
+                  key={product.handle}
+                  onClick={() => navigateToProduct(product.handle)}
+                  className="w-full flex items-center gap-3 p-3 rounded-lg bg-neutral-50 hover:bg-neutral-100 transition-colors text-left"
+                >
+                  <span className="flex items-center justify-center h-8 w-8 rounded-full bg-amber-100 text-amber-700 text-sm font-medium flex-shrink-0">
+                    {i + 1}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-neutral-900 truncate">
+                      {formatProductHandle(product.handle)}
+                    </p>
+                    <p className="text-xs text-neutral-500">
+                      {product.count.toLocaleString()} views
+                    </p>
+                  </div>
+                  <ChevronRight className="h-4 w-4 text-neutral-300 flex-shrink-0" />
+                </button>
+              ))
+            ) : (
+              <p className="text-sm text-neutral-500">No product views recorded yet</p>
+            )}
+          </div>
+        </div>
+
+        {/* Top Countries */}
+        <div className="bg-white rounded-xl p-6 shadow-sm">
+          <h3 className="font-hvmuse text-lg text-neutral-900 mb-4 flex items-center gap-2">
+            <Globe className="h-5 w-5 text-neutral-400" />
+            Top Countries
+          </h3>
+          <div className="space-y-2">
+            {data.topCountries && data.topCountries.length > 0 ? (
+              data.topCountries.map((country, i) => (
+                <div
+                  key={country.country}
+                  className="flex items-center gap-3 p-3 rounded-lg bg-neutral-50"
+                >
+                  <span className="flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 text-blue-700 text-sm font-medium flex-shrink-0">
+                    {i + 1}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-neutral-900">
+                      {country.country}
+                    </p>
+                    <p className="text-xs text-neutral-500">
+                      {country.count.toLocaleString()} visits
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))
-          ) : (
-            <p className="text-sm text-neutral-500 col-span-3">No product views recorded yet</p>
-          )}
+              ))
+            ) : (
+              <p className="text-sm text-neutral-500">
+                Country data will appear as visitors browse the site
+              </p>
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -193,13 +270,15 @@ function StatCard({
   value, 
   subtitle,
   icon: Icon, 
-  color 
+  color,
+  onClick
 }: { 
   label: string; 
   value: string; 
   subtitle?: string;
   icon: any; 
   color: 'blue' | 'green' | 'purple' | 'amber';
+  onClick?: () => void;
 }) {
   const colorClasses = {
     blue: 'bg-blue-50 text-blue-600',
@@ -208,8 +287,15 @@ function StatCard({
     amber: 'bg-amber-50 text-amber-600',
   };
 
+  const Component = onClick ? 'button' : 'div';
+
   return (
-    <div className="bg-white rounded-xl p-6 shadow-sm">
+    <Component 
+      className={`bg-white rounded-xl p-6 shadow-sm text-left w-full ${
+        onClick ? 'hover:shadow-md transition-shadow cursor-pointer' : ''
+      }`}
+      onClick={onClick}
+    >
       <div className="flex items-center justify-between mb-3">
         <span className="text-sm text-neutral-500">{label}</span>
         <div className={`p-2 rounded-lg ${colorClasses[color]}`}>
@@ -220,7 +306,7 @@ function StatCard({
       {subtitle && (
         <p className="text-xs text-neutral-500 mt-1 truncate">{subtitle}</p>
       )}
-    </div>
+    </Component>
   );
 }
 
@@ -257,4 +343,12 @@ function formatProductHandle(handle: string): string {
     .split('-')
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
+}
+
+function formatPath(path: string): string {
+  if (path === '/') return 'Homepage';
+  return path
+    .replace(/^\//, '')
+    .replace(/-/g, ' ')
+    .replace(/\//g, ' → ');
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { FileText, Loader2, User, Eye, MousePointer, MapPin, Star } from 'lucide-react';
 
 interface PageStats {
@@ -21,6 +22,9 @@ interface PageUser {
 }
 
 export default function AdminPagesPage() {
+  const searchParams = useSearchParams();
+  const initialSelected = searchParams.get('selected');
+  
   const [pages, setPages] = useState<PageStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedPage, setSelectedPage] = useState<string | null>(null);
@@ -31,6 +35,13 @@ export default function AdminPagesPage() {
   useEffect(() => {
     loadPages();
   }, []);
+  
+  // Handle initial selection from URL
+  useEffect(() => {
+    if (initialSelected && !loading) {
+      loadPageUsers(initialSelected);
+    }
+  }, [initialSelected, loading]);
 
   const loadPages = async () => {
     setLoading(true);
