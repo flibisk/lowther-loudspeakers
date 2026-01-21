@@ -9,6 +9,9 @@ import { Breadcrumbs } from '@/components/breadcrumbs';
 import { Button } from '@/components/ui/button';
 import { DriveUnitCard } from '@/components/drive-unit-card';
 import { trackBrochureDownload, trackFormSubmit } from '@/lib/analytics';
+import { useAuth } from '@/contexts/auth-context';
+import { AuthModal } from '@/components/auth/auth-modal';
+import { Download, Lock, LogIn, User } from 'lucide-react';
 
 interface CabinetPlan {
   id: string;
@@ -157,66 +160,41 @@ const customerQuotes = [
 ];
 
 export default function BuildALowtherPage() {
+  const { user, loading: authLoading } = useAuth();
   const [selectedPlan, setSelectedPlan] = useState<CabinetPlan | null>(null);
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    country: ''
-  });
-  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const openPlanDetail = (plan: CabinetPlan) => {
     setSelectedPlan(plan);
-    setFormSubmitted(false);
     setTimeout(() => setIsOverlayOpen(true), 50);
+  };
+
+  const handleAuthSuccess = () => {
+    setShowAuthModal(false);
+    // User is now logged in, they can see the drive units and download
+  };
+
+  const handleDownloadPlan = () => {
+    if (!selectedPlan || !user) return;
+    
+    // Track the download
+    trackBrochureDownload(selectedPlan.id);
+    
+    // Trigger the download
+    const link = document.createElement('a');
+    link.href = selectedPlan.pdfPath;
+    link.download = `${selectedPlan.title}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const closePlanDetail = () => {
     setIsOverlayOpen(false);
     setTimeout(() => {
       setSelectedPlan(null);
-      setFormData({ name: '', email: '', country: '' });
-      setFormSubmitted(false);
     }, 600);
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!selectedPlan) return;
-
-    try {
-      const response = await fetch('/api/submit-plan-request', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          country: formData.country,
-          planTitle: selectedPlan.title,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        trackFormSubmit(`Build a Lowther - ${selectedPlan?.title || 'Unknown'}`);
-        setFormSubmitted(true);
-      } else {
-        alert('There was an error submitting your request. Please try again or contact us directly.');
-      }
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      alert('There was an error submitting your request. Please try again or contact us directly.');
-    }
   };
 
   // Handle escape key
@@ -463,31 +441,6 @@ export default function BuildALowtherPage() {
                     ))}
                   </div>
 
-                  {/* Drive Unit Requirements */}
-                  <div className="mb-8 p-6 bg-gray-100 rounded-lg">
-                    <h3 className="font-display text-2xl mb-4" style={{ color: '#c59862' }}>
-                      Required Drive Units
-                    </h3>
-                    <div className="space-y-3">
-                      {selectedPlan.driveUnitOptions.recommended && (
-                        <DriveUnitCard
-                          driveUnitString={selectedPlan.driveUnitOptions.recommended}
-                          label="Recommended"
-                        />
-                      )}
-                      <DriveUnitCard
-                        driveUnitString={selectedPlan.driveUnitOptions.standard}
-                        label="Standard"
-                      />
-                      {selectedPlan.driveUnitOptions.sealed && (
-                        <DriveUnitCard
-                          driveUnitString={selectedPlan.driveUnitOptions.sealed}
-                          label="Sealed"
-                        />
-                      )}
-                    </div>
-                  </div>
-
                   <div className="mb-8 p-6 bg-gray-50 rounded-lg">
                     <h3 className="font-display text-xl mb-3" style={{ color: '#c59862' }}>
                       Material and Finishing Guidance
@@ -497,160 +450,100 @@ export default function BuildALowtherPage() {
                     </p>
                   </div>
 
-                  {!formSubmitted ? (
-                    <>
-                      <p className="text-gray-700 mb-6">
-                        Fill in the form below to get access to the downloadable plan for free and get your personalised quote for everything else.
-                      </p>
-                      <p className="text-sm text-gray-600 mb-8 italic">
-                        We ask for your information so we can support you as much as possible in your Lowther speaker build. We know you might have more questions (e.g. best drive unit for your amplifier) and we can answer these when we are in contact with you.
-                      </p>
-
-                      <form onSubmit={handleSubmit} className="space-y-6">
-                        <div>
-                          <label htmlFor="name" className="block text-sm font-medium text-gray-900 mb-2">
-                            Name *
-                          </label>
-                          <input
-                            type="text"
-                            id="name"
-                            name="name"
-                            value={formData.name}
-                            onChange={handleInputChange}
-                            required
-                            className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#c59862] focus:border-transparent"
-                          />
+                  {/* Login Required Section - Show when not logged in */}
+                  {!user && !authLoading && (
+                    <div className="p-8 bg-neutral-900 rounded-lg text-white">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="h-12 w-12 rounded-full bg-[#c59862] flex items-center justify-center">
+                          <Lock className="h-6 w-6 text-white" />
                         </div>
-
                         <div>
-                          <label htmlFor="email" className="block text-sm font-medium text-gray-900 mb-2">
-                            Email Address *
-                          </label>
-                          <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleInputChange}
-                            required
-                            className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#c59862] focus:border-transparent"
-                          />
+                          <h3 className="font-display text-2xl" style={{ color: '#c59862' }}>
+                            Login to Download Plans
+                          </h3>
+                          <p className="text-gray-400 text-sm">Free access for all members</p>
                         </div>
-
-                        <div>
-                          <label htmlFor="country" className="block text-sm font-medium text-gray-900 mb-2">
-                            Country *
-                          </label>
-                          <input
-                            type="text"
-                            id="country"
-                            name="country"
-                            value={formData.country}
-                            onChange={handleInputChange}
-                            required
-                            className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#c59862] focus:border-transparent"
-                          />
-                </div>
-
+                      </div>
+                      
+                      <p className="text-gray-300 mb-6 leading-relaxed">
+                        Create a free account or sign in to download the {selectedPlan.title} plans and get access to recommended drive units you can add directly to your cart.
+                      </p>
+                      
+                      <div className="space-y-3">
                         <Button
-                          type="submit"
-                          variant="black"
+                          variant="white"
                           size="lowther"
                           className="w-full"
+                          onClick={() => setShowAuthModal(true)}
                         >
-                          GET FREE PLAN
+                          <LogIn className="h-5 w-5 mr-2" />
+                          SIGN IN / CREATE ACCOUNT
                         </Button>
-                      </form>
-                    </>
-                  ) : (
+                      </div>
+                      
+                      <p className="text-xs text-gray-500 mt-4 text-center">
+                        We'll also be able to help you choose the perfect drive units for your amplifier
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Logged In - Show drive units and download */}
+                  {user && (
                     <div className="space-y-8">
-                      <div className="p-6 bg-green-50 border border-green-200 rounded-lg">
-                        <h3 className="font-display text-2xl mb-3 text-green-800">
-                          Thank you!
-                        </h3>
-                        <p className="text-green-700">
-                          Your plan is ready to download. We'll also be in touch shortly to help you choose the perfect drive units for your build.
-                </p>
-              </div>
-
-                      {/* Drive Units Section - Primary CTA */}
-                      <div className="p-8 bg-gray-900 rounded-lg text-white">
-                        <h3 className="font-display text-3xl mb-4" style={{ color: '#c59862' }}>
-                          You'll need Lowther Drive Units
-                        </h3>
-                        
-                        {/* Show specific requirements */}
-                        <div className="mb-6 p-4 bg-white/10 rounded-md">
-                          <p className="text-sm font-semibold text-[#c59862] mb-2">For this {selectedPlan.title}:</p>
-                          <div className="space-y-2 text-sm">
-                            {selectedPlan.driveUnitOptions.recommended && (
-                              <p className="text-white">✨ <strong>Recommended:</strong> {selectedPlan.driveUnitOptions.recommended}</p>
-                            )}
-                            <p className="text-gray-300"><strong>Standard:</strong> {selectedPlan.driveUnitOptions.standard}</p>
-                            {selectedPlan.driveUnitOptions.sealed && (
-                              <p className="text-gray-300"><strong>If worried about sealing:</strong> {selectedPlan.driveUnitOptions.sealed}</p>
-                            )}
-                          </div>
+                      {/* Welcome message */}
+                      <div className="p-4 bg-green-50 border border-green-200 rounded-lg flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
+                          <User className="h-5 w-5 text-white" />
                         </div>
+                        <div>
+                          <p className="text-green-800 font-medium">
+                            Welcome{user.displayName ? `, ${user.displayName}` : ''}!
+                          </p>
+                          <p className="text-green-700 text-sm">
+                            You now have access to download plans and purchase drive units
+                          </p>
+                        </div>
+                      </div>
 
-                        <p className="text-gray-300 mb-6 leading-relaxed">
-                          Browse our collections to find these drive units, or contact us for personalized recommendations based on your amplifier and listening preferences.
+                      {/* Drive Units Section */}
+                      <div className="p-6 bg-gray-100 rounded-lg">
+                        <h3 className="font-display text-2xl mb-4" style={{ color: '#c59862' }}>
+                          Required Drive Units
+                        </h3>
+                        <p className="text-gray-600 mb-4 text-sm">
+                          Add the drive units you need directly to your cart:
                         </p>
-                        
                         <div className="space-y-3">
-                          <Link href="/collection/concert" className="block" target="_blank" rel="noopener noreferrer">
-                            <Button
-                              variant="white"
-                              size="lowther"
-                              className="w-full"
-                            >
-                              SHOP CONCERT COLLECTION
-                            </Button>
-                          </Link>
-                          
-                          <Link href="/collection/sinfonia" className="block" target="_blank" rel="noopener noreferrer">
-                            <Button
-                              variant="white"
-                              size="lowther"
-                              className="w-full"
-                            >
-                              SHOP SINFONIA COLLECTION
-                            </Button>
-                          </Link>
-                          
-                          <Link href="/collection/philharmonic" className="block" target="_blank" rel="noopener noreferrer">
-                            <Button
-                              variant="white"
-                              size="lowther"
-                              className="w-full"
-                            >
-                              SHOP PHILHARMONIC COLLECTION
-                            </Button>
-                          </Link>
-
-                          <Link href="/collection/grand-opera" className="block" target="_blank" rel="noopener noreferrer">
-                            <Button
-                              variant="white"
-                              size="lowther"
-                              className="w-full"
-                            >
-                              SHOP GRAND OPERA COLLECTION
-                            </Button>
-                          </Link>
+                          {selectedPlan.driveUnitOptions.recommended && (
+                            <DriveUnitCard
+                              driveUnitString={selectedPlan.driveUnitOptions.recommended}
+                              label="Recommended"
+                            />
+                          )}
+                          <DriveUnitCard
+                            driveUnitString={selectedPlan.driveUnitOptions.standard}
+                            label="Standard"
+                          />
+                          {selectedPlan.driveUnitOptions.sealed && (
+                            <DriveUnitCard
+                              driveUnitString={selectedPlan.driveUnitOptions.sealed}
+                              label="Sealed"
+                            />
+                          )}
                         </div>
                       </div>
 
                       {/* Badges Section */}
                       <div className="p-6 bg-gray-50 rounded-lg border border-gray-200">
-                        <h3 className="font-display text-2xl mb-3" style={{ color: '#c59862' }}>
+                        <h3 className="font-display text-xl mb-3" style={{ color: '#c59862' }}>
                           Complete Your Build with Official Badges
                         </h3>
-                        <p className="text-gray-700 mb-4 leading-relaxed">
+                        <p className="text-gray-700 mb-4 leading-relaxed text-sm">
                           Add the finishing touch to your handmade Lowther with our official metal badges, crafted by the same artisans who produce emblems for Aston Martin.
                         </p>
-                        <Link href="/ensemble/lowther-badges" className="block" target="_blank" rel="noopener noreferrer">
+                        <Link href="/ensemble/lowther-badges" target="_blank" rel="noopener noreferrer">
                           <Button
-                            variant="black"
+                            variant="outline"
                             size="lowther"
                             className="w-full"
                           >
@@ -659,25 +552,33 @@ export default function BuildALowtherPage() {
                         </Link>
                       </div>
 
-                      {/* Download Plan - Secondary CTA */}
-                      <div className="pt-6 border-t border-gray-200">
-                        <p className="text-sm text-gray-600 mb-4 text-center">
-                          Already have your drive units?
+                      {/* Download Plan - Primary CTA */}
+                      <div className="p-6 bg-[#c59862] rounded-lg">
+                        <h3 className="font-display text-xl mb-3 text-white">
+                          Download Your Plan
+                        </h3>
+                        <p className="text-white/80 mb-4 text-sm">
+                          Get the complete {selectedPlan.title} building plans in PDF format.
                         </p>
-                        <a 
-                          href={selectedPlan.pdfPath} 
-                          download 
-                          className="block w-full"
-                          onClick={() => trackBrochureDownload(selectedPlan.id)}
+                        <Button
+                          variant="white"
+                          size="lowther"
+                          className="w-full"
+                          onClick={handleDownloadPlan}
                         >
-                          <Button
-                            variant="outline"
-                            size="lowther"
-                            className="w-full"
-                          >
-                            DOWNLOAD PLAN
-                          </Button>
-                        </a>
+                          <Download className="h-5 w-5 mr-2" />
+                          DOWNLOAD {selectedPlan.title.toUpperCase()} PLAN
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Loading state */}
+                  {authLoading && (
+                    <div className="p-8 bg-gray-100 rounded-lg text-center">
+                      <div className="animate-pulse">
+                        <div className="h-8 bg-gray-200 rounded w-48 mx-auto mb-4"></div>
+                        <div className="h-4 bg-gray-200 rounded w-64 mx-auto"></div>
                       </div>
                     </div>
                   )}
@@ -687,6 +588,14 @@ export default function BuildALowtherPage() {
           </div>
         </div>
       )}
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        onSuccess={handleAuthSuccess}
+        mode="signup"
+      />
     </div>
   );
 }
