@@ -7,17 +7,22 @@ const ADMIN_EMAILS = [
   'hello@lowtherloudspeakers.com',
 ];
 
-// Action event types we want to track
-const ACTION_TYPES = [
-  'CTA_CLICK',
-  'VIDEO_PLAY',
-  'FORM_SUBMIT',
-  'ENQUIRY_START',
-  'ENQUIRY_SUBMIT',
-  'DOWNLOAD_BROCHURE',
-  'ADD_TO_CART',
-  'BEGIN_CHECKOUT',
-];
+// Lead scoring values
+const LEAD_SCORES: Record<string, number> = {
+  PAGE_VIEW: 1,
+  PRODUCT_VIEW: 5,
+  PRODUCT_REVISIT: 3,
+  VIDEO_PLAY: 3,
+  DOWNLOAD_BROCHURE: 10,
+  FORM_SUBMIT: 15,
+  CTA_CLICK: 2,
+  ADD_TO_CART: 20,
+  BEGIN_CHECKOUT: 30,
+  ENQUIRY_START: 5,
+  ENQUIRY_SUBMIT: 25,
+  TRUST_YOUR_EARS_VOTE: 3,
+  BLOG_DEEP_READ: 4,
+};
 
 async function isAdmin(): Promise<boolean> {
   const cookieStore = await cookies();
@@ -63,7 +68,7 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    // Build user data with actions
+    // Build user data with score and CTA clicks
     const usersData = await Promise.all(
       pageViewsByUser.map(async (pv) => {
         // Get user info if logged in
@@ -75,59 +80,57 @@ export async function GET(request: NextRequest) {
               id: true,
               email: true,
               displayName: true,
+              fullName: true,
+              country: true,
             },
           });
         }
 
-        // Get actions taken on this page by this user/session
-        const actionsRaw = await prisma.userEvent.findMany({
+        // Calculate lead score for this user
+        let leadScore = 0;
+        if (pv.userId) {
+          const eventCounts = await prisma.userEvent.groupBy({
+            by: ['eventType'],
+            where: { userId: pv.userId },
+            _count: true,
+          });
+
+          for (const ec of eventCounts) {
+            const weight = LEAD_SCORES[ec.eventType as keyof typeof LEAD_SCORES] || 1;
+            leadScore += ec._count * weight;
+          }
+        }
+
+        // Count CTA clicks on this specific page
+        const ctaClicks = await prisma.userEvent.count({
           where: {
             path,
-            OR: [
-              { userId: pv.userId },
-              { sessionId: pv.sessionId },
-            ].filter(Boolean),
-            eventType: { in: ACTION_TYPES },
-          },
-          select: {
-            eventType: true,
-            eventData: true,
+            eventType: 'CTA_CLICK',
+            OR: pv.userId 
+              ? [{ userId: pv.userId }, { sessionId: pv.sessionId }]
+              : [{ sessionId: pv.sessionId }],
           },
         });
-
-        // Aggregate actions
-        const actionMap: Record<string, { type: string; productHandle?: string; count: number }> = {};
-        for (const action of actionsRaw) {
-          const data = action.eventData as any;
-          const key = `${action.eventType}-${data?.productHandle || data?.ctaName || ''}`;
-          
-          if (!actionMap[key]) {
-            actionMap[key] = {
-              type: action.eventType,
-              productHandle: data?.productHandle || data?.ctaName || data?.formType || undefined,
-              count: 0,
-            };
-          }
-          actionMap[key].count++;
-        }
 
         return {
           userId: pv.userId,
           email: userInfo?.email || null,
-          displayName: userInfo?.displayName || null,
+          displayName: userInfo?.displayName || userInfo?.fullName || null,
+          country: userInfo?.country || null,
           visitCount: pv._count,
+          ctaClicks,
+          leadScore,
           lastVisit: pv._max.timestamp?.toISOString() || new Date().toISOString(),
-          actions: Object.values(actionMap),
         };
       })
     );
 
-    // Sort by visit count (most visits first), then by last visit
+    // Sort by lead score (highest first), then by visit count
     usersData.sort((a, b) => {
-      if (b.visitCount !== a.visitCount) {
-        return b.visitCount - a.visitCount;
+      if (b.leadScore !== a.leadScore) {
+        return b.leadScore - a.leadScore;
       }
-      return new Date(b.lastVisit).getTime() - new Date(a.lastVisit).getTime();
+      return b.visitCount - a.visitCount;
     });
 
     // Limit to top 100 users

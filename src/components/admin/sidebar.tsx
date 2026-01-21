@@ -31,11 +31,6 @@ const navItems = [
     icon: LayoutDashboard,
   },
   {
-    label: 'Page Views',
-    href: '/admin/pages',
-    icon: FileText,
-  },
-  {
     label: 'Users',
     href: '/admin/users',
     icon: Users,
@@ -44,6 +39,11 @@ const navItems = [
     label: 'Hot Leads',
     href: '/admin/leads',
     icon: TrendingUp,
+  },
+  {
+    label: 'Page Views',
+    href: '/admin/pages',
+    icon: FileText,
   },
   {
     label: 'Settings',

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FileText, Loader2, User, Eye, MousePointer, Calendar } from 'lucide-react';
+import { FileText, Loader2, User, Eye, MousePointer, MapPin, Star } from 'lucide-react';
 
 interface PageStats {
   path: string;
@@ -13,13 +13,11 @@ interface PageUser {
   userId: string | null;
   email: string | null;
   displayName: string | null;
+  country: string | null;
   visitCount: number;
+  ctaClicks: number;
+  leadScore: number;
   lastVisit: string;
-  actions: {
-    type: string;
-    productHandle?: string;
-    count: number;
-  }[];
 }
 
 export default function AdminPagesPage() {
@@ -77,20 +75,6 @@ export default function AdminPagesPage() {
       .join(' ');
   };
 
-  // Get action label
-  const getActionLabel = (type: string) => {
-    switch (type) {
-      case 'CTA_CLICK': return 'CTA Click';
-      case 'VIDEO_PLAY': return 'Video Play';
-      case 'FORM_SUBMIT': return 'Form Submit';
-      case 'ENQUIRY_START': return 'Started Enquiry';
-      case 'ENQUIRY_SUBMIT': return 'Submitted Enquiry';
-      case 'DOWNLOAD_BROCHURE': return 'Downloaded Brochure';
-      case 'ADD_TO_CART': return 'Added to Cart';
-      default: return type.replace(/_/g, ' ');
-    }
-  };
-
   return (
     <div>
       <div className="mb-8">
@@ -102,7 +86,7 @@ export default function AdminPagesPage() {
         {/* Page List */}
         <div>
           <h2 className="font-hvmuse text-lg text-neutral-900 mb-4">
-            Top Pages
+            All Pages (by views)
           </h2>
           
           {loading ? (
@@ -116,7 +100,7 @@ export default function AdminPagesPage() {
               <p className="text-neutral-500">No page views recorded yet</p>
             </div>
           ) : (
-            <div className="space-y-2 max-h-[600px] overflow-y-auto pr-2">
+            <div className="space-y-2 max-h-[700px] overflow-y-auto pr-2">
               {pages.map((page, index) => (
                 <button
                   key={page.path}
@@ -139,7 +123,7 @@ export default function AdminPagesPage() {
                         {page.path}
                       </p>
                       <div className="flex items-center gap-4 mt-2 text-xs text-neutral-500">
-                        <span className="flex items-center gap-1">
+                        <span className="flex items-center gap-1 font-semibold text-amber-600">
                           <Eye className="h-3 w-3" />
                           {page.viewCount.toLocaleString()} views
                         </span>
@@ -175,62 +159,61 @@ export default function AdminPagesPage() {
           ) : pageUsers.length === 0 ? (
             <div className="bg-white rounded-xl p-8 shadow-sm text-center">
               <User className="h-12 w-12 text-neutral-300 mx-auto mb-3" />
-              <p className="text-neutral-500">No identified visitors for this page</p>
+              <p className="text-neutral-500">No visitors for this page yet</p>
             </div>
           ) : (
-            <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
+            <div className="space-y-3 max-h-[700px] overflow-y-auto pr-2">
               {pageUsers.map((user, index) => (
                 <div
                   key={user.userId || `anon-${index}`}
                   className="bg-white rounded-xl p-4 shadow-sm"
                 >
                   <div className="flex items-start gap-3">
-                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-amber-200 to-amber-400 flex items-center justify-center flex-shrink-0">
-                      <span className="font-hvmuse text-sm text-white">
+                    <div className="h-12 w-12 rounded-full bg-gradient-to-br from-amber-200 to-amber-400 flex items-center justify-center flex-shrink-0">
+                      <span className="font-hvmuse text-lg text-white">
                         {(user.displayName || user.email || '?').charAt(0).toUpperCase()}
                       </span>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-neutral-900 truncate">
-                        {user.displayName || user.email || 'Anonymous User'}
-                      </p>
-                      {user.email && user.displayName && (
-                        <p className="text-xs text-neutral-400 truncate">{user.email}</p>
-                      )}
-                      <div className="flex items-center gap-4 mt-2 text-xs text-neutral-500">
-                        <span className="flex items-center gap-1">
-                          <Eye className="h-3 w-3" />
-                          {user.visitCount} visits
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Calendar className="h-3 w-3" />
-                          Last: {new Date(user.lastVisit).toLocaleDateString()}
-                        </span>
+                      <div className="flex items-center gap-2">
+                        <p className="font-medium text-neutral-900 truncate">
+                          {user.displayName || 'Anonymous'}
+                        </p>
+                        {user.leadScore > 0 && (
+                          <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-700">
+                            <Star className="h-3 w-3" />
+                            {user.leadScore}
+                          </span>
+                        )}
                       </div>
                       
-                      {/* Actions taken on this page */}
-                      {user.actions.length > 0 && (
-                        <div className="mt-3 pt-3 border-t border-neutral-100">
-                          <p className="text-xs font-medium text-neutral-600 mb-2">Actions on this page:</p>
-                          <div className="flex flex-wrap gap-2">
-                            {user.actions.map((action, i) => (
-                              <span
-                                key={i}
-                                className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-green-50 text-green-700"
-                              >
-                                <MousePointer className="h-3 w-3" />
-                                {getActionLabel(action.type)}
-                                {action.productHandle && (
-                                  <span className="font-medium">({action.productHandle})</span>
-                                )}
-                                {action.count > 1 && (
-                                  <span className="text-green-500">×{action.count}</span>
-                                )}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
+                      {user.email && (
+                        <p className="text-sm text-neutral-500 truncate">{user.email}</p>
                       )}
+                      
+                      {user.country && (
+                        <p className="text-xs text-neutral-400 flex items-center gap-1 mt-1">
+                          <MapPin className="h-3 w-3" />
+                          {user.country}
+                        </p>
+                      )}
+                      
+                      {/* Stats row */}
+                      <div className="flex items-center gap-4 mt-3 pt-3 border-t border-neutral-100">
+                        <div className="text-center">
+                          <p className="text-lg font-semibold text-neutral-900">{user.visitCount}</p>
+                          <p className="text-xs text-neutral-500">Page Visits</p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-lg font-semibold text-green-600">{user.ctaClicks}</p>
+                          <p className="text-xs text-neutral-500">CTA Clicks</p>
+                        </div>
+                        <div className="text-center flex-1">
+                          <p className="text-xs text-neutral-400">
+                            Last visit: {new Date(user.lastVisit).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
