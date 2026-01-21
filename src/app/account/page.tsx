@@ -1,182 +1,308 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import { useAuth } from '@/contexts/auth-context';
+import { AuthModal } from '@/components/trust-your-ears/auth-modal';
+import { ProfileModal } from '@/components/account/profile-modal';
+import { EquipmentSection } from '@/components/account/equipment-section';
+import { RecommendationsSection } from '@/components/account/recommendations-section';
+import { 
+  LogOut, 
+  Heart, 
+  Package, 
+  MapPin, 
+  HelpCircle,
+  ChevronRight,
+  Mail,
+  MapPinned,
+  Pencil
+} from 'lucide-react';
+
+interface UserProfile {
+  id: string;
+  email: string;
+  displayName: string | null;
+  fullName: string | null;
+  address: string | null;
+  level: 'ENTHUSIAST' | 'ADVOCATE' | 'AMBASSADOR';
+}
+
+const levelConfig = {
+  ENTHUSIAST: { label: 'Enthusiast Level', color: 'bg-amber-100 text-amber-800' },
+  ADVOCATE: { label: 'Advocate Level', color: 'bg-blue-100 text-blue-800' },
+  AMBASSADOR: { label: 'Ambassador Level', color: 'bg-purple-100 text-purple-800' },
+};
 
 export default function AccountPage() {
+  const { user, loading: authLoading, signOut } = useAuth();
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [loadingProfile, setLoadingProfile] = useState(false);
+
   const shopifyAccountUrl = process.env.NEXT_PUBLIC_SHOP_URL 
     ? `${process.env.NEXT_PUBLIC_SHOP_URL}/account`
     : 'https://shop.lowtherloudspeakers.com/account';
 
-  return (
-    <div className="min-h-screen bg-white pt-32 pb-16">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-display text-[#c59862] mb-4">
-            Your Account
-          </h1>
-          <p className="text-lg text-gray-600">
-            Manage your orders, addresses, and account settings
-          </p>
+  // Fetch full profile when user is authenticated
+  useEffect(() => {
+    if (user) {
+      fetchProfile();
+    }
+  }, [user]);
+
+  const fetchProfile = async () => {
+    setLoadingProfile(true);
+    try {
+      const response = await fetch('/api/account/profile');
+      if (response.ok) {
+        const data = await response.json();
+        setProfile(data.user);
+      }
+    } catch (error) {
+      console.error('Failed to fetch profile:', error);
+    } finally {
+      setLoadingProfile(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    await signOut();
+    setProfile(null);
+  };
+
+  const handleProfileUpdate = () => {
+    fetchProfile();
+    setShowProfileModal(false);
+  };
+
+  // Show loading state
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-[#faf9f7] pt-32 pb-16">
+        <div className="max-w-3xl mx-auto px-4">
+          <div className="flex items-center justify-center py-20">
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-neutral-200 border-t-neutral-600" />
+          </div>
         </div>
+      </div>
+    );
+  }
 
-        {/* Account Options */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-          {/* Login/Register */}
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 hover:shadow-lg transition-shadow">
-            <div className="flex items-center mb-4">
-              <svg
-                className="h-8 w-8 text-[#c59862] mr-3"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+  // Show sign-in prompt if not authenticated
+  if (!user) {
+    return (
+      <>
+        <div className="min-h-screen bg-[#faf9f7] pt-32 pb-16">
+          <div className="max-w-3xl mx-auto px-4">
+            <div className="text-center py-20">
+              <h1 className="font-hvmuse text-3xl text-neutral-900 mb-4">Your Account</h1>
+              <p className="font-sarabun text-neutral-600 mb-8">
+                Sign in to access your account, manage your Lowther collection, and more.
+              </p>
+              <button
+                onClick={() => setShowAuthModal(true)}
+                className="inline-flex items-center gap-2 rounded-lg bg-neutral-900 px-6 py-3 font-sarabun text-sm font-medium text-white transition-colors hover:bg-neutral-800"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                />
-              </svg>
-              <h2 className="text-2xl font-display text-gray-900">Sign In</h2>
+                Sign In
+              </button>
             </div>
-            <p className="text-gray-600 mb-6">
-              Access your account to view orders, manage addresses, and update your preferences.
-            </p>
-            <a href={shopifyAccountUrl} target="_blank" rel="noopener noreferrer">
-              <Button
-                size="lg"
-                className="w-full bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
-              >
-                Go to Account
-              </Button>
-            </a>
+          </div>
+        </div>
+        <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
+      </>
+    );
+  }
+
+  const displayName = profile?.fullName || profile?.displayName || 'Lowther Member';
+  const level = profile?.level || 'ENTHUSIAST';
+  const levelInfo = levelConfig[level];
+
+  return (
+    <>
+      <div className="min-h-screen bg-[#faf9f7] pt-28 pb-16">
+        <div className="max-w-3xl mx-auto px-4">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-8">
+            <h1 className="font-hvmuse text-2xl sm:text-3xl text-neutral-900">Your Account</h1>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 font-sarabun text-sm text-neutral-500 hover:text-neutral-700 transition-colors"
+            >
+              <LogOut className="h-4 w-4" />
+              Sign Out
+            </button>
           </div>
 
-          {/* Orders */}
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 hover:shadow-lg transition-shadow">
-            <div className="flex items-center mb-4">
-              <svg
-                className="h-8 w-8 text-[#c59862] mr-3"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                />
-              </svg>
-              <h2 className="text-2xl font-display text-gray-900">Orders</h2>
+          {/* Profile Card */}
+          <div className="bg-white rounded-2xl p-6 shadow-sm ring-1 ring-black/5 mb-6">
+            <div className="flex items-start gap-4 sm:gap-6">
+              {/* Avatar placeholder - could be initials or default image */}
+              <div className="relative shrink-0">
+                <div className="h-20 w-20 sm:h-24 sm:w-24 rounded-full bg-gradient-to-br from-amber-200 to-amber-400 flex items-center justify-center">
+                  <span className="font-hvmuse text-2xl sm:text-3xl text-white">
+                    {displayName.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+              </div>
+
+              {/* Profile Info */}
+              <div className="flex-1 min-w-0">
+                <div className="flex flex-wrap items-center gap-2 mb-2">
+                  <h2 className="font-hvmuse text-xl sm:text-2xl text-neutral-900 truncate">
+                    {displayName}
+                  </h2>
+                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${levelInfo.color}`}>
+                    {levelInfo.label}
+                  </span>
+                </div>
+                
+                <div className="space-y-1 text-sm text-neutral-500">
+                  <div className="flex items-center gap-2">
+                    <Mail className="h-4 w-4 text-neutral-400" />
+                    <span className="truncate">{profile?.email || user.email}</span>
+                  </div>
+                  {profile?.address && (
+                    <div className="flex items-center gap-2">
+                      <MapPinned className="h-4 w-4 text-neutral-400" />
+                      <span className="truncate">{profile.address}</span>
+                    </div>
+                  )}
+                </div>
+
+                <button
+                  onClick={() => setShowProfileModal(true)}
+                  className="mt-4 inline-flex items-center gap-1.5 font-sarabun text-xs uppercase tracking-wider text-neutral-500 hover:text-neutral-700 transition-colors"
+                >
+                  Update Profile Details
+                  <Pencil className="h-3 w-3" />
+                </button>
+              </div>
             </div>
-            <p className="text-gray-600 mb-6">
-              Track your orders, view order history, and manage returns.
-            </p>
-            <a href={`${shopifyAccountUrl}/orders`} target="_blank" rel="noopener noreferrer">
-              <Button
-                size="lg"
-                variant="outline"
-                className="w-full border-black text-black hover:bg-black hover:text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
-              >
-                View Orders
-              </Button>
-            </a>
           </div>
 
-          {/* Addresses */}
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 hover:shadow-lg transition-shadow">
-            <div className="flex items-center mb-4">
-              <svg
-                className="h-8 w-8 text-[#c59862] mr-3"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+          {/* My Lowther Collection */}
+          <EquipmentSection userId={user.id} />
+
+          {/* Trust Your Ears Recommendations */}
+          <RecommendationsSection userId={user.id} />
+
+          {/* Account Management */}
+          <div className="mb-6">
+            <h3 className="font-sarabun text-xs uppercase tracking-wider text-neutral-400 mb-3">
+              Account Management
+            </h3>
+            <div className="bg-white rounded-2xl shadow-sm ring-1 ring-black/5 divide-y divide-neutral-100">
+              {/* My Wishlist */}
+              <Link
+                href="/wishlist"
+                className="flex items-center justify-between p-4 hover:bg-neutral-50 transition-colors first:rounded-t-2xl"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
-              <h2 className="text-2xl font-display text-gray-900">Addresses</h2>
+                <div className="flex items-center gap-4">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-neutral-100">
+                    <Heart className="h-5 w-5 text-neutral-500" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-sarabun font-medium text-neutral-900">My Wishlist</span>
+                      <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-100 text-amber-700">STORE</span>
+                    </div>
+                    <p className="font-sarabun text-sm text-neutral-500">Your saved audio setups</p>
+                  </div>
+                </div>
+                <ChevronRight className="h-5 w-5 text-neutral-300" />
+              </Link>
+
+              {/* Order History */}
+              <a
+                href={`${shopifyAccountUrl}/orders`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between p-4 hover:bg-neutral-50 transition-colors"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-neutral-100">
+                    <Package className="h-5 w-5 text-neutral-500" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-sarabun font-medium text-neutral-900">Order History</span>
+                      <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-100 text-amber-700">STORE</span>
+                    </div>
+                    <p className="font-sarabun text-sm text-neutral-500">Track, return or buy again</p>
+                  </div>
+                </div>
+                <ChevronRight className="h-5 w-5 text-neutral-300" />
+              </a>
+
+              {/* Saved Addresses */}
+              <a
+                href={`${shopifyAccountUrl}/addresses`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between p-4 hover:bg-neutral-50 transition-colors"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-neutral-100">
+                    <MapPin className="h-5 w-5 text-neutral-500" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-sarabun font-medium text-neutral-900">Saved Addresses</span>
+                      <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-100 text-amber-700">STORE</span>
+                    </div>
+                    <p className="font-sarabun text-sm text-neutral-500">Manage shipping & billing</p>
+                  </div>
+                </div>
+                <ChevronRight className="h-5 w-5 text-neutral-300" />
+              </a>
+
+              {/* Support & FAQs */}
+              <Link
+                href="/faq"
+                className="flex items-center justify-between p-4 hover:bg-neutral-50 transition-colors last:rounded-b-2xl"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-neutral-100">
+                    <HelpCircle className="h-5 w-5 text-neutral-500" />
+                  </div>
+                  <div>
+                    <span className="font-sarabun font-medium text-neutral-900">Support & FAQs</span>
+                    <p className="font-sarabun text-sm text-neutral-500">Get help with your products</p>
+                  </div>
+                </div>
+                <ChevronRight className="h-5 w-5 text-neutral-300" />
+              </Link>
             </div>
-            <p className="text-gray-600 mb-6">
-              Manage your shipping and billing addresses for faster checkout.
-            </p>
-            <a href={`${shopifyAccountUrl}/addresses`} target="_blank" rel="noopener noreferrer">
-              <Button
-                size="lg"
-                variant="outline"
-                className="w-full border-black text-black hover:bg-black hover:text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
-              >
-                Manage Addresses
-              </Button>
-            </a>
           </div>
 
-          {/* Wishlist */}
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 hover:shadow-lg transition-shadow">
-            <div className="flex items-center mb-4">
-              <svg
-                className="h-8 w-8 text-[#c59862] mr-3"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                />
-              </svg>
-              <h2 className="text-2xl font-display text-gray-900">Wishlist</h2>
-            </div>
-            <p className="text-gray-600 mb-6">
-              View and manage your saved products and favorites.
+          {/* Need Assistance */}
+          <div className="bg-[#faf8f5] rounded-2xl p-8 text-center border border-neutral-200">
+            <h3 className="font-hvmuse text-xl text-[#c59862] italic mb-2">
+              Need Assistance?
+            </h3>
+            <p className="font-sarabun text-neutral-600 mb-6">
+              Our specialist team is available for any questions regarding<br className="hidden sm:block" />
+              your bespoke products or orders.
             </p>
-            <Link href="/wishlist">
-              <Button
-                size="lg"
-                variant="outline"
-                className="w-full border-black text-black hover:bg-black hover:text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
-              >
-                View Wishlist
-              </Button>
+            <Link
+              href="/contact"
+              className="inline-flex items-center justify-center rounded-full border border-neutral-300 bg-white px-6 py-2.5 font-sarabun text-sm text-neutral-700 hover:bg-neutral-50 transition-colors"
+            >
+              Contact Support
             </Link>
           </div>
         </div>
-
-        {/* Additional Info */}
-        <div className="bg-[#c59862]/10 border border-[#c59862]/20 rounded-lg p-6 text-center">
-          <h3 className="text-xl font-display text-gray-900 mb-2">
-            Need Assistance?
-          </h3>
-          <p className="text-gray-600 mb-4">
-            Our team is here to help with any questions about your account or orders.
-          </p>
-          <Link href="/contact">
-            <Button
-              variant="outline"
-              className="border-[#c59862] text-[#c59862] hover:bg-[#c59862] hover:text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
-            >
-              Contact Support
-            </Button>
-          </Link>
-        </div>
       </div>
-    </div>
+
+      {/* Profile Modal */}
+      <ProfileModal
+        isOpen={showProfileModal}
+        onClose={() => setShowProfileModal(false)}
+        onSave={handleProfileUpdate}
+        profile={profile}
+      />
+    </>
   );
 }
-

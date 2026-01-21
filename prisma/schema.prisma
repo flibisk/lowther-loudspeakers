@@ -43,19 +43,52 @@ model Vote {
   @@index([voterHash])
 }
 
-// User for commenting system (email-based auth)
+// User levels for badges
+enum UserLevel {
+  ENTHUSIAST
+  ADVOCATE
+  AMBASSADOR
+}
+
+// User roles for access control
+enum UserRole {
+  USER
+  ADMIN
+}
+
+// Central user model for all site features
 model User {
   id              String        @id @default(uuid())
   email           String        @unique
-  displayName     String?       @unique // Username - must be unique
+  displayName     String?       @unique // Username for Trust Your Ears
+  fullName        String?                // Full name for profile
+  address         String?                // Address (free text)
+  level           UserLevel     @default(ENTHUSIAST)
+  role            UserRole      @default(USER)
+  passwordHash    String?                // Optional - null means magic link only
   createdAt       DateTime      @default(now())
   lastLoginAt     DateTime      @default(now())
   
   comments        Comment[]
   commentLikes    CommentLike[]
+  equipment       Equipment[]
   
   @@index([email])
   @@index([displayName])
+  @@index([level])
+}
+
+// User's Lowther equipment collection
+model Equipment {
+  id        String   @id @default(uuid())
+  userId    String
+  name      String   // Free text: "TP1 Loudspeaker Pair", "PM6A Drive Unit"
+  addedAt   DateTime @default(now())
+  fromOrder Boolean  @default(false) // true if auto-added from Shopify order
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
 }
 
 // Verification codes for passwordless email auth
