@@ -74,8 +74,18 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    // Check if Resend is configured
+    if (!process.env.RESEND_API_KEY) {
+      console.error('[AUTH] RESEND_API_KEY is not configured');
+      return NextResponse.json(
+        { error: 'Email service not configured' },
+        { status: 500 }
+      );
+    }
+
     // Send email with code
-    const { error: emailError } = await resend.emails.send({
+    console.log(`[AUTH] Sending verification code to ${normalizedEmail}`);
+    const { data: emailData, error: emailError } = await resend.emails.send({
       from: 'Lowther Loudspeakers <mrbird@lowtherloudspeakers.com>',
       to: normalizedEmail,
       subject: 'Your verification code for Lowther',
@@ -129,14 +139,14 @@ export async function POST(request: NextRequest) {
     });
 
     if (emailError) {
-      console.error('Failed to send verification email:', emailError);
+      console.error('[AUTH] Failed to send verification email:', JSON.stringify(emailError, null, 2));
       return NextResponse.json(
-        { error: 'Failed to send verification email' },
+        { error: 'Failed to send verification email. Please try again.' },
         { status: 500 }
       );
     }
 
-    console.log(`[AUTH] Verification code sent to ${normalizedEmail}`);
+    console.log(`[AUTH] Verification code sent successfully to ${normalizedEmail}`, emailData?.id);
 
     return NextResponse.json({
       success: true,
