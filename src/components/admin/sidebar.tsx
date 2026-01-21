@@ -8,7 +8,8 @@ import {
   TrendingUp, 
   Settings,
   LogOut,
-  ChevronLeft
+  ChevronLeft,
+  FileText
 } from 'lucide-react';
 
 interface AdminUser {
@@ -28,6 +29,11 @@ const navItems = [
     label: 'Dashboard',
     href: '/admin',
     icon: LayoutDashboard,
+  },
+  {
+    label: 'Page Views',
+    href: '/admin/pages',
+    icon: FileText,
   },
   {
     label: 'Users',
