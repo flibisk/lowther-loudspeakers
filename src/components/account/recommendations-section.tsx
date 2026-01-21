@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Plus, ChevronDown, Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface Album {
   id: string;
@@ -53,21 +54,20 @@ export function RecommendationsSection({ userId }: RecommendationsSectionProps) 
           </div>
         ) : albums.length === 0 ? (
           <div className="text-center py-8">
-            <p className="font-sarabun text-sm text-neutral-500 mb-4">
+            <p className="font-sarabun text-sm text-neutral-500 mb-6">
               You haven&apos;t recommended any albums yet
             </p>
-            <Link
-              href="/trust-your-ears"
-              className="inline-flex items-center gap-2 rounded-lg bg-[#c59862] px-4 py-2 font-sarabun text-sm font-medium text-white hover:bg-[#b38752] transition-colors"
-            >
-              <Plus className="h-4 w-4" />
-              Recommend
+            <Link href="/trust-your-ears">
+              <Button variant="black" size="lowther">
+                <Plus className="h-4 w-4" />
+                Recommend
+              </Button>
             </Link>
           </div>
         ) : (
           <>
             {/* Album Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {displayedAlbums.map((album) => (
                 <Link
                   key={album.id}
@@ -100,7 +100,7 @@ export function RecommendationsSection({ userId }: RecommendationsSectionProps) 
             </div>
 
             {/* Actions */}
-            <div className="flex items-center justify-center gap-4">
+            <div className="flex items-center justify-center gap-6 mt-8 pt-6 border-t border-neutral-100">
               {hasMore && (
                 <button
                   onClick={() => setShowAll(!showAll)}
@@ -110,12 +110,11 @@ export function RecommendationsSection({ userId }: RecommendationsSectionProps) 
                   <ChevronDown className={`h-4 w-4 transition-transform ${showAll ? 'rotate-180' : ''}`} />
                 </button>
               )}
-              <Link
-                href="/trust-your-ears"
-                className="flex items-center gap-2 rounded-lg bg-[#c59862] px-4 py-2 font-sarabun text-xs uppercase tracking-wider text-white hover:bg-[#b38752] transition-colors"
-              >
-                <Plus className="h-4 w-4" />
-                Recommend
+              <Link href="/trust-your-ears">
+                <Button variant="black" size="lowther">
+                  <Plus className="h-4 w-4" />
+                  Recommend
+                </Button>
               </Link>
             </div>
           </>
