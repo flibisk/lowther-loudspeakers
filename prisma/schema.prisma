@@ -73,6 +73,7 @@ model User {
   comments        Comment[]
   commentLikes    CommentLike[]
   equipment       Equipment[]
+  events          UserEvent[]
   
   @@index([email])
   @@index([displayName])
@@ -142,4 +143,42 @@ model CommentLike {
   @@unique([commentId, userId]) // One like per user per comment
   @@index([commentId])
   @@index([userId])
+}
+
+// Event types for analytics tracking
+enum EventType {
+  PAGE_VIEW
+  CTA_CLICK
+  VIDEO_PLAY
+  DOWNLOAD_BROCHURE
+  FORM_SUBMIT
+  PRODUCT_VIEW
+  ADD_TO_CART
+  BEGIN_CHECKOUT
+  TRUST_YOUR_EARS_VOTE
+  ENQUIRY_START
+  ENQUIRY_SUBMIT
+  PRODUCT_REVISIT
+  BLOG_DEEP_READ
+}
+
+// User event tracking for analytics
+model UserEvent {
+  id            String    @id @default(uuid())
+  userId        String?   // Optional - for logged-in users
+  sessionId     String    // For anonymous tracking
+  eventType     EventType
+  eventData     Json?     // Additional data (product handle, collection, etc.)
+  path          String    // Page URL path
+  referrer      String?   // Where they came from
+  userAgent     String?   // Browser/device info
+  timestamp     DateTime  @default(now())
+  
+  user          User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  @@index([userId])
+  @@index([sessionId])
+  @@index([eventType])
+  @@index([timestamp])
+  @@index([path])
 }
