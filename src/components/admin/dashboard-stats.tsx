@@ -14,7 +14,9 @@ import {
   UserCheck,
   Loader2,
   Globe,
-  ChevronRight
+  ChevronRight,
+  X,
+  FileText
 } from 'lucide-react';
 
 interface DashboardData {
@@ -28,6 +30,21 @@ interface DashboardData {
   eventBreakdown: { type: string; count: number }[];
 }
 
+interface EventDetailItem {
+  id: string;
+  title: string;
+  count: number;
+  users: { email: string | null; displayName: string | null }[];
+  lastOccurred: string;
+}
+
+interface EventDetails {
+  eventType: string;
+  totalCount: number;
+  items: EventDetailItem[];
+  label: string;
+}
+
 export function DashboardStats() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -35,6 +52,8 @@ export function DashboardStats() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [eventDetails, setEventDetails] = useState<EventDetails | null>(null);
+  const [loadingDetails, setLoadingDetails] = useState(false);
 
   useEffect(() => {
     fetchStats();
@@ -55,6 +74,36 @@ export function DashboardStats() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const fetchEventDetails = async (eventType: string) => {
+    // Only fetch details for events that have meaningful drill-down data
+    const drilldownTypes = [
+      'DOWNLOAD_BROCHURE', 'DOWNLOAD_PLAN', 'VIDEO_PLAY', 
+      'FORM_SUBMIT', 'CTA_CLICK', 'PRODUCT_VIEW', 'PRODUCT_REVISIT',
+      'ENQUIRY_START', 'ENQUIRY_SUBMIT'
+    ];
+    
+    if (!drilldownTypes.includes(eventType)) {
+      return; // No drill-down for PAGE_VIEW, ADD_TO_CART, etc.
+    }
+
+    setLoadingDetails(true);
+    try {
+      const response = await fetch(`/api/admin/events/${eventType}?range=${range}`);
+      if (response.ok) {
+        const result = await response.json();
+        setEventDetails(result);
+      }
+    } catch (err) {
+      console.error('Failed to load event details:', err);
+    } finally {
+      setLoadingDetails(false);
+    }
+  };
+
+  const closeEventDetails = () => {
+    setEventDetails(null);
   };
 
   const navigateToPage = (path: string) => {
@@ -131,21 +180,43 @@ export function DashboardStats() {
         {/* Event Breakdown */}
         <div className="bg-white rounded-xl p-6 shadow-sm">
           <h3 className="font-hvmuse text-lg text-neutral-900 mb-4">Event Breakdown</h3>
-          <div className="space-y-3">
+          <div className="space-y-2">
             {data.eventBreakdown.length > 0 ? (
-              data.eventBreakdown.map((event) => (
-                <div key={event.type} className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <EventIcon type={event.type} />
-                    <span className="text-sm text-neutral-600">
-                      {formatEventType(event.type)}
-                    </span>
-                  </div>
-                  <span className="text-sm font-medium text-neutral-900">
-                    {event.count.toLocaleString()}
-                  </span>
-                </div>
-              ))
+              data.eventBreakdown.map((event) => {
+                const isClickable = [
+                  'DOWNLOAD_BROCHURE', 'DOWNLOAD_PLAN', 'VIDEO_PLAY', 
+                  'FORM_SUBMIT', 'CTA_CLICK', 'PRODUCT_VIEW', 'PRODUCT_REVISIT',
+                  'ENQUIRY_START', 'ENQUIRY_SUBMIT'
+                ].includes(event.type);
+                
+                return (
+                  <button
+                    key={event.type}
+                    onClick={() => isClickable && fetchEventDetails(event.type)}
+                    disabled={!isClickable}
+                    className={`w-full flex items-center justify-between p-2 rounded-lg transition-colors ${
+                      isClickable 
+                        ? 'hover:bg-neutral-50 cursor-pointer' 
+                        : 'cursor-default'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <EventIcon type={event.type} />
+                      <span className="text-sm text-neutral-600">
+                        {formatEventType(event.type)}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-neutral-900">
+                        {event.count.toLocaleString()}
+                      </span>
+                      {isClickable && (
+                        <ChevronRight className="h-4 w-4 text-neutral-300" />
+                      )}
+                    </div>
+                  </button>
+                );
+              })
             ) : (
               <p className="text-sm text-neutral-500">No events recorded yet</p>
             )}
@@ -261,6 +332,93 @@ export function DashboardStats() {
           </div>
         </div>
       </div>
+
+      {/* Event Details Modal */}
+      {(eventDetails || loadingDetails) && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div 
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={closeEventDetails}
+          />
+          <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl max-h-[80vh] overflow-hidden">
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b border-neutral-100">
+              <div className="flex items-center gap-3">
+                {eventDetails && <EventIcon type={eventDetails.eventType} />}
+                <div>
+                  <h2 className="font-hvmuse text-xl text-neutral-900">
+                    {eventDetails ? formatEventType(eventDetails.eventType) : 'Loading...'}
+                  </h2>
+                  {eventDetails && (
+                    <p className="text-sm text-neutral-500">
+                      {eventDetails.totalCount.toLocaleString()} total events
+                    </p>
+                  )}
+                </div>
+              </div>
+              <button
+                onClick={closeEventDetails}
+                className="rounded-full p-2 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-600 transition-colors"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="p-6 overflow-y-auto max-h-[60vh]">
+              {loadingDetails ? (
+                <div className="flex items-center justify-center py-10">
+                  <Loader2 className="h-8 w-8 animate-spin text-neutral-400" />
+                </div>
+              ) : eventDetails && eventDetails.items.length > 0 ? (
+                <div className="space-y-3">
+                  {eventDetails.items.map((item, i) => (
+                    <div
+                      key={item.id}
+                      className="flex items-start gap-4 p-4 rounded-lg bg-neutral-50"
+                    >
+                      <span className="flex items-center justify-center h-8 w-8 rounded-full bg-amber-100 text-amber-700 text-sm font-medium flex-shrink-0">
+                        {i + 1}
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-neutral-900">
+                          {item.title}
+                        </p>
+                        <div className="flex items-center gap-4 mt-1 text-xs text-neutral-500">
+                          <span>{item.count} downloads</span>
+                          <span>Last: {new Date(item.lastOccurred).toLocaleDateString()}</span>
+                        </div>
+                        {item.users.length > 0 && (
+                          <div className="mt-2 flex flex-wrap gap-1">
+                            {item.users.slice(0, 5).map((user, idx) => (
+                              <span 
+                                key={idx}
+                                className="px-2 py-0.5 rounded-full bg-neutral-200 text-xs text-neutral-600"
+                              >
+                                {user.displayName || user.email || 'Anonymous'}
+                              </span>
+                            ))}
+                            {item.users.length > 5 && (
+                              <span className="px-2 py-0.5 rounded-full bg-neutral-200 text-xs text-neutral-600">
+                                +{item.users.length - 5} more
+                              </span>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : eventDetails ? (
+                <div className="text-center py-10">
+                  <FileText className="h-12 w-12 text-neutral-300 mx-auto mb-3" />
+                  <p className="text-neutral-500">No detailed data available for this event type</p>
+                </div>
+              ) : null}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -316,6 +474,7 @@ function EventIcon({ type }: { type: string }) {
     CTA_CLICK: MousePointer,
     VIDEO_PLAY: Play,
     DOWNLOAD_BROCHURE: FileDown,
+    DOWNLOAD_PLAN: FileText,
     FORM_SUBMIT: Users,
     PRODUCT_VIEW: Package,
     ADD_TO_CART: ShoppingCart,

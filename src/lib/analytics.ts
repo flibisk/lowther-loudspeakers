@@ -36,6 +36,7 @@ export type EventType =
   | 'CTA_CLICK'
   | 'VIDEO_PLAY'
   | 'DOWNLOAD_BROCHURE'
+  | 'DOWNLOAD_PLAN'
   | 'FORM_SUBMIT'
   | 'PRODUCT_VIEW'
   | 'ADD_TO_CART'
@@ -52,7 +53,11 @@ export interface EventData {
   formType?: string;
   ctaName?: string;
   videoId?: string;
+  videoTitle?: string;
   brochureId?: string;
+  brochureTitle?: string;
+  planId?: string;
+  planTitle?: string;
   albumId?: string;
   value?: number;
   [key: string]: any;
@@ -116,8 +121,12 @@ export function trackVideoPlay(videoId: string) {
   trackEvent('VIDEO_PLAY', { videoId });
 }
 
-export function trackBrochureDownload(brochureId: string) {
-  trackEvent('DOWNLOAD_BROCHURE', { brochureId });
+export function trackBrochureDownload(brochureId: string, brochureTitle?: string) {
+  trackEvent('DOWNLOAD_BROCHURE', { brochureId, brochureTitle });
+}
+
+export function trackPlanDownload(planId: string, planTitle?: string) {
+  trackEvent('DOWNLOAD_PLAN', { planId, planTitle });
 }
 
 export function trackEnquiryStart(formType?: string) {

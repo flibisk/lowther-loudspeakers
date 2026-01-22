@@ -16,6 +16,7 @@ const SCORE_WEIGHTS = {
   PRODUCT_REVISIT: 3,    // Return visit to a product
   VIDEO_PLAY: 3,
   DOWNLOAD_BROCHURE: 10,
+  DOWNLOAD_PLAN: 10,
   FORM_SUBMIT: 15,
   CTA_CLICK: 2,
   ADD_TO_CART: 20,

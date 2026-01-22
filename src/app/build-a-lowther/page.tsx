@@ -8,7 +8,7 @@ import { LowtherForLifeSection } from '@/components/lowther-for-life-section';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { Button } from '@/components/ui/button';
 import { DriveUnitCard } from '@/components/drive-unit-card';
-import { trackBrochureDownload, trackFormSubmit } from '@/lib/analytics';
+import { trackPlanDownload } from '@/lib/analytics';
 import { useAuth } from '@/contexts/auth-context';
 import { AuthModal } from '@/components/auth/auth-modal';
 import { Download, Lock, LogIn, User } from 'lucide-react';
@@ -178,8 +178,8 @@ export default function BuildALowtherPage() {
   const handleDownloadPlan = () => {
     if (!selectedPlan || !user) return;
     
-    // Track the download
-    trackBrochureDownload(selectedPlan.id);
+    // Track the download as a plan download (not brochure)
+    trackPlanDownload(selectedPlan.id, selectedPlan.title);
     
     // Trigger the download
     const link = document.createElement('a');

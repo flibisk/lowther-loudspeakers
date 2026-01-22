@@ -64,6 +64,13 @@ UPDATE "User" SET "role" = 'ADMIN' WHERE "email" IN (
     'hello@lowtherloudspeakers.com'
 );
 
+-- Add DOWNLOAD_PLAN to EventType enum if it doesn't exist
+DO $$ BEGIN
+    ALTER TYPE "EventType" ADD VALUE IF NOT EXISTS 'DOWNLOAD_PLAN';
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
 -- Verify the changes
 SELECT 'UserEvent table created' AS status;
 SELECT COUNT(*) AS admin_count FROM "User" WHERE "role" = 'ADMIN';

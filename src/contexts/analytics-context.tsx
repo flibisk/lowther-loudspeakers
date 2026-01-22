@@ -9,6 +9,7 @@ export type EventType =
   | 'CTA_CLICK'
   | 'VIDEO_PLAY'
   | 'DOWNLOAD_BROCHURE'
+  | 'DOWNLOAD_PLAN'
   | 'FORM_SUBMIT'
   | 'PRODUCT_VIEW'
   | 'ADD_TO_CART'
