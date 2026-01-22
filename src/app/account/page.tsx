@@ -16,8 +16,15 @@ import {
   ChevronRight,
   Mail,
   MapPinned,
-  Pencil
+  Pencil,
+  LayoutDashboard
 } from 'lucide-react';
+
+// Admin email addresses
+const ADMIN_EMAILS = [
+  'social@lowtherloudspeakers.com',
+  'hello@lowtherloudspeakers.com',
+];
 
 interface UserProfile {
   id: string;
@@ -148,13 +155,26 @@ export default function AccountPage() {
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
               <h1 className="font-hvmuse text-2xl sm:text-3xl text-neutral-900">Your Account</h1>
-              <button
-                onClick={handleLogout}
-                className="flex items-center gap-2 font-sarabun text-sm text-neutral-500 hover:text-neutral-700 transition-colors"
-              >
-                <LogOut className="h-4 w-4" />
-                Sign Out
-              </button>
+              <div className="flex items-center gap-4">
+                {/* Admin Dashboard Button - only visible to admin emails */}
+                {user.email && ADMIN_EMAILS.includes(user.email) && (
+                  <Link
+                    href="/admin"
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-neutral-900 font-sarabun text-sm text-white hover:bg-neutral-800 transition-colors"
+                  >
+                    <LayoutDashboard className="h-4 w-4" />
+                    <span className="hidden sm:inline">Admin Dashboard</span>
+                    <span className="sm:hidden">Admin</span>
+                  </Link>
+                )}
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 font-sarabun text-sm text-neutral-500 hover:text-neutral-700 transition-colors"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Sign Out
+                </button>
+              </div>
             </div>
 
             {/* Profile Card */}
