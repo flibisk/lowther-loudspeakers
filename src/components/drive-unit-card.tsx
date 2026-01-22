@@ -195,9 +195,9 @@ export function DriveUnitCard({ driveUnitString, label, description }: DriveUnit
 
   return (
     <div className="bg-white rounded-lg border border-gray-300 p-4 hover:shadow-md transition-shadow">
-      <div className="flex gap-4">
+      <div className="flex flex-col sm:flex-row gap-4">
         {/* Image */}
-        <div className="relative w-24 h-24 flex-shrink-0 bg-gray-100 rounded overflow-hidden">
+        <div className="relative w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 bg-gray-100 rounded overflow-hidden mx-auto sm:mx-0">
           {product && productImage ? (
             <Image
               src={productImage}
@@ -215,7 +215,7 @@ export function DriveUnitCard({ driveUnitString, label, description }: DriveUnit
         </div>
 
         {/* Content */}
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 overflow-hidden">
           {/* Label */}
           <div className="mb-1">
             {label === 'Recommended' && (
@@ -247,7 +247,7 @@ export function DriveUnitCard({ driveUnitString, label, description }: DriveUnit
               {/* Quantity Selector */}
               <div className="flex items-center gap-2 mb-2">
                 <label htmlFor={`quantity-${parsed.handle}`} className="text-sm text-gray-600">
-                  Quantity:
+                  Qty:
                 </label>
                 <div className="flex items-center border border-gray-300 rounded">
                   <button
@@ -269,7 +269,7 @@ export function DriveUnitCard({ driveUnitString, label, description }: DriveUnit
                         setQuantity(val);
                       }
                     }}
-                    className="w-16 px-2 py-1 text-center border-0 focus:outline-none focus:ring-0"
+                    className="w-12 px-1 py-1 text-center border-0 focus:outline-none focus:ring-0 text-sm"
                   />
                   <button
                     type="button"
@@ -286,7 +286,7 @@ export function DriveUnitCard({ driveUnitString, label, description }: DriveUnit
               <div className="flex gap-2">
                 <Button
                   size="sm"
-                  className="flex-1 h-10 bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[3px] transition-all duration-300 uppercase"
+                  className="flex-1 h-10 bg-black hover:bg-[#c59862] text-white font-sarabun text-xs tracking-[2px] sm:tracking-[3px] transition-all duration-300 uppercase"
                   onClick={handleAddToCart}
                   disabled={addingToCart || cartLoading || !product.variants[0]?.availableForSale}
                 >

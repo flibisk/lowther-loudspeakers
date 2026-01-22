@@ -567,7 +567,7 @@ export default function BuildALowtherPage() {
                           onClick={handleDownloadPlan}
                         >
                           <Download className="h-5 w-5 mr-2" />
-                          DOWNLOAD {selectedPlan.title.toUpperCase()} PLAN
+                          DOWNLOAD
                         </Button>
                       </div>
                     </div>
