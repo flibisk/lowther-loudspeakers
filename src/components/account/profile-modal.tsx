@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, User, Mail, MapPin, Lock, Eye, EyeOff, Loader2, Check, Globe } from 'lucide-react';
 
 interface ProfileModalProps {
@@ -115,9 +116,16 @@ export function ProfileModal({ isOpen, onClose, onSave, profile }: ProfileModalP
     onClose();
   };
 
-  if (!isOpen) return null;
+  // Use state to track if we're mounted (for portal)
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
 
-  return (
+  if (!isOpen || !mounted) return null;
+
+  const modalContent = (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div 
@@ -126,7 +134,7 @@ export function ProfileModal({ isOpen, onClose, onSave, profile }: ProfileModalP
       />
       
       {/* Modal */}
-      <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl">
+      <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-neutral-100">
           <h2 className="font-hvmuse text-xl text-neutral-900">Update Profile Details</h2>
@@ -337,4 +345,7 @@ export function ProfileModal({ isOpen, onClose, onSave, profile }: ProfileModalP
       </div>
     </div>
   );
+
+  // Render via portal to document.body so it persists through parent re-renders
+  return createPortal(modalContent, document.body);
 }
