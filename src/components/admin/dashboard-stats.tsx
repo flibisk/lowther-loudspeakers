@@ -491,7 +491,25 @@ function EventIcon({ type }: { type: string }) {
 }
 
 function formatEventType(type: string): string {
-  return type
+  // Custom labels for better readability
+  const labels: Record<string, string> = {
+    'DOWNLOAD_BROCHURE': 'Catalogue Download',
+    'DOWNLOAD_PLAN': 'Plan Download',
+    'PAGE_VIEW': 'Page Views',
+    'PRODUCT_VIEW': 'Product Views',
+    'PRODUCT_REVISIT': 'Product Revisits',
+    'CTA_CLICK': 'CTA Clicks',
+    'VIDEO_PLAY': 'Video Plays',
+    'FORM_SUBMIT': 'Form Submissions',
+    'ADD_TO_CART': 'Add to Cart',
+    'BEGIN_CHECKOUT': 'Begin Checkout',
+    'TRUST_YOUR_EARS_VOTE': 'Album Votes',
+    'ENQUIRY_START': 'Enquiry Started',
+    'ENQUIRY_SUBMIT': 'Enquiry Submitted',
+    'BLOG_DEEP_READ': 'Blog Deep Reads',
+  };
+  
+  return labels[type] || type
     .split('_')
     .map(word => word.charAt(0) + word.slice(1).toLowerCase())
     .join(' ');

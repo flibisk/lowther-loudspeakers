@@ -46,7 +46,7 @@ function getDateRange(range: string): Date {
 
 // Event type to data field mapping
 const EVENT_DATA_FIELDS: Record<string, { idField: string; titleField: string; label: string }> = {
-  'DOWNLOAD_BROCHURE': { idField: 'brochureId', titleField: 'brochureTitle', label: 'Brochure' },
+  'DOWNLOAD_BROCHURE': { idField: 'brochureId', titleField: 'brochureTitle', label: 'Catalogue' },
   'DOWNLOAD_PLAN': { idField: 'planId', titleField: 'planTitle', label: 'Plan' },
   'VIDEO_PLAY': { idField: 'videoId', titleField: 'videoTitle', label: 'Video' },
   'FORM_SUBMIT': { idField: 'formType', titleField: 'formType', label: 'Form' },
