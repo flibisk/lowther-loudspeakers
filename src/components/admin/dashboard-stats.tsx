@@ -23,6 +23,8 @@ interface DashboardData {
   totalPageViews: number;
   newUsers: number;
   totalUsers: number;
+  catalogueDownloads: number;
+  planDownloads: number;
   topPages: { path: string; count: number }[];
   topProducts: { handle: string; count: number }[];
   topCountries: { country: string; count: number }[];
@@ -143,9 +145,9 @@ export function DashboardStats() {
   return (
     <div className="space-y-6">
       {/* Overview Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         <StatCard
-          label="Total Page Views"
+          label="Page Views"
           value={data.totalPageViews.toLocaleString()}
           icon={Eye}
           color="blue"
@@ -166,11 +168,25 @@ export function DashboardStats() {
           onClick={() => router.push('/admin/users')}
         />
         <StatCard
-          label="Top User Events"
+          label="Catalogue Downloads"
+          value={data.catalogueDownloads.toLocaleString()}
+          icon={FileDown}
+          color="amber"
+          onClick={() => fetchEventDetails('DOWNLOAD_BROCHURE')}
+        />
+        <StatCard
+          label="Plan Downloads"
+          value={data.planDownloads.toLocaleString()}
+          icon={FileText}
+          color="amber"
+          onClick={() => fetchEventDetails('DOWNLOAD_PLAN')}
+        />
+        <StatCard
+          label="Top User"
           value={data.topUser?.eventCount.toLocaleString() || '0'}
           subtitle={data.topUser?.displayName || data.topUser?.email || 'No data'}
           icon={TrendingUp}
-          color="amber"
+          color="blue"
           onClick={data.topUser ? () => navigateToUser(data.topUser!.id) : undefined}
         />
       </div>

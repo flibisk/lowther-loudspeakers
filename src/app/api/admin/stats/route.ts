@@ -73,6 +73,22 @@ export async function GET(request: NextRequest) {
     // Total users
     const totalUsers = await prisma.user.count();
 
+    // Catalogue downloads in range
+    const catalogueDownloads = await prisma.userEvent.count({
+      where: {
+        eventType: 'DOWNLOAD_BROCHURE',
+        timestamp: { gte: startDate },
+      },
+    });
+
+    // Plan downloads in range
+    const planDownloads = await prisma.userEvent.count({
+      where: {
+        eventType: 'DOWNLOAD_PLAN',
+        timestamp: { gte: startDate },
+      },
+    });
+
     // Top pages
     const topPagesRaw = await prisma.userEvent.groupBy({
       by: ['path'],
@@ -183,6 +199,8 @@ export async function GET(request: NextRequest) {
       totalPageViews,
       newUsers,
       totalUsers,
+      catalogueDownloads,
+      planDownloads,
       topPages,
       topProducts,
       topCountries,
